@@ -1,0 +1,18 @@
+<!-- Dashboard -->
+<div class="dashboard">
+
+  <!-- Jumbotron -->
+  <div class="jumbotron text-center">
+    <h1>Dashboard<br><small>{{auth.user.username}}</small></h1>
+  </div>
+
+  <div class="container">
+    <ul class="list-group">
+      <li class="list-group-item list-group-heading">Users</li>
+      <li ng-repeat="user in users" class="list-group-item">{{user.username}}</li>
+    </ul>
+
+    <button ng-click="getUsers()" class="btn btn-default">Refresh</button>
+  </div>
+
+</div>

@@ -1,0 +1,29 @@
+ version: '2'
+ services:
+   client:
+     image: peragrin-client
+     links:
+       - api:upstream
+     ports:
+       - "8888:8000"
+   api:
+     image: peragrin-api
+     ports: 
+       - "8080:80"
+     environment:
+       - DB_NAME=peragrin
+       - DB_USER=peragrin
+       - DB_PASSWORD=secret
+       - DB_HOST=db
+       - DB_PORT=3306
+     links:
+       - db
+   db:
+     image: mysql
+     ports:
+       - 3306:3306
+     environment:
+       - MYSQL_DATABASE=peragrin
+       - MYSQL_USER=peragrin
+       - MYSQL_PASSWORD=secret
+       - MYSQL_ROOT_PASSWORD=secret
