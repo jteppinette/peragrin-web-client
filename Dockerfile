@@ -1,8 +1,5 @@
-FROM node:4-onbuild
+FROM nginx:alpine
 
-EXPOSE 8000
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-RUN npm run bower -- install --allow-root && \
-    npm run gulp -- build
-
-CMD npm run serve -- --proxy http://upstream/
+COPY ./public /usr/share/nginx/html

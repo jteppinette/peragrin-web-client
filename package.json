@@ -3,9 +3,7 @@
   "scripts": {
     "bower": "bower",
     "gulp": "gulp",
-    "serve": "http-server ./public -p 8000",
-    "serve-local": "http-server ./public -p 8000 --proxy http://localhost:8080/",
-    "start": "http-server ./public -p 8000 --proxy http://api.peragrin.jteppinette.com/"
+    "serve": "http-server ./public"
   },
   "devDependencies": {
     "bower": "1.8.0",

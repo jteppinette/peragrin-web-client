@@ -1,21 +1,46 @@
-# Peragrin Client *an Angular front end to the Peragrin application*
+# Peragrin Client - *an Angular front end to the Peragrin application*
 
-# Initialize Development Environment
+## Development
 
-1. Install Node
-2. `git clone <repo-url>`
-3. `cd <repo-name>`
-4. `npm install`
-5. `npm run bower -- install`
-6. `npm run gulp`
-7. `npm start`
-8. Open `localhost:8080`
+### Required Software
 
-## Docker
+* [docker](https://docs.docker.com/)
+* [git](https://git-scm.com/)
+* [nodejs](https://nodejs.org/en/download/)
 
-1. `docker build . -t peragrin-client`
+### Dependencies
 
-2. Run the api and db servers defined in `github.com/jteppinette/peragrin-api`
+This client application requires the [Peragrin API](https://github.com/jteppinette/peragrin-api) backend.
 
-3. `docker run -it -p 8080:8080 -l peragrin-api:upstream \
-      --rm --name peragrin-client peragrin-client`
+### Getting Started
+
+1. `git clone <repo-url>`
+
+2. `cd <repo-name>`
+
+3. `npm install`
+
+4. `npm run bower -- install`
+
+5. `npm run gulp`
+
+6. `npm run serve -- --proxy http://localhost:8000/`
+
+## Usage
+
+### Docker
+
+1. `npm install`
+
+2. `npm run bower -- install`
+
+3. `npm run gulp`
+
+4. `docker build . -t client`
+
+5. `docker run
+      -d
+      -p 8080:80
+      --link app:upstream
+      --name client
+      client`
