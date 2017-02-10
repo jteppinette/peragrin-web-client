@@ -33,7 +33,7 @@
         };
         self.getAuth = function (opts) {
             opts = opts || {required: true};
-            return $http.get("/users/current/", {ignoreAuthModule: !opts.required})
+            return $http.get("/user/", {ignoreAuthModule: !opts.required})
                 .then(function (data) {
                     return self.assignAuth({user: data.data, status: true});
                 })
