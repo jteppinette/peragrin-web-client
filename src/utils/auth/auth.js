@@ -11,6 +11,7 @@
     function AuthService($http, $state) {
         return {
             login: login,
+            register: register,
             logout: logout
         };
 
@@ -23,9 +24,18 @@
                 });
         };
 
+        function register(credentials) {
+            return $http.post("/register", credentials)
+                .then(function(http) {
+                    sessionStorage.encoded = http.data.token;
+                    sessionStorage.decoded = jwt_decode(http.data.token);
+                    $state.go("app.dashboard");
+                });
+        };
+
         function logout() {
             sessionStorage.clear()
-            $state.go("app.landing");
+            $state.go("app.landing.login");
         }
     }
 

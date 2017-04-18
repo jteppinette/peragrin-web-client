@@ -1,0 +1,26 @@
+<!-- REGISTER -->
+<form ng-class="status" class="register">
+
+  <!-- Username -->
+  <div class="form-group form-group-lg">
+    <label class="control-label">Username</label>
+    <input type="text" class="form-control" ng-model="username" placeholder="Enter your username">
+  </div>
+
+  <!-- Password -->
+  <div class="form-group form-group-lg">
+    <label class="control-label">Password</label>
+    <input type="password" class="form-control" ng-model="password" placeholder="Enter your password">
+  </div>
+
+  <!-- Submit -->
+  <button ng-click="submit(username, password)" type="submit" class="btn btn-lg btn-default">Register</button>
+
+  <!-- Message -->
+  <p class="help-block">{{message}}</p>
+
+  <div class="help-block">
+    <a ui-sref="app.landing.login">Do you already have an account? Click here to login.</a>
+  </div>
+
+</form>

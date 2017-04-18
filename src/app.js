@@ -26,10 +26,19 @@
                 templateUrl: "app.html"
             })
                 .state("app.landing", {
-                    url: "/",
-                    templateUrl: "landing/landing.html",
-                    controller: "LandingController"
+                    abstract: true,
+                    templateUrl: "landing/landing.html"
                 })
+                    .state("app.landing.login", {
+                        url: "/",
+                        templateUrl: "landing/login/login.html",
+                        controller: "LoginController"
+                    })
+                    .state("app.landing.register", {
+                        url: "/register",
+                        templateUrl: "landing/register/register.html",
+                        controller: "RegisterController"
+                    })
                 .state("app.dashboard", {
                     url: "/dashboard",
                     templateUrl: "dashboard/dashboard.html",
