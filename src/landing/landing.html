@@ -1,38 +1,30 @@
+<!-- LANDING -->
 <div class="landing">
+  <div class="login">
 
-  <!-- Navigation -->
-  <nav class="navbar navbar-default navbar-fixed-top" role="navigation" ng-init="collapsed=true" ng-controller="NavigationController">
-    <div class="container-fluid">
+    <h1>Peragrin</h1>
 
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" ng-click="collapsed=!collapsed">
-          <span class="sr-only">Toggle Navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" ui-sref="landing">Peragrin</a>
+    <form ng-class="status">
+
+      <!-- Username -->
+      <div class="form-group form-group-lg">
+        <label class="control-label">Username</label>
+        <input type="text" class="form-control" ng-model="username" placeholder="Enter your username">
       </div>
 
-      <div class="navbar-collapse" collapse="collapsed">
-        <ul class="nav navbar-nav">
-          <li ui-sref-active="active"><a ui-sref="landing">Landing</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href ng-click="login()">Login</a></li>
-        </ul>
+      <!-- Password -->
+      <div class="form-group form-group-lg">
+        <label class="control-label">Password</label>
+        <input type="password" class="form-control" ng-model="password" placeholder="Enter your password">
       </div>
 
-    </div>
-  </nav>
+      <!-- Submit -->
+      <button ng-click="submit(username, password)" type="submit" class="btn btn-lg btn-default">Login</button>
 
-  <!-- Jumbotron -->
-  <div class="jumbotron text-center">
-    <h1>Peragrin<br><small>Peragrin</small></h1>
-  </div>
+      <!-- Message -->
+      <p class="help-block pull-right">{{message}}</p>
 
-  <div class="container">
+    </form>
 
   </div>
-
 </div>

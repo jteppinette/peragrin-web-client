@@ -50,12 +50,6 @@ gulp.task("fonts", function() {
         .pipe(gulp.dest(dir.output+"fonts"));
 });
 
-gulp.task("test", ["app:js", "vendor:js", "templates"], function(done) {
-    new karma({
-        configFile: __dirname + "/karma.conf.js"
-    }, done).start();
-});
-
 gulp.task("build", ["index", "app:js", "vendor:js", "templates", "css", "fonts"]);
 
-gulp.task("default", ["index", "test", "css", "fonts"]);
+gulp.task("default", ["build"]);

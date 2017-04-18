@@ -1,6 +1,14 @@
-// Partials
+// Variable Overrides
 @import 'sass/variables';
-@import 'sass/general';
+
+// Default Bootstrap Variables
+@import '../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/variables';
+
+// Variable Overrides
+@import 'sass/variables';
 
 // Bootstrap
 @import '../bower_components/bootstrap-sass/assets/stylesheets/bootstrap';
+
+// Partials
+@import 'sass/general';

@@ -1,0 +1,47 @@
+<!-- Dashboard -->
+<div class="dashboard">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-inverse" role="navigation" ng-init="collapsed=true">
+    <div class="container-fluid">
+
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" ng-click="collapsed=!collapsed">
+          <span class="sr-only">Toggle Navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" ui-sref="landing">Peragrin</a>
+      </div>
+
+      <div class="navbar-collapse" uib-collapse="collapsed">
+        <ul class="nav navbar-nav">
+          <li ui-sref-active="active"><a ui-sref="app.landing">Landing</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href ng-click="logout()">Logout</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+
+    <!-- USERS -->
+    <div class="panel panel-primary">
+      <div class="panel-heading clearfix">
+        <h2 class="panel-title pull-left">Users</h2>
+        <button class="btn btn-default btn-lg pull-right">Add User</button>
+      </div>
+      <div class="panel-body">
+        <ul class="list-group">
+          <li ng-repeat="user in users" class="list-group-item">{{user.username}}</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+</div>
