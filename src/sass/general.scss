@@ -41,10 +41,26 @@ a {
     font-size: $font-size-large;
   }
 
-  .btn-default:hover {
+}
+
+.btn-default {
+  color: $brand-primary;
+
+  &:hover {
     background-color: $brand-primary;
     border: 1px solid white;
     color: white;
+  }
+}
+
+.btn-primary {
+  border: 1px solid white;
+  color: white;
+
+  &:hover {
+    background-color: white;
+    color: $brand-primary;
+    border: 1px solid $brand-primary;
   }
 }
 

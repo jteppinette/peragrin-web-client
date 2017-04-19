@@ -28,30 +28,36 @@
   </nav>
 
   <div class="container-fluid">
+    <div class="row">
 
-    <!-- USERS -->
-    <div class="panel panel-primary">
-      <div class="panel-heading clearfix">
-        <h2 class="panel-title pull-left">Users</h2>
-        <button class="btn btn-default btn-lg pull-right">Add User</button>
+      <!-- ORGANIZATIONS -->
+      <div class="col-md-8">
+        <div class="panel panel-primary">
+          <div class="panel-heading clearfix">
+            <h2 class="panel-title pull-left">Organizations</h2>
+            <button class="btn btn-primary btn-lg pull-right">Add Organization</button>
+          </div>
+          <div class="panel-body">
+            <ul class="list-group">
+              <li ng-repeat="org in organizations" class="list-group-item">{{org.name}}</li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <div class="panel-body">
-        <ul class="list-group">
-          <li ng-repeat="user in users" class="list-group-item">{{user.username}}</li>
-        </ul>
+
+      <!-- YOUR ORGANIZATION -->
+      <div class="col-md-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h2 class="panel-title">Your Organization</h2>
+          </div>
+          <div class="panel-body">
+            <h3>{{ organization.name }}</h3>
+          </div>
+        </div>
       </div>
+
     </div>
-
-    <!-- YOUR ORGANIZATION -->
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        <h2 class="panel-title">Your Organization</h2>
-      </div>
-      <div class="panel-body">
-        <h3>{{ organization.name }}</h3>
-      </div>
-    </div>
-
   </div>
 
 </div>
