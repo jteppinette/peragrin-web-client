@@ -52,8 +52,6 @@
         $scope.submit = submit;
         $scope.cancel = $uibModalInstance.dismiss;
 
-        console.log(communityID);
-
         $scope.organization = {};
 
         function submit() {
