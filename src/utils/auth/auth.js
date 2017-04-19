@@ -18,13 +18,7 @@
         function login(credentials) {
             return $http.post("/login", credentials)
                 .then(function(http) {
-                    var decoded = jwt_decode(http.data.token);
-
-                    sessionStorage.encoded = http.data.token;
-                    sessionStorage.userID = decoded.id
-                    sessionStorage.username = decoded.username
-                    sessionStorage.organizationID = decoded.organizationID
-
+                    set(http.data.token);
                     $state.go("app.dashboard");
                 });
         };
@@ -32,8 +26,7 @@
         function register(data) {
             return $http.post("/register", data)
                 .then(function(http) {
-                    sessionStorage.encoded = http.data.token;
-                    sessionStorage.decoded = jwt_decode(http.data.token);
+                    set(http.data.token);
                     $state.go("app.dashboard");
                 });
         };
@@ -42,12 +35,20 @@
             sessionStorage.clear()
             $state.go("app.landing.login");
         }
+
+        function set(token) {
+            var decoded = jwt_decode(token);
+            sessionStorage.token = token;
+            sessionStorage.userID = decoded.id
+            sessionStorage.username = decoded.username
+            sessionStorage.organizationID = decoded.organizationID
+        }
     }
 
     function AuthInterceptor() {
         return {
             request: function(config) {
-                config.headers["Authorization"] = `Bearer ${sessionStorage.encoded}`;
+                config.headers["Authorization"] = `Bearer ${sessionStorage.token}`;
                 return config;
             }
         };
