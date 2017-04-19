@@ -49,6 +49,7 @@
                     $http.get(`/communities/${$scope.organization.communityID}/organizations`)
                         .then(function(http) {
                             $scope.organizations = http.data;
+                            $scope.organizationsByID = _.groupBy($scope.organizations, "id");
                         });
                     $http.get(`/communities/${$scope.organization.communityID}/posts`)
                         .then(function(http) {
