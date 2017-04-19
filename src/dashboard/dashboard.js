@@ -5,10 +5,12 @@
 
     angular
         .module("app.dashboard", [])
-        .controller("DashboardController", DashboardController);
+        .controller("DashboardController", DashboardController)
+        .controller("OrganizationsCreateController", OrganizationsCreateController);
 
-    function DashboardController($http, $scope, AuthService) {
+    function DashboardController($http, $scope, $uibModal, AuthService) {
         $scope.logout = AuthService.logout;
+        $scope.createOrganization = createOrganization;
 
         $scope.organization = {};
         $scope.organizations = [];
@@ -30,6 +32,44 @@
         };
 
         initialize();
+
+        function createOrganization() {
+            var instance = $uibModal.open({
+                templateUrl: "dashboard/organizations/create.html",
+                controller: "OrganizationsCreateController",
+                resolve: {
+                    communityID: function() {
+                        return $scope.organization.communityID;
+                    }
+                }
+            });
+            return instance.result
+                .then(initialize);
+        }
+    }
+
+    function OrganizationsCreateController($scope, $uibModalInstance, $http, communityID) {
+        $scope.submit = submit;
+        $scope.cancel = $uibModalInstance.dismiss;
+
+        console.log(communityID);
+
+        $scope.organization = {};
+
+        function submit() {
+            var data = {
+                username: $scope.username,
+                password: $scope.password,
+                organization: {
+                    communityID: communityID,
+                    address: $scope.organization.address,
+                    name: $scope.organization.name
+                }
+            };
+            return $http.post("/register", data)
+                .then($uibModalInstance.close)
+                .catch($uibModalInstance.dismiss);
+        }
     }
 
 }());

@@ -29,8 +29,8 @@
                 });
         };
 
-        function register(credentials) {
-            return $http.post("/register", credentials)
+        function register(data) {
+            return $http.post("/register", data)
                 .then(function(http) {
                     sessionStorage.encoded = http.data.token;
                     sessionStorage.decoded = jwt_decode(http.data.token);

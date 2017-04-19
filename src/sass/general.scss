@@ -30,10 +30,6 @@ a {
   .container {
     width: 500px;
     color: white;
-
-    .form-group-lg > .control-label {
-      font-size: $font-size-large;
-    }
   }
 
   .help-block a {
@@ -45,10 +41,10 @@ a {
 
 .btn-default {
   color: $brand-primary;
+  border: 1px solid white;
 
   &:hover {
     background-color: $brand-primary;
-    border: 1px solid white;
     color: white;
   }
 }
@@ -70,8 +66,18 @@ a {
   }
 }
 
-.form-control, .btn-default {
+.modal-body {
+  .form-control {
+    border: 1px solid $input-border;
+  }
+}
+
+.form-control {
   border: 1px solid white;
+}
+
+.form-group-lg > .control-label {
+  font-size: $font-size-large;
 }
 
 .list-group {
