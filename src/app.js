@@ -8,6 +8,7 @@
             "ui.router",
             "ui.bootstrap",
             "ui.gravatar",
+            "ui-leaflet",
             "templates",
             "utils.auth",
             "app.dashboard",

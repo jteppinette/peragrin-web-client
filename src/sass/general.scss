@@ -118,3 +118,20 @@ a {
     border-bottom-color: $brand-primary;
   }
 }
+
+
+.panel-body {
+  border-top: 5px solid white;
+}
+
+.map.panel-body {
+  padding: 0px;
+  margin: 0px;
+
+  .leaflet-container {
+    overflow: hidden;
+    outline: none;
+  }
+}
+
+textarea, input, button { outline: none; }

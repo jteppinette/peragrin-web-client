@@ -14,12 +14,35 @@
 
         $scope.organization = {};
         $scope.organizations = [];
+        $scope.geo = {};
+        $scope.markers = {};
+        $scope.tiles = {
+            url: "https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token={apiKey}",
+            options: {
+                apiKey: sessionStorage.mapboxAPIKey
+            }
+        };
+        $scope.defaults = {
+            scrollWheelZoom: false
+        };
         $scope.email = sessionStorage.email;
 
         function initialize() {
             $http.get(`/organizations/${sessionStorage.organizationID}`)
                 .then(function(http) {
                     $scope.organization = http.data;
+                    $scope.geo = {
+                        lng: $scope.organization.longitude,
+                        lat: $scope.organization.latitude,
+                        zoom: 15
+                    };
+                    $scope.markers = {
+                        organization: {
+                            lng: $scope.organization.longitude,
+                            lat: $scope.organization.latitude,
+                            message: $scope.organization.name
+                        }
+                    };
 
                     $http.get(`/communities/${$scope.organization.communityID}/organizations`)
                         .then(function(http) {

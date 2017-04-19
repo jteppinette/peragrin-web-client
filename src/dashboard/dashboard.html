@@ -57,10 +57,11 @@
       <div class="col-md-4">
         <div class="panel panel-primary">
           <div class="panel-heading">
-            <h2 class="panel-title">Your Organization</h2>
+            <h2 class="panel-title">{{organization.name}}</h2>
+            <p>{{organization.address}}</p>
           </div>
-          <div class="panel-body">
-            <h3>{{ organization.name }}</h3>
+          <div class="panel-body map">
+            <leaflet tiles="tiles" center="geo" markers="markers" defaults="defaults" width="100%" height="480px"></leaflet>
           </div>
         </div>
       </div>

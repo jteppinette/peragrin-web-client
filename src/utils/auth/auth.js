@@ -39,6 +39,7 @@
         function set(token) {
             var decoded = jwt_decode(token);
             sessionStorage.token = token;
+            sessionStorage.mapboxAPIKey = decoded.mapboxAPIKey;
             sessionStorage.userID = decoded.id
             sessionStorage.email = decoded.email
             sessionStorage.organizationID = decoded.organizationID
