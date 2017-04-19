@@ -11,11 +11,17 @@
         $scope.logout = AuthService.logout;
 
         $scope.users = [];
+        $scope.organization = {};
 
         function initialize() {
             $http.get("/users")
-                .then(function (data) {
-                    $scope.users = data.data;
+                .then(function(http) {
+                    $scope.users = http.data;
+                });
+
+            $http.get(`/organizations/${sessionStorage.organizationID}`)
+                .then(function(http) {
+                    $scope.organization = http.data;
                 });
 
             $scope.$on("$stateChangeSuccess", function () {

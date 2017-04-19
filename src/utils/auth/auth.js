@@ -18,8 +18,13 @@
         function login(credentials) {
             return $http.post("/login", credentials)
                 .then(function(http) {
+                    var decoded = jwt_decode(http.data.token);
+
                     sessionStorage.encoded = http.data.token;
-                    sessionStorage.decoded = jwt_decode(http.data.token);
+                    sessionStorage.userID = decoded.id
+                    sessionStorage.username = decoded.username
+                    sessionStorage.organizationID = decoded.organizationID
+
                     $state.go("app.dashboard");
                 });
         };
