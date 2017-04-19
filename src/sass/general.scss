@@ -135,3 +135,7 @@ a {
 }
 
 textarea, input, button { outline: none; }
+
+.alert, .panel-heading {
+  font-size: $font-size-large;
+}
