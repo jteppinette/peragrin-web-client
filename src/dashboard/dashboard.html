@@ -74,19 +74,24 @@
           <div class="panel-heading">
             <h2 class="panel-title">Social Feed</h2>
           </div>
-          <div class="panel-body">
+          <div ng-if="organization.enabled" class="panel-body">
             <div class="input-group">
               <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
               <input class="form-control" type="text" ng-model="postsFilter" placeholder="Filter posts by content...">
             </div>
           </div>
-          <ul class="list-group">
+          <ul ng-if="organization.enabled" class="list-group">
             <li ng-repeat="post in posts | filter: postsFilter" class="list-group-item">
               <span class="pull-right">{{post.createdAt | amUtc | amCalendar:referenceTime:formats}}</span>
               <h4 class="list-group-item-heading"><strong>{{organizationsByID[post.organizationID][0].name}}</strong></h4>
               <p class="list-group-item-text">{{post.content}}
             </li>
           </ul>
+          <div ng-if="!organization.enabled" class="panel-body">
+            <div class="alert alert-info" role="alert">
+              <p>This feature requires that your account be enabled.</p>
+            </div>
+          </div>
         </div>
       </div>
 
