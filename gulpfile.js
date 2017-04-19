@@ -51,8 +51,8 @@ gulp.task("css", function() {
 });
 
 gulp.task("fonts", function() {
-    return gulp.src(bower({filter: "**/*.*(woff|woff2|eot|svg|ttf)"}))
-        .pipe(gulp.dest(dir.output+"fonts"));
+    return gulp.src("./bower_components/bootstrap-sass/assets/fonts/bootstrap/*", {base: "./bower_components/bootstrap-sass/assets"})
+        .pipe(gulp.dest(dir.output));
 });
 
 gulp.task("build", ["index", "assets", "app:js", "vendor:js", "templates", "css", "fonts"]);

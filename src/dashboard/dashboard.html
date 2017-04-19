@@ -40,12 +40,20 @@
                 <tr>
                   <th><strong>Name</strong></th>
                   <th><strong>Address</strong></th>
+                  <th ng-if="organization.leader"><strong>Enabled</strong></th>
+                  <th ng-if="organization.leader"></th>
                 </tr>
               <thead>
               <tbody>
-                <tr ng-repeat="org in organizations">
+                <tr ng-repeat="org in organizations" ng-class="{warning: !org.enabled, success: org.id == organization.id}">
                   <td>{{org.name}}</td>
                   <td>{{org.address}}</td>
+                  <td ng-if="organization.leader"><span class="glyphicon" ng-class="{'glyphicon-ok': org.enabled, 'glyphicon-remove': !org.enabled}"></span></td>
+                  <td ng-if="organization.leader">
+                    <div class="btn-group btn-group-md">
+                      <button ng-show="!org.enabled" ng-click="enableOrganization(org)" class="btn btn-primary">Enable</button>
+                    </div>
+                  </td>
                 </tr>
               </tbody>
             </table>

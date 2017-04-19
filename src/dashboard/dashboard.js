@@ -11,6 +11,7 @@
     function DashboardController($http, $scope, $uibModal, AuthService) {
         $scope.logout = AuthService.logout;
         $scope.createOrganization = createOrganization;
+        $scope.enableOrganization = enableOrganization;
 
         $scope.organization = {};
         $scope.organizations = [];
@@ -68,6 +69,11 @@
                 }
             });
             return instance.result
+                .then(initialize);
+        }
+
+        function enableOrganization(organization) {
+            $http.post(`/organizations/${organization.id}/enable`)
                 .then(initialize);
         }
     }
