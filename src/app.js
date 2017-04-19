@@ -7,6 +7,7 @@
         .module("app", [
             "ui.router",
             "ui.bootstrap",
+            "ui.gravatar",
             "templates",
             "utils.auth",
             "app.dashboard",
@@ -15,7 +16,9 @@
         .config(Config)
         .run(Run);
 
-    function Config($stateProvider, $urlRouterProvider, $httpProvider) {
+    function Config($stateProvider, $urlRouterProvider, $httpProvider, gravatarServiceProvider) {
+        gravatarServiceProvider.defaults = {default: "mm", size: 100};
+
         $urlRouterProvider.otherwise("/");
 
         $httpProvider.interceptors.push("AuthInterceptor");

@@ -92,6 +92,12 @@ a {
 }
 
 .navbar {
+  border-top: 0px !important;
+
+  img {
+    height: $navbar-height;
+  }
+
   .navbar-nav {
     font-size: ceil(($font-size-base * 2));
   }

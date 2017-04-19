@@ -18,6 +18,11 @@ gulp.task("index", function() {
         .pipe(gulp.dest(dir.output));
 });
 
+gulp.task("assets", function() {
+    return gulp.src(dir.src+"assets/**/*")
+        .pipe(gulp.dest(dir.output));
+});
+
 gulp.task("app:js", function() {
     return gulp.src(dir.src+"**/*.js")
         .pipe(jslint())
@@ -50,6 +55,6 @@ gulp.task("fonts", function() {
         .pipe(gulp.dest(dir.output+"fonts"));
 });
 
-gulp.task("build", ["index", "app:js", "vendor:js", "templates", "css", "fonts"]);
+gulp.task("build", ["index", "assets", "app:js", "vendor:js", "templates", "css", "fonts"]);
 
 gulp.task("default", ["build"]);

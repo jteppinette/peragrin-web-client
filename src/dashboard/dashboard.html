@@ -3,8 +3,6 @@
 
   <!-- Navigation -->
   <nav class="navbar navbar-inverse" role="navigation" ng-init="collapsed=true">
-    <div class="container-fluid">
-
       <div class="navbar-header">
         <button type="button" class="navbar-toggle collapsed" ng-click="collapsed=!collapsed">
           <span class="sr-only">Toggle Navigation</span>
@@ -20,11 +18,10 @@
           <li ui-sref-active="active"><a ui-sref="app.dashboard">Dashboard</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
+          <li ng-if="collapsed"><img gravatar-src-once="email" gravatar-size="100"></li>
           <li><a href ng-click="logout()">Logout</a></li>
         </ul>
       </div>
-
-    </div>
   </nav>
 
   <div class="container-fluid">

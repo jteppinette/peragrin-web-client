@@ -9,6 +9,7 @@
     "angular": "^1.6.3",
     "angular-bootstrap": "^2.5.0",
     "angular-ui-router": "^0.4.2",
-    "jwt-decode": "^2.2.0"
+    "jwt-decode": "^2.2.0",
+    "angular-gravatar": "^0.4.2"
   }
 }

@@ -14,6 +14,7 @@
 
         $scope.organization = {};
         $scope.organizations = [];
+        $scope.email = sessionStorage.email;
 
         function initialize() {
             $http.get(`/organizations/${sessionStorage.organizationID}`)
