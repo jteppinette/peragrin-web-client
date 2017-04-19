@@ -75,6 +75,12 @@
             <h2 class="panel-title">Social Feed</h2>
           </div>
           <div ng-if="organization.enabled" class="panel-body">
+            <div class="form-group">
+              <textarea ng-model="content" class="form-control" placeholder="Write your post here"></textarea>
+            </div>
+            <button ng-click="createPost(content)" class="btn btn-primary btn-lg">Create Post</button>
+          </div>
+          <div ng-if="organization.enabled" class="panel-body">
             <div class="input-group">
               <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
               <input class="form-control" type="text" ng-model="postsFilter" placeholder="Filter posts by content...">
@@ -87,12 +93,6 @@
               <p class="list-group-item-text">{{post.content}}
             </li>
           </ul>
-          <div ng-if="organization.enabled" class="panel-body">
-            <div class="form-group">
-              <textarea ng-model="content" class="form-control" placeholder="Write your post here"></textarea>
-            </div>
-            <button ng-click="createPost(content)" class="btn btn-primary btn-lg">Create Post</button>
-          </div>
           <div ng-if="!organization.enabled" class="panel-body">
             <div class="alert alert-info" role="alert">
               <p>This feature requires that your account be enabled.</p>
