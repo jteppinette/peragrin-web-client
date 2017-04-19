@@ -40,7 +40,7 @@
             var decoded = jwt_decode(token);
             sessionStorage.token = token;
             sessionStorage.userID = decoded.id
-            sessionStorage.username = decoded.username
+            sessionStorage.email = decoded.email
             sessionStorage.organizationID = decoded.organizationID
         }
     }

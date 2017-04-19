@@ -10,8 +10,8 @@
     function LoginController($http, $scope, AuthService) {
         $scope.submit = submit;
 
-        function submit(username, password) {
-            AuthService.login({username: username, password: password});
+        function submit(email, password) {
+            AuthService.login({email: email, password: password});
         }
     }
 

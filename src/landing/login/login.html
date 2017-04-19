@@ -1,22 +1,22 @@
 <!-- LOGIN -->
 <form ng-class="status" class="login">
 
-  <!-- Username -->
+  <!-- EMAIL -->
   <div class="form-group form-group-lg">
-    <label class="control-label">Username</label>
-    <input type="text" class="form-control" ng-model="username" placeholder="Enter your username">
+    <label class="control-label">Email</label>
+    <input type="email" class="form-control" ng-model="email" placeholder="Enter your email">
   </div>
 
-  <!-- Password -->
+  <!-- PASSWORD -->
   <div class="form-group form-group-lg">
     <label class="control-label">Password</label>
     <input type="password" class="form-control" ng-model="password" placeholder="Enter your password">
   </div>
 
-  <!-- Submit -->
-  <button ng-click="submit(username, password)" type="submit" class="btn btn-lg btn-default">Login</button>
+  <!-- SUBMIT -->
+  <button ng-click="submit(email, password)" type="submit" class="btn btn-lg btn-default">Login</button>
 
-  <!-- Message -->
+  <!-- MESSAGE -->
   <p class="help-block">{{message}}</p>
 
   <div class="help-block">
