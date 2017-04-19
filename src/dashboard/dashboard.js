@@ -15,6 +15,7 @@
 
         $scope.organization = {};
         $scope.organizations = [];
+        $scope.posts = [];
         $scope.geo = {};
         $scope.markers = {};
         $scope.tiles = {
@@ -48,6 +49,10 @@
                     $http.get(`/communities/${$scope.organization.communityID}/organizations`)
                         .then(function(http) {
                             $scope.organizations = http.data;
+                        });
+                    $http.get(`/communities/${$scope.organization.communityID}/posts`)
+                        .then(function(http) {
+                            $scope.posts = http.data;
                         });
                 });
 
