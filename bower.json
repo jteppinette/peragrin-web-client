@@ -12,6 +12,7 @@
     "jwt-decode": "^2.2.0",
     "angular-gravatar": "^0.4.2",
     "ui-leaflet": "^2.0.0",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "angular-moment": "^1.0.1"
   }
 }

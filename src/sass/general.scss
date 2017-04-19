@@ -139,3 +139,8 @@ textarea, input, button { outline: none; }
 .alert, .panel-heading {
   font-size: $font-size-large;
 }
+
+.list-group-item-text {
+  padding-top: 10px;
+  font-size: $font-size-large;
+}

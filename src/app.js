@@ -10,6 +10,7 @@
             "ui.gravatar",
             "ui-leaflet",
             "templates",
+            "angularMoment",
             "utils.auth",
             "app.dashboard",
             "app.landing"
