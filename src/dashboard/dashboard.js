@@ -12,6 +12,7 @@
         $scope.logout = AuthService.logout;
         $scope.createOrganization = createOrganization;
         $scope.enableOrganization = enableOrganization;
+        $scope.createPost = createPost;
 
         $scope.organization = {};
         $scope.organizations = [];
@@ -80,6 +81,11 @@
 
         function enableOrganization(organization) {
             $http.post(`/organizations/${organization.id}/enable`)
+                .then(initialize);
+        }
+
+        function createPost(content) {
+            $http.post(`/posts`, {content: content})
                 .then(initialize);
         }
     }

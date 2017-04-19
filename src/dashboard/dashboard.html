@@ -81,12 +81,18 @@
             </div>
           </div>
           <ul ng-if="organization.enabled" class="list-group">
-            <li ng-repeat="post in posts | filter: postsFilter" class="list-group-item">
+            <li ng-repeat="post in posts | filter: postsFilter | limitTo:8" class="list-group-item">
               <span class="pull-right">{{post.createdAt | amUtc | amCalendar:referenceTime:formats}}</span>
               <h4 class="list-group-item-heading"><strong>{{organizationsByID[post.organizationID][0].name}}</strong></h4>
               <p class="list-group-item-text">{{post.content}}
             </li>
           </ul>
+          <div ng-if="organization.enabled" class="panel-body">
+            <div class="form-group">
+              <textarea ng-model="content" class="form-control" placeholder="Write your post here"></textarea>
+            </div>
+            <button ng-click="createPost(content)" class="btn btn-primary btn-lg">Create Post</button>
+          </div>
           <div ng-if="!organization.enabled" class="panel-body">
             <div class="alert alert-info" role="alert">
               <p>This feature requires that your account be enabled.</p>
