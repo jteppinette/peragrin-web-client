@@ -3,7 +3,6 @@ const gulp = require("gulp"),
     concat = require("gulp-concat"),
     templates = require("gulp-angular-templatecache"),
     annotate = require("gulp-ng-annotate"),
-    karma = require("karma").Server,
     jslint = require("gulp-jslint"),
     ignore = require("gulp-ignore"),
     bower = require("main-bower-files");

@@ -1,5 +1,5 @@
 {
-  "name": "peragrin-client",
+  "name": "web-client",
   "scripts": {
     "bower": "bower",
     "gulp": "gulp",
