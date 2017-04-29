@@ -20,5 +20,5 @@ while getopts ":t:" opt; do
   esac
 done
 
-docker run -v `pwd`:/src --rm node:7 /bin/sh -c "cd /src; npm install; npm run bower -- install --allow-root; npm run gulp"
+docker run -v `pwd`:/src --rm node:7 /bin/sh -c "cd /src; npm install; npm run build:prod"
 docker build -t $TARGET .

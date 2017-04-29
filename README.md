@@ -20,11 +20,7 @@ This client application requires the [Peragrin API](https://github.com/jteppinet
 
 3. `npm install`
 
-4. `npm run bower -- install`
-
-5. `npm run gulp`
-
-6. `npm run serve -- --proxy http://localhost:8000/`
+5. `npm run watch:dev`
 
 ## Usage
 
@@ -32,9 +28,7 @@ This client application requires the [Peragrin API](https://github.com/jteppinet
 
 1. `npm install`
 
-2. `npm run bower -- install`
-
-3. `npm run gulp`
+3. `npm run build:dev`
 
 4. `docker build . -t client`
 
