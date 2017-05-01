@@ -64,18 +64,14 @@ $map-height := 400px;
 
 .leaflet-container {
   z-index: 5;
+  height: $map-height - 63 !important;
+}
 
-  &.vue2leaflet-map {
-    height: $map-height - 63 !important;
-  }
-
-  img.leaflet-marker-icon {
-    transform: inherit !important;
-  }
+.leaflet-shadow-pane {
+  display: none;
 }
 
 .map-card {
   height: $map-height;
 }
-
 </style>
