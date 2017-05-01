@@ -14,17 +14,32 @@ export default {
 </script>
 
 <style lang="stylus">
+@import '../base';
+
 .unauthenticated {
   height: 100vh;
   width: 100vw;
+  background-color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
-  background-color: white;
+
+  @media screen and (max-width: $grid-breakpoints.sm) {
+    display: inline;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 0px
+  }
 
   .container {
+    height: auto;
     max-width: 500px;
+
+    @media screen and (max-width: $grid-breakpoints.sm) {
+      max-width: none;
+      height: 100%;
+    }
   }
 
   h1 {
