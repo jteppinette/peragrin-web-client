@@ -11,8 +11,8 @@
       </v-data-table>
     </v-card>
   </v-col>
-  <v-col lg6>
-    <v-card v-if="organization" class="map-card elevation-3">
+  <v-col lg6 class="map">
+    <v-card v-if="organization" class="elevation-3">
       <v-card-title class="primary white--text">Map</v-card-title>
       <v-map :zoom=15 :center="[organization.latitude, organization.longitude]">
         <v-tilelayer :token="mapboxAPIKey" url="https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token={token}"></v-tilelayer>
@@ -60,6 +60,8 @@ function mounted () {
 </script>
 
 <style lang="stylus">
+@import '../base';
+
 $map-height := 400px;
 
 .leaflet-container {
@@ -71,7 +73,17 @@ $map-height := 400px;
   display: none;
 }
 
-.map-card {
+.overview {
+  .col {
+    padding-bottom: 10px;
+
+    @media screen and (max-width: $grid-breakpoints.lg) {
+      width: 100%;
+    }
+  }
+}
+
+.map.card {
   height: $map-height;
 }
 </style>
