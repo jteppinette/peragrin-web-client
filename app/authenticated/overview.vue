@@ -2,7 +2,7 @@
 <div class="overview">
 
   <v-row>
-    <v-col sm12 lg6>
+    <v-col xs12 lg6>
       <v-card class="elevation-3">
         <v-card-title class="primary white--text">Organizations</v-card-title>
         <v-data-table v-model="organizations" :headers="headers" hide-actions>
@@ -13,7 +13,7 @@
         </v-data-table>
       </v-card>
     </v-col>
-    <v-col sm12 lg6 class="map">
+    <v-col xs12 lg6 class="map">
       <v-card v-if="organization" class="elevation-3">
         <v-card-title class="primary white--text">Map</v-card-title>
         <v-map :zoom=15 :center="[organization.latitude, organization.longitude]">
