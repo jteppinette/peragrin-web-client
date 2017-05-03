@@ -2,6 +2,35 @@
 <div class="overview">
 
   <v-row>
+    <v-col xs12>
+      <v-stepper v-model="step">
+        <v-stepper-header>
+          <v-stepper-step step="1" v-bind:complete="step > 1">Add Personal Information</v-stepper-step>
+          <v-divider />
+          <v-stepper-step step="2" v-bind:complete="step > 2">Add Business Information</v-stepper-step>
+          <v-divider />
+          <v-stepper-step step="3">Add Organizations</v-stepper-step>
+        </v-stepper-header>
+        <v-stepper-content step="1">
+          <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px" />
+          <v-btn primary @click.native="step = 2">Continue</v-btn>
+          <v-btn flat>Cancel</v-btn>
+        </v-stepper-content>
+        <v-stepper-content step="2">
+          <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px" />
+          <v-btn primary @click.native="step = 3">Continue</v-btn>
+          <v-btn flat>Cancel</v-btn>
+        </v-stepper-content>
+        <v-stepper-content step="3">
+          <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px" />
+          <v-btn primary @click.native="step = 1">Continue</v-btn>
+          <v-btn flat>Cancel</v-btn>
+        </v-stepper-content>
+      </v-stepper>
+    </v-col>
+  </v-row>
+
+  <v-row>
     <v-col xs12 lg6>
       <v-card class="elevation-3">
         <v-card-title class="primary white--text">Organizations</v-card-title>
@@ -30,6 +59,15 @@
 </template>
 
 <script>
+import L from 'leaflet';
+
+L.Icon.Default.imagePath = '/';
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
+
 // TODO: sortable needs to be removed, bug fix in data table component required
 const headers = [
   {
@@ -45,7 +83,7 @@ const headers = [
 ];
 
 export default {
-  data: () => ({organization: undefined, organizations: [], headers, mapboxAPIKey: sessionStorage.mapboxAPIKey}),
+  data: () => ({organization: undefined, organizations: [], headers, mapboxAPIKey: sessionStorage.mapboxAPIKey, step: 1}),
   mounted
 };
 
@@ -71,10 +109,6 @@ $map-height := 400px;
 .leaflet-container {
   z-index: 5;
   height: $map-height - 63 !important;
-}
-
-.leaflet-shadow-pane {
-  display: none;
 }
 
 .overview .col {
