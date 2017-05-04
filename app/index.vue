@@ -71,4 +71,8 @@ require('./assets/images/logo-white.png');
 @import '~vuetify/src/stylus/components/_bottom-nav'
 
 @import "~leaflet/dist/leaflet.css";
+
+.col {
+  padding-bottom: 10px;
+}
 </style>
