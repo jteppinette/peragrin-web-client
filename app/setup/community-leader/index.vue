@@ -1,4 +1,6 @@
 <template>
+<div class="community-leader">
+  <h1>Community Leader</h1>
   <v-stepper v-model="step">
     <v-stepper-header>
       <v-stepper-step step="1" v-bind:complete="step > 1">Add Personal Information</v-stepper-step>
@@ -23,10 +25,11 @@
       <v-btn flat>Cancel</v-btn>
     </v-stepper-content>
   </v-stepper>
+</div>
 </template>
 
 <script>
 export default {
-  data: () => ({step: 1})
-}
+  data: () => ({step: 1}),
+};
 </script>

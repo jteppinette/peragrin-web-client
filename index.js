@@ -9,6 +9,10 @@ import unauthenticated from 'unauthenticated';
 import login from 'unauthenticated/login';
 import register from 'unauthenticated/register';
 
+import setup from 'setup';
+import communityLeaderSetup from 'setup/community-leader';
+import businessLeaderSetup from 'setup/business-leader';
+
 import authenticated from 'authenticated';
 import overview from 'authenticated/overview';
 
@@ -23,6 +27,12 @@ const routes = [
             {path: 'login', component: login},
             {path: 'register', component: register}
         ],
+    },
+    {
+        path: '/setup', component: setup, children: [
+            {path: 'community-leader', component: communityLeaderSetup},
+            {path: 'business-leader', component: businessLeaderSetup}
+        ]
     },
     {
         path: '/', component: authenticated, children: [

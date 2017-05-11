@@ -1,5 +1,5 @@
 <template>
-<v-app left-fixed-sidebar footer top-toolbar>
+<v-app left-fixed-sidebar footer top-toolbar class="authenticated">
   <header>
     <v-toolbar class="elevation-0">
       <v-toolbar-side-icon @click.native.stop="open = !open" class="hidden-lg-and-up" />

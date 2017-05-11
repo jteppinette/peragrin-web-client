@@ -1,12 +1,6 @@
 <template>
 <div class="overview">
 
-  <v-row>
-    <v-col xs12>
-      <setup></setup>
-    </v-col>
-  </v-row>
-
   <v-row v-if="organization">
     <v-col xs12 lg6>
       <v-card class="elevation-3">
@@ -28,15 +22,13 @@
 <script>
 import organizations from './organizations';
 import organizationMap from './organization-map';
-import setup from './setup';
 
 export default {
   data: () => ({organization: undefined}),
   mounted,
   components: {
     organizations,
-    organizationMap,
-    setup
+    organizationMap
   }
 };
 
