@@ -4,14 +4,14 @@
   <v-text-field v-model="password" prepend-icon="lock" type="password" label="Password"></v-text-field>
   <v-select v-model="role" :items="roles" prepend-icon="account_box" label="Select your role" :disabled="locked" item-text="name" item-value="name" light single-line auto />
   <v-btn @click.native="register" block primary>Register</v-btn>
-  <p class="pt-2 text-xs-center"><router-link to="/login">If you already have an account, then click here to login.</router-link></p>
+  <p class="pt-2 text-xs-center"><router-link to="/auth/login">If you already have an account, then click here to login.</router-link></p>
 </form>
 </template>
 
 <script>
 import jwtDecode from 'jwt-decode';
 
-const PATRON = {key: 'p', next: '/overview', name: 'Patron'},
+const PATRON = {key: 'p', next: '/console/overview', name: 'Patron'},
       BUSINESS_LEADER = {key: 'b', next: '/setup/business-leader', name: 'Business Leader'},
       COMMUNITY_LEADER = {key: 'c', next: '/setup/community-leader', name: 'Community Leader'};
 

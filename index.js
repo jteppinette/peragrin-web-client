@@ -5,24 +5,25 @@ import Vuetify from 'vuetify';
 
 import app from './app';
 
-import unauthenticated from 'unauthenticated';
-import login from 'unauthenticated/login';
-import register from 'unauthenticated/register';
+import auth from 'auth';
+import login from 'auth/login';
+import register from 'auth/register';
 
 import setup from 'setup';
 import communityLeaderSetup from 'setup/community-leader';
 import businessLeaderSetup from 'setup/business-leader';
 
-import authenticated from 'authenticated';
-import overview from 'authenticated/overview';
+import console from 'console';
+import overview from 'console/overview';
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
 Vue.use(Vuetify);
 
 const routes = [
+    {path: '/', redirect: '/auth/login'},
     {
-        path: '/', component: unauthenticated, children: [
+        path: '/auth', component: auth, children: [
             {path: '', redirect: 'login'},
             {path: 'login', component: login},
             {path: 'register', component: register}
@@ -35,7 +36,7 @@ const routes = [
         ]
     },
     {
-        path: '/', component: authenticated, children: [
+        path: '/console', component: console, children: [
             {path: '', redirect: 'overview'},
             {path: 'overview', component: overview, name: 'Overview'}
         ]

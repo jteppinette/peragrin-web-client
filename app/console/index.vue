@@ -1,5 +1,5 @@
 <template>
-<v-app left-fixed-sidebar footer top-toolbar class="authenticated">
+<v-app left-fixed-sidebar footer top-toolbar class="console">
   <header>
     <v-toolbar class="elevation-0">
       <v-toolbar-side-icon @click.native.stop="open = !open" class="hidden-lg-and-up" />
@@ -48,11 +48,11 @@
 
 <script>
 const navigation = [
-  {name: 'Overview', action: 'explore', href: '/overview'},
-  {name: 'News Feed', action: 'rss_feed', href: '/news-feed'},
-  {name: 'Map', action: 'map', href: '/map'},
-  {name: 'Calendar', action: 'event', href: '/calendar'},
-  {name: 'Chat', action: 'chat', href: '/chat'}
+  {name: 'Overview', action: 'explore', href: '/console/overview'},
+  {name: 'News Feed', action: 'rss_feed', href: '/console/news-feed'},
+  {name: 'Map', action: 'map', href: '/console/map'},
+  {name: 'Calendar', action: 'event', href: '/console/calendar'},
+  {name: 'Chat', action: 'chat', href: '/console/chat'}
 ];
 
 export default {
@@ -63,11 +63,11 @@ export default {
   methods: {
     logout: function() {
       sessionStorage.clear();
-      this.$router.push('/login');
+      this.$router.push('/auth/login');
     }
   },
   beforeRouteEnter (to, from, next) {
-    next(sessionStorage.userID ? undefined : {path: '/login', query: {redirect: to.fullPath}});
+    next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
   }
 };
 </script>

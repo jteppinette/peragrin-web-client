@@ -3,7 +3,7 @@
   <v-text-field v-model="email" prepend-icon="mail" type="email" label="Email"></v-text-field>
   <v-text-field v-model="password" prepend-icon="lock" type="password" label="Password"></v-text-field>
   <v-btn @click.native="login" block primary>Login</v-btn>
-  <p class="pt-2 text-xs-center"><router-link to="/register">If you do not have an account, then click here to register.</router-link></p>
+  <p class="pt-2 text-xs-center"><router-link to="/auth/register">If you do not have an account, then click here to register.</router-link></p>
 </form>
 </template>
 
@@ -25,6 +25,6 @@ function login() {
       sessionStorage.userID = id;
       sessionStorage.email = email;
     })
-    .then(() => this.$router.push(this.$route.query.next || '/overview'));
+    .then(() => this.$router.push(this.$route.query.next || '/console/overview'));
 }
 </script>

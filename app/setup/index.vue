@@ -9,7 +9,7 @@
 <script>
 export default {
   beforeRouteEnter (to, from, next) {
-    next(sessionStorage.userID ? undefined : {path: '/login', query: {redirect: to.fullPath}});
+    next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
   }
 };
 </script>

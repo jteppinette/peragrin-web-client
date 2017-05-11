@@ -1,5 +1,5 @@
 <template>
-<v-app class="unauthenticated">
+<v-app class="auth">
   <v-container fluid class="elevation-15">
     <h1 class="pa-5 text-xs-center">peragrin</h1>
     <router-view></router-view>
@@ -9,14 +9,14 @@
 
 <script>
 export default {
-  beforeRouteEnter: (to, from, next) => next(sessionStorage.userID ? {path: '/overview'} : undefined)
+  beforeRouteEnter: (to, from, next) => next(sessionStorage.userID ? {path: '/console/overview'} : undefined)
 };
 </script>
 
 <style lang="stylus">
 @import '../base';
 
-.unauthenticated {
+.auth {
   height: 100vh;
   width: 100vw;
   background-color: white;
