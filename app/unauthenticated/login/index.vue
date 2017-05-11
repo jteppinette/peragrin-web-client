@@ -24,8 +24,7 @@ function login() {
       sessionStorage.mapboxAPIKey = mapboxAPIKey;
       sessionStorage.userID = id;
       sessionStorage.email = email;
-      sessionStorage.organizationID = organizationID;
     })
-    .then(() => this.$router.push(this.$router.query || '/overview'));
+    .then(() => this.$router.push(this.$route.query.next || '/overview'));
 }
 </script>
