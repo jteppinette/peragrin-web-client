@@ -8,25 +8,9 @@
 </template>
 
 <script>
-import L from 'leaflet';
-
-L.Icon.Default.imagePath = '/';
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-    iconUrl: require('leaflet/dist/images/marker-icon.png'),
-    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-});
-
-import Vue2Leaflet from 'vue2-leaflet';
 
 export default {
-  props: ['organization'],
-  components: {
-    'v-map': Vue2Leaflet.Map,
-    'v-tilelayer': Vue2Leaflet.TileLayer,
-    'v-marker': Vue2Leaflet.Marker,
-    'v-popup': Vue2Leaflet.Popup
-  }
+  props: ['organization']
 };
 </script>
 

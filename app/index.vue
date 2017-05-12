@@ -4,10 +4,6 @@
   </div>
 </template>
 
-<script>
-require('./assets/images/logo-white.png');
-</script>
-
 <style lang="stylus">
 @import 'base';
 

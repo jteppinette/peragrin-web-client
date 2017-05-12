@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VueResource from 'vue-resource';
 import Vuetify from 'vuetify';
+import Vue2Leaflet from 'vue2-leaflet';
 
 import app from './app';
 
@@ -19,6 +20,22 @@ import overview from 'console/overview';
 Vue.use(VueRouter);
 Vue.use(VueResource);
 Vue.use(Vuetify);
+
+Vue.component('v-map', Vue2Leaflet.Map);
+Vue.component('v-tilelayer', Vue2Leaflet.TileLayer);
+Vue.component('v-marker', Vue2Leaflet.Marker);
+Vue.component('v-popup', Vue2Leaflet.Popup);
+
+require('assets/images/logo-white.png');
+
+import L from 'leaflet';
+
+L.Icon.Default.imagePath = '/';
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+});
 
 const routes = [
     {path: '/', redirect: '/auth/login'},
