@@ -34,9 +34,8 @@ function register() {
   return this.$http.post('/register', {email: this.email, password: this.password})
     .then(response => response.json())
     .then(function({token}) {
-      var {mapboxAPIKey, id, email} = jwtDecode(token);
+      var {id, email} = jwtDecode(token);
       sessionStorage.token = token;
-      sessionStorage.mapboxAPIKey = mapboxAPIKey;
       sessionStorage.userID = id;
       sessionStorage.email = email;
     })

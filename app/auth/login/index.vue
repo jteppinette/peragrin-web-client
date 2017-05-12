@@ -19,9 +19,8 @@ function login() {
   return this.$http.post('/login', {email: this.email, password: this.password})
     .then(response => response.json())
     .then(function({token}) {
-      var {mapboxAPIKey, id, email, organizationID} = jwtDecode(token);
+      var {id, email, organizationID} = jwtDecode(token);
       sessionStorage.token = token;
-      sessionStorage.mapboxAPIKey = mapboxAPIKey;
       sessionStorage.userID = id;
       sessionStorage.email = email;
     })

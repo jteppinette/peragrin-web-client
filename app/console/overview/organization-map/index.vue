@@ -1,6 +1,6 @@
 <template>
   <v-map :zoom=15 :center="[organization.latitude, organization.longitude]">
-    <v-tilelayer :token="mapboxAPIKey" url="https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token={token}"></v-tilelayer>
+    <v-tilelayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"></v-tilelayer>
     <v-marker :lat-lng="{'lat': organization.latitude, 'lng': organization.longitude}">
        <v-popup :content="organization.name"></v-popup>
     </v-marker>
@@ -21,7 +21,6 @@ import Vue2Leaflet from 'vue2-leaflet';
 
 export default {
   props: ['organization'],
-  data: () => ({mapboxAPIKey: sessionStorage.mapboxAPIKey}),
   components: {
     'v-map': Vue2Leaflet.Map,
     'v-tilelayer': Vue2Leaflet.TileLayer,
