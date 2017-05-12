@@ -1,7 +1,7 @@
 <template>
-  <v-map :zoom=15 :center="[organization.latitude, organization.longitude]">
+  <v-map :zoom=15 :center="[organization.lat, organization.lon]">
     <v-tilelayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"></v-tilelayer>
-    <v-marker :lat-lng="{'lat': organization.latitude, 'lng': organization.longitude}">
+    <v-marker :lat-lng="{'lat': organization.lat, 'lng': organization.lon}">
        <v-popup :content="organization.name"></v-popup>
     </v-marker>
   </v-map>
