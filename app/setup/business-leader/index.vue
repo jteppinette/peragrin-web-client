@@ -51,14 +51,22 @@
         </v-stepper-content>
 
         <v-stepper-content step="2">
-          <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px" />
-          <v-btn primary @click.native="step = 3">Continue</v-btn>
-          <v-btn flat>Cancel</v-btn>
+          <v-map v-if="step == 2 && organization.lon && organization.lat" :zoom="15" :center="[organization.lat, organization.lon]">
+            <v-tilelayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"></v-tilelayer>
+            <v-marker v-on:l-move="move" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}" :draggable="true">
+               <v-popup :content="organization.name"></v-popup>
+            </v-marker>
+          </v-map>
+
+          <v-btn primary @click.native="updateBusinessLocation">Update Business Location</v-btn>
+          <v-btn flat @click.native="step = 3">Continue</v-btn>
         </v-stepper-content>
         <v-stepper-content step="3">
+          <v-btn primary @click.native="step = 4">Continue</v-btn>
+        </v-stepper-content>
+        <v-stepper-content step="4">
           <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px" />
-          <v-btn primary @click.native="step = 1">Continue</v-btn>
-          <v-btn flat>Cancel</v-btn>
+          <v-btn primary >Continue to Console</v-btn>
         </v-stepper-content>
       </v-stepper>
     </v-col>
@@ -90,9 +98,6 @@
           </v-card-text>
         </v-card-row>
 
-        <v-divider></v-divider>
-
-        <v-subheader v-if="organization.lon && organization.lat">Map</v-subheader>
         <v-card-row v-if="organization.lon && organization.lat">
           <organization-map :organization="organization"></organization-map>
         </v-card-row>
@@ -119,10 +124,17 @@ var organization = {
   lat: undefined
 };
 
+var marker = {
+  lat: undefined,
+  lng: undefined
+}
+
 export default {
-  data: () => ({step: 1, organization}),
+  data: () => ({step: 1, organization, marker}),
   methods: {
-    setupBusiness
+    setupBusiness,
+    move,
+    updateBusinessLocation
   },
   components: {
     organizationMap
@@ -130,13 +142,23 @@ export default {
 };
 
 function setupBusiness() {
-  var self = this;
   return this.$http.post('/organizations', this.organization)
     .then(response => response.json())
-    .then(function({lon, lat}) {
-      self.organization.lon = lon;
-      self.organization.lat = lat;
-    })
-    .then(() => self.step = 2);
+    .then(organization => this.organization = organization)
+    .then(() => this.step = 2);
+}
+
+function move({latlng}) {
+  this.marker.lat = latlng.lat;
+  this.marker.lon = latlng.lng;
+}
+
+function updateBusinessLocation() {
+  this.organization.lat = this.marker.lat;
+  this.organization.lon = this.marker.lon;
+
+  return this.$http.post(`/organizations/${this.organization.id}`, this.organization)
+    .then(response => response.json())
+    .then(organization => this.organization = organization);
 }
 </script>
