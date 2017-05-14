@@ -62,11 +62,13 @@
           <v-btn flat @click.native="step = 3">Continue</v-btn>
         </v-stepper-content>
         <v-stepper-content step="3">
+          <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px" />
           <v-btn primary @click.native="step = 4">Continue</v-btn>
+          <v-btn flat @click.native="step = 4">Skip</v-btn>
         </v-stepper-content>
         <v-stepper-content step="4">
           <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px" />
-          <v-btn primary >Continue to Console</v-btn>
+          <v-btn primary router="true" to="/console/overview">Continue to Console</v-btn>
         </v-stepper-content>
       </v-stepper>
     </v-col>
