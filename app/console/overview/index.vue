@@ -24,7 +24,7 @@ import organizations from './organizations';
 import organizationMap from './organization-map';
 
 export default {
-  data: () => ({organization: undefined}),
+  data: () => ({organization: undefined, organizations: []}),
   mounted,
   components: {
     organizations,
@@ -33,10 +33,9 @@ export default {
 };
 
 function mounted() {
-  if (sessionStorage.organizationID) {
-    this.$http.get(`/organizations/${sessionStorage.organizationID}`)
-      .then(response => response.json())
-      .then((organization) => this.organization = organization);
-  }
+  this.$http.get('/auth/organizations')
+    .then(response => response.json())
+    .then((organizations) => this.organizations = organizations)
+    .then((organizations) => this.organization = organizations[0]);
 }
 </script>
