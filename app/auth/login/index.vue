@@ -16,7 +16,7 @@ export default {
 };
 
 function login() {
-  return this.$http.post('/login', {email: this.email, password: this.password})
+  return this.$http.post('/auth/login', {email: this.email, password: this.password})
     .then(response => response.json())
     .then(function({token}) {
       var {id, email, organizationID} = jwtDecode(token);

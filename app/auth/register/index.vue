@@ -31,7 +31,7 @@ function mounted() {
 }
 
 function register() {
-  return this.$http.post('/register', {email: this.email, password: this.password})
+  return this.$http.post('/auth/register', {email: this.email, password: this.password})
     .then(response => response.json())
     .then(function({token}) {
       var {id, email} = jwtDecode(token);
