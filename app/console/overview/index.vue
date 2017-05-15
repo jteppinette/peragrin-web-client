@@ -2,17 +2,14 @@
 <div class="overview">
 
   <v-row>
-    <v-col xs12 lg6 v-if="community">
-      <v-card class="elevation-3">
+    <v-col xs12 lg8 v-if="community">
+      <v-card>
         <v-card-title class="primary white--text">{{ community.name }}</v-card-title>
-        <community :id="community.id"></community>
+        <community-organizations-list :id="community.id"></community-organizations-list>
       </v-card>
     </v-col>
-    <v-col xs12 lg6 v-if="organization" class="map">
-      <v-card v-if="organization" class="elevation-3">
-        <v-card-title class="primary white--text">{{ organization.name }}</v-card-title>
-        <organization-map :organization="organization"></organization-map>
-      </v-card>
+    <v-col xs12 lg4 v-if="organization">
+      <organization-card :organization="organization"></organization-card>
     </v-col>
   </v-row>
 
@@ -20,15 +17,15 @@
 </template>
 
 <script>
-import community from './community';
-import organizationMap from './organization-map';
+import communityOrganizationsList from 'common/community/organizations/list';
+import organizationCard from 'common/organization/card';
 
 export default {
   data: () => ({organization: undefined, organizations: [], community: undefined, communities: []}),
   mounted,
   components: {
-    community,
-    organizationMap
+    communityOrganizationsList,
+    organizationCard
   }
 };
 

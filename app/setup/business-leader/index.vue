@@ -74,37 +74,7 @@
     </v-col>
 
     <v-col xs4>
-      <v-card>
-
-        <v-card-row class="primary">
-          <v-card-title><span class="white--text">{{ organization.name || 'Your Organization' }}</span></v-card-title>
-        </v-card-row>
-
-        <v-subheader>General</v-subheader>
-        <v-card-row>
-          <v-card-text>
-            <strong>{{ organization.name }}</strong>
-          </v-card-text>
-        </v-card-row>
-
-        <v-divider></v-divider>
-
-        <v-subheader>Address</v-subheader>
-        <v-card-row>
-          <v-card-text>
-            <blockquote>
-              {{ organization.street }} <br/>
-              {{ organization.city }} {{ organization.state }} {{ organization.zip }} <br/>
-              {{ organization.country }}
-            </blockquote>
-          </v-card-text>
-        </v-card-row>
-
-        <v-card-row v-if="organization.lon && organization.lat">
-          <organization-map :organization="organization"></organization-map>
-        </v-card-row>
-
-      </v-card>
+      <organization-card :organization="organization"></organization-card>
     </v-col>
 
   </v-row>
@@ -113,7 +83,7 @@
 </template>
 
 <script>
-import organizationMap from 'console/overview/organization-map';
+import organizationCard from 'common/organization/card';
 
 var organization = {
   name: '',
@@ -139,7 +109,7 @@ export default {
     updateBusinessLocation
   },
   components: {
-    organizationMap
+    organizationCard
   }
 };
 
