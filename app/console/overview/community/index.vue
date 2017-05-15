@@ -2,7 +2,7 @@
   <v-data-table v-model="organizations" :headers="headers" hide-actions>
     <template slot="items" scope="props">
       <td class="text-xs-right">{{ props.item.name }}</td>
-      <td class="text-xs-right">{{ props.item.address }}</td>
+      <td class="text-xs-right">{{ props.item.street }}</td>
     </template>
   </v-data-table>
 </template>
@@ -15,20 +15,20 @@ const headers = [
     sortable: true
   },
   {
-    text: 'Address',
-    value: 'address',
-    sortable: true
+    text: 'Street',
+    value: 'street',
+    sortable: false
   }
 ];
 
 export default {
-  props: ['communityID'],
+  props: ['id'],
   data: () => ({organizations: [], headers}),
   mounted
 };
 
 function mounted () {
-  this.$http.get(`/communities/${this.communityID}/organizations`)
+  this.$http.get(`/communities/${this.id}/organizations`)
     .then(response => response.json())
     .then((organizations) => this.organizations = organizations);
 }
