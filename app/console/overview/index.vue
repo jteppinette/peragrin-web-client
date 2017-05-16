@@ -9,7 +9,7 @@
       </v-card>
     </v-col>
     <v-col xs12 lg4 v-if="organization">
-      <organization-card :organization="organization" :communities="communities"></organization-card>
+      <organization-card @community:selected="assumeCommunity" :organization="organization" :communities="communities"></organization-card>
     </v-col>
   </v-row>
 
@@ -26,6 +26,9 @@ export default {
   components: {
     communityOrganizationsList,
     organizationCard
+  },
+  methods: {
+    assumeCommunity
   }
 };
 
@@ -33,7 +36,7 @@ function mounted() {
   return initOrganizations.call(this)
     .then(assumeOrganization)
     .then(initCommunities)
-    .then(assumeCommunity);
+    .then(communities => this.assumeCommunity(communities[0]));
 }
 
 function initOrganizations() {
@@ -52,7 +55,7 @@ function initCommunities(organization) {
     .then((communities) => this.communities = communities);
 }
 
-function assumeCommunity(communities) {
-    return this.community = communities[0];
+function assumeCommunity(community) {
+    return this.community = community;
 }
 </script>

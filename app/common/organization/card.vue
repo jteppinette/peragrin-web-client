@@ -14,7 +14,7 @@
 
     <v-list subheader v-if="communities.length">
       <v-subheader v-if="communities.length">Communities</v-subheader>
-      <v-list-item v-for="community in communities" v-bind:key="community.name">
+      <v-list-item v-for="community in communities" :key="community.name" @click="$emit('community:selected', community)">
         <v-list-tile>
           <v-list-tile-content><v-list-tile-title v-text="community.name" /></v-list-tile-content>
         </v-list-tile>

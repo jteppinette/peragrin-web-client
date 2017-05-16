@@ -24,11 +24,18 @@ const headers = [
 export default {
   props: ['id'],
   data: () => ({organizations: [], headers}),
-  mounted
+  watch: {
+    id: function(id) {
+      return getOrganizations.call(this, id)
+    }
+  },
+  mounted: function() {
+    return getOrganizations.call(this, this.id);
+  }
 };
 
-function mounted () {
-  this.$http.get(`/communities/${this.id}/organizations`)
+function getOrganizations(communityID) {
+  return this.$http.get(`/communities/${communityID}/organizations`)
     .then(response => response.json())
     .then((organizations) => this.organizations = organizations);
 }
