@@ -103,7 +103,7 @@ function mounted() {
 
 function joinCommunities() {
   return this.$http.post(`/organizations/${this.organization.id}/communities`, this.communities.selected)
-    .then(() => this.step = 4);
+    .then(() => this.$router.push('/console/overview'));
 }
 
 function setupBusiness() {
