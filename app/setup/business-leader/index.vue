@@ -3,7 +3,7 @@
 
   <v-row>
 
-    <v-col xs8>
+    <v-col lg8 md6 sm12 xs12>
       <v-stepper v-model="step">
         <v-stepper-header>
           <v-stepper-step step="1" v-bind:complete="step > 1">Business</v-stepper-step>
@@ -16,35 +16,21 @@
         </v-stepper-header>
 
         <v-stepper-content step="1">
-          <v-subheader><v-icon class="primary--text">info</v-icon> &nbsp; General</v-subheader>
-          <v-row row>
-            <v-col xs8 offset-xs2>
-              <v-text-field v-model="organization.name" type="text" label="Name"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-subheader><v-icon class="primary--text">location_on</v-icon> &nbsp; Address</v-subheader>
-          <v-row row>
-            <v-col xs8 offset-xs2>
-              <v-text-field v-model="organization.street" type="text" label="Street"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row row>
-            <v-col xs4 offset-xs2>
-              <v-text-field v-model="organization.city" type="text" label="City"></v-text-field>
-            </v-col>
-            <v-col xs4>
-              <v-text-field v-model="organization.state" type="text" label="State"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row row>
-            <v-col xs4 offset-xs2>
-              <v-text-field v-model="organization.zip" type="text" label="Zip"></v-text-field>
-            </v-col>
-            <v-col xs4>
-              <v-text-field v-model="organization.country" type="text" label="Country"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-btn primary @click.native="setupBusiness">Setup Business</v-btn>
+          <v-container>
+            <v-subheader>General</v-subheader>
+            <v-text-field v-model="organization.name" type="text" label="Name"></v-text-field>
+            <v-subheader>Address</v-subheader>
+            <v-text-field v-model="organization.street" type="text" label="Street"></v-text-field>
+            <v-row>
+              <v-col xs6><v-text-field v-model="organization.city" type="text" label="City"></v-text-field></v-col>
+              <v-col xs6><v-text-field v-model="organization.state" type="text" label="State"></v-text-field></v-col>
+            </v-row>
+            <v-row>
+              <v-col xs6><v-text-field v-model="organization.zip" type="text" label="Zip"></v-text-field></v-col>
+              <v-col xs6><v-text-field v-model="organization.country" type="text" label="Country"></v-text-field></v-col>
+            </v-row>
+            <v-btn primary @click.native="setupBusiness">Setup Business</v-btn>
+          </v-container>
         </v-stepper-content>
 
         <v-stepper-content step="2">
@@ -59,18 +45,11 @@
         </v-stepper-content>
 
         <v-stepper-content step="3">
-          <v-container fluid>
-            <v-row>
-              <v-col xs4>
-                <v-subheader>Choose the communities you would like to join</v-subheader>
-              </v-col>
-              <v-col xs8>
-                <v-select label="Communities" :items="communities.available" v-model="communities.selected" auto chips multiple light item-text="name" item-value="name" />
-              </v-col>
-            </v-row>
+          <v-container>
+            <v-select label="Communities" hint="Choose the communities you would like to join" persistent-hint :items="communities.available" v-model="communities.selected" auto chips multiple light item-text="name" item-value="name" />
+            <v-btn primary @click.native="joinCommunities">Join Communities</v-btn>
+            <v-btn flat @click.native="step = 4">Skip</v-btn>
           </v-container>
-          <v-btn primary @click.native="joinCommunities">Join Communities</v-btn>
-          <v-btn flat @click.native="step = 4">Skip</v-btn>
         </v-stepper-content>
 
         <v-stepper-content step="4">
@@ -80,7 +59,7 @@
       </v-stepper>
     </v-col>
 
-    <v-col xs4>
+    <v-col lg4 md6 sm12 xs12>
       <organization-card :organization="organization" :communities="communities.selected"></organization-card>
     </v-col>
 
@@ -157,11 +136,22 @@ function updateBusinessLocation() {
 }
 </script>
 
-<style scoped lang="stylus">
+<style lang="stylus">
 $map-height := 400px;
 
-.leaflet-container {
-  z-index: 5;
-  height: $map-height - 63 !important;
+.business-leader {
+
+  .leaflet-container {
+    z-index: 5;
+    height: $map-height - 63 !important;
+  }
+
+  .stepper__content li.subheader {
+    padding: 0px;
+  }
+
+  .stepper__content, .stepper__wrapper {
+    overflow: visible;
+  }
 }
 </style>
