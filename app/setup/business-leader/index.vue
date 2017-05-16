@@ -129,23 +129,3 @@ function updateBusinessLocation() {
     .then(organization => this.organization = organization);
 }
 </script>
-
-<style lang="stylus">
-$map-height := 400px;
-
-.business-leader {
-
-  .leaflet-container {
-    z-index: 5;
-    height: $map-height - 63 !important;
-  }
-
-  .stepper__content li.subheader {
-    padding: 0px;
-  }
-
-  .stepper__content, .stepper__wrapper {
-    overflow: visible;
-  }
-}
-</style>

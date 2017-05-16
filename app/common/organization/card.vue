@@ -51,12 +51,3 @@ export default {
   props: ['organization', 'communities']
 };
 </script>
-
-<style scoped lang="stylus">
-$map-height := 400px;
-
-.leaflet-container {
-  z-index: 5;
-  height: $map-height - 63 !important;
-}
-</style>

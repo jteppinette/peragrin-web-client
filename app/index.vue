@@ -68,16 +68,25 @@
 
 @import "~leaflet/dist/leaflet.css";
 
-.col {
-  padding-bottom: 10px;
-}
-
 html, body {
   background-color: white;
+}
+
+.leaflet-container {
+  z-index: 5;
+  height: 350px !important;
+}
+
+.col {
+  padding-bottom: 10px;
 }
 
 .card__title.primary {
   color: white;
   font-family: 'Fredoka One', cursive;
+}
+
+.container > .subheader {
+  padding: 0px;
 }
 </style>
