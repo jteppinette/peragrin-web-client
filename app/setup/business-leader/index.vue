@@ -7,12 +7,10 @@
       <v-stepper v-model="step">
         <v-stepper-header>
           <v-stepper-step step="1" v-bind:complete="step > 1">Business</v-stepper-step>
-          <v-divider />
+          <v-divider></v-divider>
           <v-stepper-step step="2" v-bind:complete="step > 2">Map</v-stepper-step>
-          <v-divider />
+          <v-divider></v-divider>
           <v-stepper-step step="3" v-bind:complete="step > 3">Communities</v-stepper-step>
-          <v-divider />
-          <v-stepper-step step="4">Share</v-stepper-step>
         </v-stepper-header>
 
         <v-stepper-content step="1">
@@ -48,14 +46,10 @@
           <v-container>
             <v-select label="Communities" hint="Choose the communities you would like to join" persistent-hint :items="communities.available" v-model="communities.selected" auto chips multiple light item-text="name" item-value="name" />
             <v-btn primary @click.native="joinCommunities">Join Communities</v-btn>
-            <v-btn flat @click.native="step = 4">Skip</v-btn>
+            <v-btn primary :router="true" to="/console/overview">Continue to Console</v-btn>
           </v-container>
         </v-stepper-content>
 
-        <v-stepper-content step="4">
-          <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px" />
-          <v-btn primary :router="true" to="/console/overview">Continue to Console</v-btn>
-        </v-stepper-content>
       </v-stepper>
     </v-col>
 
