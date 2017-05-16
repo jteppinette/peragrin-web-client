@@ -71,4 +71,13 @@
 .col {
   padding-bottom: 10px;
 }
+
+html, body {
+  background-color: white;
+}
+
+.card__title.primary {
+  color: white;
+  font-family: 'Fredoka One', cursive;
+}
 </style>

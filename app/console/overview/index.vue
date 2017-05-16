@@ -4,7 +4,7 @@
   <v-row>
     <v-col xs12 lg8 v-if="community">
       <v-card>
-        <v-card-title class="primary white--text">{{ community.name }}</v-card-title>
+        <v-card-title class="primary">{{ community.name }}</v-card-title>
         <community-organizations-list :id="community.id"></community-organizations-list>
       </v-card>
     </v-col>

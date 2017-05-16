@@ -1,7 +1,7 @@
 <template>
   <v-card>
 
-    <v-card-title class="primary white--text">{{ organization.name || 'Your Organization' }}</v-card-title>
+    <v-card-title class="primary">{{ organization.name || 'Your Organization' }}</v-card-title>
 
     <v-subheader>General</v-subheader>
     <v-card-row>
