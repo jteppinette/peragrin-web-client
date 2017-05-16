@@ -9,7 +9,7 @@
       </v-card>
     </v-col>
     <v-col xs12 lg4 v-if="organization">
-      <organization-card :organization="organization"></organization-card>
+      <organization-card :organization="organization" :communities="communities"></organization-card>
     </v-col>
   </v-row>
 

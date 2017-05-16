@@ -81,7 +81,7 @@
     </v-col>
 
     <v-col xs4>
-      <organization-card :organization="organization"></organization-card>
+      <organization-card :organization="organization" :communities="communities.selected"></organization-card>
     </v-col>
 
   </v-row>

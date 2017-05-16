@@ -12,6 +12,17 @@
 
     <v-divider></v-divider>
 
+    <v-list subheader v-if="communities.length">
+      <v-subheader v-if="communities.length">Communities</v-subheader>
+      <v-list-item v-for="community in communities" v-bind:key="community.name">
+        <v-list-tile>
+          <v-list-tile-content><v-list-tile-title v-text="community.name" /></v-list-tile-content>
+        </v-list-tile>
+      </v-list-item>
+    </v-list>
+
+    <v-divider></v-divider>
+
     <v-subheader>Address</v-subheader>
     <v-card-row>
       <v-card-text>
@@ -37,7 +48,7 @@
 
 <script>
 export default {
-  props: ['organization']
+  props: ['organization', 'communities']
 };
 </script>
 
