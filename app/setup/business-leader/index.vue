@@ -15,18 +15,7 @@
 
         <v-stepper-content step="1">
           <v-container>
-            <v-subheader>General</v-subheader>
-            <v-text-field v-model="organization.name" type="text" label="Name"></v-text-field>
-            <v-subheader>Address</v-subheader>
-            <v-text-field v-model="organization.street" type="text" label="Street"></v-text-field>
-            <v-row>
-              <v-col xs6><v-text-field v-model="organization.city" type="text" label="City"></v-text-field></v-col>
-              <v-col xs6><v-text-field v-model="organization.state" type="text" label="State"></v-text-field></v-col>
-            </v-row>
-            <v-row>
-              <v-col xs6><v-text-field v-model="organization.zip" type="text" label="Zip"></v-text-field></v-col>
-              <v-col xs6><v-text-field v-model="organization.country" type="text" label="Country"></v-text-field></v-col>
-            </v-row>
+            <organization-form v-model="organization"></organization-form>
             <v-btn primary @click.native="setupBusiness">Setup Business</v-btn>
           </v-container>
         </v-stepper-content>
@@ -64,6 +53,7 @@
 
 <script>
 import organizationCard from 'common/organization/card';
+import organizationForm from 'common/organization/form';
 
 var organization = {
   name: '',
@@ -72,8 +62,6 @@ var organization = {
   state: '',
   country: '',
   zip: '',
-  lon: undefined,
-  lat: undefined
 };
 
 var marker = {
@@ -91,7 +79,8 @@ export default {
     join
   },
   components: {
-    organizationCard
+    organizationCard,
+    organizationForm
   }
 };
 
