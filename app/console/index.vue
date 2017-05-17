@@ -21,7 +21,7 @@
 
     <v-sidebar fixed v-model="open" class="elevation-0">
       <div class="sidebar__logo">
-        <router-link to="/overview" ><img src="/assets/images/logo-white.png" /></router-link>
+        <router-link to="/console/overview" ><img src="/assets/images/logo-white.png" /></router-link>
         <h3>peragrin</h3>
       </div>
       <v-list two-line>
