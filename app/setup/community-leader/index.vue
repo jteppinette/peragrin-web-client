@@ -1,35 +1,129 @@
 <template>
 <div class="community-leader">
-  <h1>Community Leader</h1>
-  <v-stepper v-model="step">
-    <v-stepper-header>
-      <v-stepper-step step="1" v-bind:complete="step > 1">Add Personal Information</v-stepper-step>
-      <v-divider />
-      <v-stepper-step step="2" v-bind:complete="step > 2">Add Business Information</v-stepper-step>
-      <v-divider />
-      <v-stepper-step step="3">Add Organizations</v-stepper-step>
-    </v-stepper-header>
-    <v-stepper-content step="1">
-      <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px" />
-      <v-btn primary @click.native="step = 2">Continue</v-btn>
-      <v-btn flat>Cancel</v-btn>
-    </v-stepper-content>
-    <v-stepper-content step="2">
-      <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px" />
-      <v-btn primary @click.native="step = 3">Continue</v-btn>
-      <v-btn flat>Cancel</v-btn>
-    </v-stepper-content>
-    <v-stepper-content step="3">
-      <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px" />
-      <v-btn primary @click.native="step = 1">Continue</v-btn>
-      <v-btn flat>Cancel</v-btn>
-    </v-stepper-content>
-  </v-stepper>
+
+  <v-row>
+
+    <v-col lg8 md6 sm12 xs12>
+      <v-stepper v-model="step">
+        <v-stepper-header>
+          <v-stepper-step step="1" v-bind:complete="step > 1">Organization</v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step step="2" v-bind:complete="step > 2">Map</v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step step="3" v-bind:complete="step > 3">Community</v-stepper-step>
+        </v-stepper-header>
+
+        <v-stepper-content step="1">
+          <v-container>
+            <v-subheader>General</v-subheader>
+            <v-text-field v-model="organization.name" type="text" label="Name"></v-text-field>
+            <v-subheader>Address</v-subheader>
+            <v-text-field v-model="organization.street" type="text" label="Street"></v-text-field>
+            <v-row>
+              <v-col xs6><v-text-field v-model="organization.city" type="text" label="City"></v-text-field></v-col>
+              <v-col xs6><v-text-field v-model="organization.state" type="text" label="State"></v-text-field></v-col>
+            </v-row>
+            <v-row>
+              <v-col xs6><v-text-field v-model="organization.zip" type="text" label="Zip"></v-text-field></v-col>
+              <v-col xs6><v-text-field v-model="organization.country" type="text" label="Country"></v-text-field></v-col>
+            </v-row>
+            <v-btn primary @click.native="setupOrganization">Setup Organization</v-btn>
+          </v-container>
+        </v-stepper-content>
+
+        <v-stepper-content step="2">
+          <v-map v-if="step == 2 && organization.lon && organization.lat" :zoom="15" :center="[organization.lat, organization.lon]">
+            <v-tilelayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"></v-tilelayer>
+            <v-marker v-on:l-move="move" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}" :draggable="true">
+               <v-popup :content="organization.name"></v-popup>
+            </v-marker>
+          </v-map>
+          <v-btn primary @click.native="updateOrganizationLocation">Update Organization Location</v-btn>
+          <v-btn flat @click.native="step = 3">Continue</v-btn>
+        </v-stepper-content>
+
+        <v-stepper-content step="3">
+          <v-container>
+            <v-text-field v-model="community.name" type="text" label="Name"></v-text-field>
+            <v-btn primary @click.native="createCommunity">Create Community</v-btn>
+          </v-container>
+        </v-stepper-content>
+
+      </v-stepper>
+    </v-col>
+
+    <v-col lg4 md6 sm12 xs12>
+      <organization-card :organization="organization" :communities="community.name ? [community] : []"></organization-card>
+    </v-col>
+
+  </v-row>
+
 </div>
 </template>
 
 <script>
-export default {
-  data: () => ({step: 1}),
+import organizationCard from 'common/organization/card';
+
+var organization = {
+  name: '',
+  street: '',
+  city: '',
+  state: '',
+  country: '',
+  zip: '',
+  lon: undefined,
+  lat: undefined
 };
+
+var community = {
+  name: ''
+}
+
+var marker = {
+  lat: undefined,
+  lng: undefined
+}
+
+export default {
+  data: () => ({step: 1, organization, marker, community}),
+  methods: {
+    setupOrganization,
+    move,
+    updateOrganizationLocation,
+    createCommunity
+  },
+  components: {
+    organizationCard
+  }
+};
+
+function createCommunity() {
+  return this.$http.post(`/organizations/${this.organization.id}/communities`, this.community)
+    .then(response => response.json())
+    .then(community => this.community = community)
+    .then(() => this.$router.push('/console/overview'));
+}
+
+function setupOrganization() {
+  return this.$http.post('/organizations', this.organization)
+    .then(response => response.json())
+    .then(organization => this.organization = organization)
+    .then(() => this.step = 2);
+}
+
+function move({latlng}) {
+  this.marker.lat = latlng.lat;
+  this.marker.lon = latlng.lng;
+}
+
+function updateOrganizationLocation() {
+  if (!this.marker.lat || !this.marker.lon) return;
+
+  this.organization.lat = this.marker.lat;
+  this.organization.lon = this.marker.lon;
+
+  return this.$http.post(`/organizations/${this.organization.id}`, this.organization)
+    .then(response => response.json())
+    .then(organization => this.organization = organization);
+}
 </script>

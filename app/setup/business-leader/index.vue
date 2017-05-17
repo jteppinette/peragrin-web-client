@@ -10,7 +10,7 @@
           <v-divider></v-divider>
           <v-stepper-step step="2" v-bind:complete="step > 2">Map</v-stepper-step>
           <v-divider></v-divider>
-          <v-stepper-step step="3" v-bind:complete="step > 3">Communities</v-stepper-step>
+          <v-stepper-step step="3" v-bind:complete="step > 3">Community</v-stepper-step>
         </v-stepper-header>
 
         <v-stepper-content step="1">
@@ -44,8 +44,8 @@
 
         <v-stepper-content step="3">
           <v-container>
-            <v-select label="Communities" hint="Choose the communities you would like to join" persistent-hint :items="communities.available" v-model="communities.selected" auto chips multiple light item-text="name" item-value="name" />
-            <v-btn primary @click.native="joinCommunities">Join Communities</v-btn>
+            <v-select label="Community" hint="Choose the community you would like to join" persistent-hint :items="communities" v-model="community" auto light item-text="name" item-value="name" />
+            <v-btn primary @click.native="join">Join Community</v-btn>
             <v-btn primary :router="true" to="/console/overview">Continue to Console</v-btn>
           </v-container>
         </v-stepper-content>
@@ -54,7 +54,7 @@
     </v-col>
 
     <v-col lg4 md6 sm12 xs12>
-      <organization-card :organization="organization" :communities="communities.selected"></organization-card>
+      <organization-card :organization="organization" :communities="community.id ? [community] : []"></organization-card>
     </v-col>
 
   </v-row>
@@ -82,13 +82,13 @@ var marker = {
 }
 
 export default {
-  data: () => ({step: 1, organization, marker, communities: {selected: [], available: []}}),
+  data: () => ({step: 1, organization, marker, communities: [], community: {}}),
   mounted: mounted,
   methods: {
     setupBusiness,
     move,
     updateBusinessLocation,
-    joinCommunities
+    join
   },
   components: {
     organizationCard
@@ -98,11 +98,11 @@ export default {
 function mounted() {
   return this.$http.get('/communities')
     .then(response => response.json())
-    .then(communities => this.communities.available = communities);
+    .then(communities => this.communities = communities);
 }
 
-function joinCommunities() {
-  return this.$http.post(`/organizations/${this.organization.id}/communities`, this.communities.selected)
+function join() {
+  return this.$http.post(`/organizations/${this.organization.id}/communities/${this.community.id}`)
     .then(() => this.$router.push('/console/overview'));
 }
 
@@ -119,7 +119,7 @@ function move({latlng}) {
 }
 
 function updateBusinessLocation() {
-  if (!this.market.lat || !this.marker.long) return;
+  if (!this.marker.lat || !this.marker.lon) return;
 
   this.organization.lat = this.marker.lat;
   this.organization.lon = this.marker.lon;
