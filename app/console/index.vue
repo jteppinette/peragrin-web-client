@@ -72,7 +72,7 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style scoped lang="stylus">
 @import '../base';
 
 .toolbar__title {

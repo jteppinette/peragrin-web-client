@@ -6,6 +6,8 @@ import Vue2Leaflet from 'vue2-leaflet';
 
 import app from './app';
 
+import client from 'client';
+
 import auth from 'auth';
 import login from 'auth/login';
 import register from 'auth/register';
@@ -38,7 +40,8 @@ L.Icon.Default.mergeOptions({
 });
 
 const routes = [
-    {path: '/', redirect: '/auth/login'},
+    {path: '/', redirect: '/client'},
+    {path: '/client', component: client},
     {
         path: '/auth', component: auth, children: [
             {path: '', redirect: 'login'},
