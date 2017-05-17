@@ -10,7 +10,7 @@
     <v-content>
       <v-progress-linear v-if="loading" :indeterminate="true"></v-progress-linear>
       <v-map v-if="lat && lon" :zoom="14" :center="[lat, lon]">
-        <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+        <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
         <v-marker v-for="organization in organizations" @l-click="selected = organization" :key="organization.id" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}">
           <v-popup :content="organization.name"></v-popup>
         </v-marker>
