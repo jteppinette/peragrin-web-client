@@ -94,7 +94,7 @@ function createCommunity() {
 }
 
 function setupOrganization() {
-  return this.$http.post('/organizations', this.organization)
+  return this.$http.post('/auth/organizations', this.organization)
     .then(response => response.json())
     .then(organization => this.organization = organization)
     .then(() => this.step = 2);

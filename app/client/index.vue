@@ -62,9 +62,14 @@ function mounted() {
       this.lat = lat;
       this.loading = false;
     });
-  this.$http.get('/organizations')
+  this.$http.get('/communities')
     .then(response => response.json())
-    .then(organizations => this.organizations = organizations);
+    .then(communities => this.communities = communities)
+    .then((communities) => {
+      return this.$http.get(`/communities/${communities[0].id}/organizations`)
+        .then(response => response.json())
+        .then(organizations => this.organizations = organizations);
+    });
 }
 
 function geo() {
