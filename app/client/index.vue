@@ -1,47 +1,41 @@
 <template>
-<v-app class="client">
-  <v-toolbar :fixed="true" class="primary">
-    <v-toolbar-title>peragrin</v-toolbar-title>
+<v-app sidebar-under-toolbar top-toolbar right-fixed-sidebar class="client">
+  <v-toolbar class="primary elevation-0" fixed>
+    <v-toolbar-logo class="text-xs-right">peragrin</v-toolbar-logo>
+    <v-toolbar-side-icon class="hidden-lg-and-up" @click.native.stop="sidebar = !sidebar" />
     <v-toolbar-items class="hidden-md-and-down">
-    <v-toolbar-item :router="true" href="/auth/login" ripple>Login</v-toolbar-item>
+      <v-toolbar-item :router="true" href="/auth/login" ripple>Login</v-toolbar-item>
     </v-toolbar-items>
   </v-toolbar>
-  <main>
-    <v-content>
-      <v-progress-linear v-if="loading" :indeterminate="true"></v-progress-linear>
-      <v-map v-if="lat && lon" :zoom="14" :center="[lat, lon]">
-        <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
-        <v-marker v-for="organization in organizations" @l-click="selected = organization" :key="organization.id" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}">
-          <v-popup :content="organization.name"></v-popup>
-        </v-marker>
-      </v-map>
-    </v-content>
-    <v-sidebar v-if="selected.id" right class="scroll-y" scroll-y>
+  <v-map v-if="lat && lon" :zoom="14" :center="[lat, lon]">
+    <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+    <v-marker v-for="organization in organizations" @l-click="(e) => select(e, organization)" :key="organization.id" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}">
+      <v-popup :content="organization.name"></v-popup>
+    </v-marker>
+  </v-map>
+  <v-sidebar v-model="sidebar" fixed right>
 
-      <v-subheader>General</v-subheader>
-      <v-container>
-        <p><strong class="white--text">{{ selected.name }}</strong></p>
-      </v-container>
+    <v-subheader>General</v-subheader>
+    <v-container>
+      <p><strong class="white--text">{{ selected.name }}</strong></p>
+    </v-container>
 
-      <v-divider></v-divider>
+    <v-subheader>Address</v-subheader>
+    <blockquote style="color: white">
+      {{ selected.street }} <br/>
+      {{ selected.city }} {{ selected.state }} {{ selected.zip }} <br/>
+      {{ selected.country }}
+    </blockquote>
 
-      <v-subheader>Address</v-subheader>
-      <blockquote style="color: white">
-        {{ selected.street }} <br/>
-        {{ selected.city }} {{ selected.state }} {{ selected.zip }} <br/>
-        {{ selected.country }}
-      </blockquote>
-
-      <v-list subheader>
-        <v-subheader>Promotions</v-subheader>
-        <v-list-item v-for="promotion in promotions" :key="promotion.name">
-          <v-list-tile>
-            <v-list-tile-content><v-list-tile-title v-text="promotion.name" /></v-list-tile-content>
-          </v-list-tile>
-        </v-list-item>
-      </v-list>
-    </v-sidebar>
-  </main>
+    <v-list subheader>
+      <v-subheader>Promotions</v-subheader>
+      <v-list-item v-for="promotion in promotions" :key="promotion.name">
+        <v-list-tile>
+          <v-list-tile-content><v-list-tile-title v-text="promotion.name" /></v-list-tile-content>
+        </v-list-tile>
+      </v-list-item>
+    </v-list>
+  </v-sidebar>
 </v-app>
 </template>
 
@@ -51,65 +45,53 @@ const promotions = [
 ];
 
 export default {
-  data: () => ({organizations: [], loading: true, selected: {}, promotions, lon: 0, lat: 0}),
-  mounted
+  data: () => ({organizations: [], selected: {}, promotions, lon: 0, lat: 0, sidebar: false}),
+  mounted,
+  methods: {
+    select: function({originalEvent: e}, organization) {
+      this.selected = organization;
+      this.lon = this.selected.lon;
+      this.lat = this.selected.lat;
+      this.sidebar = true;
+      e.stopPropagation();
+    }
+  }
 };
 
 function mounted() {
-  geo()
-    .then(({lon, lat}) => {
-      this.lon = lon;
-      this.lat = lat;
-      this.loading = false;
-    });
   this.$http.get('/communities')
     .then(response => response.json())
     .then(communities => this.communities = communities)
     .then((communities) => {
       return this.$http.get(`/communities/${communities[0].id}/organizations`)
         .then(response => response.json())
-        .then(organizations => this.organizations = organizations);
+        .then(organizations => this.organizations = organizations)
+        .then(organizations => {
+          this.selected = organizations[0]
+          this.lon = this.selected.lon;
+          this.lat = this.selected.lat;
+        });
     });
-}
-
-function geo() {
-  const fb = {lon: -84.30444, lat: 33.79023};
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) return resolve({lon: fb.lon, lat: fb.lat});
-    navigator.geolocation.getCurrentPosition(({coords: {longitude, latitude}}) => {
-      return resolve({lon: longitude, lat: latitude});
-    }, () => {
-      return resolve({lon: fb.lon, lat: fb.lat});
-    });
-  });
 }
 </script>
 
 <style scoped lang="stylus">
-.toolbar__title {
-  font-family: 'Fredoka One', Roboto, sans-serif;
-}
+.client {
+  .toolbar__logo {
+    font-family: 'Fredoka One', Roboto, sans-serif;
+    padding-left: 15px;
+    font-size: 2.5em;
+  }
 
-.leaflet-container {
-  z-index: 5;
-  height: 100vh !important;
-}
-</style>
+  .toolbar {
+    border-bottom: 6px solid white;
+    border-color: white !important;
+  }
 
-<style lang="stylus">
-.client .leaflet-control-container {
-  position: absolute;
-  top: 100px;
-}
-
-.client .sidebar {
-  padding-top: 70px;
-}
-
-.client .progress-linear {
-  top: 64px;
-  z-index: 50;
-  margin: 0px;
-  position: absolute;
+  .vue2leaflet-map {
+    position: fixed;
+    height: 100% !important;
+    top: 64px;
+  }
 }
 </style>
