@@ -13,7 +13,7 @@
       <v-popup :content="organization.name"></v-popup>
     </v-marker>
   </v-map>
-  <v-sidebar v-model="sidebar" fixed right>
+  <v-sidebar v-model="sidebar" :mobile-break-point="mobileBreakPoint" fixed drawer right>
 
     <v-subheader>General</v-subheader>
     <v-container>
@@ -44,8 +44,10 @@ const promotions = [
   {name: '10% Off Discount'}, {name: 'BOGO Free'}
 ];
 
+const mobileBreakPoint = 992;
+
 export default {
-  data: () => ({organizations: [], selected: {}, promotions, lon: 0, lat: 0, sidebar: false}),
+  data: () => ({organizations: [], selected: {}, promotions, lon: 0, lat: 0, mobileBreakPoint, sidebar: (window.innerWidth >= mobileBreakPoint)}),
   mounted,
   methods: {
     select: function({originalEvent: e}, organization) {
