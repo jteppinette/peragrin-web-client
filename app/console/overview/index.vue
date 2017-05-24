@@ -9,7 +9,7 @@
       </v-card>
     </v-col>
     <v-col xs12 lg4 v-if="organization">
-      <organization-card @community:selected="assumeCommunity" :organization="organization" :communities="communities"></organization-card>
+      <organization-card @community:selected="assumeCommunity" :organization="organization" :hours="hours" :communities="communities"></organization-card>
     </v-col>
   </v-row>
 
@@ -21,7 +21,7 @@ import communityOrganizationsList from 'common/community/organizations/list';
 import organizationCard from 'common/organization/card';
 
 export default {
-  data: () => ({organization: undefined, organizations: [], community: undefined, communities: []}),
+  data: () => ({organization: undefined, hours: [], organizations: [], community: undefined, communities: []}),
   mounted,
   components: {
     communityOrganizationsList,
@@ -46,7 +46,11 @@ function initOrganizations() {
 }
 
 function assumeOrganization(organizations) {
-    return this.organization = organizations[0];
+  this.organization = organizations[0]
+  this.$http.get(`/organizations/${this.organization.id}/hours`)
+    .then(response => response.json())
+    .then(hours => this.hours = hours);
+  return this.organization;
 }
 
 function initCommunities(organization) {

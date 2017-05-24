@@ -14,8 +14,9 @@
         </v-stepper-header>
 
         <v-stepper-content step="1">
-          <v-container>
+          <v-container fluid>
             <organization-form v-model="organization"></organization-form>
+            <organization-hours v-model="hours"></organization-hours>
             <v-btn primary @click.native="setupBusiness">Setup Business</v-btn>
           </v-container>
         </v-stepper-content>
@@ -43,7 +44,7 @@
     </v-col>
 
     <v-col lg4 md6 sm12 xs12>
-      <organization-card :organization="organization" :communities="community.id ? [community] : []"></organization-card>
+      <organization-card :organization="organization" :hours="hours" :communities="community.id ? [community] : []"></organization-card>
     </v-col>
 
   </v-row>
@@ -54,6 +55,7 @@
 <script>
 import organizationCard from 'common/organization/card';
 import organizationForm from 'common/organization/form';
+import organizationHours from 'common/organization/hours';
 
 var organization = {
   name: '',
@@ -61,8 +63,10 @@ var organization = {
   city: '',
   state: '',
   country: '',
-  zip: '',
+  zip: ''
 };
+
+var hours = [{weekday: 1}, {weekday: 2}, {weekday: 3}, {weekday: 4}, {weekday: 5}];
 
 var marker = {
   lat: undefined,
@@ -70,7 +74,7 @@ var marker = {
 }
 
 export default {
-  data: () => ({step: 1, organization, marker, communities: [], community: {}}),
+  data: () => ({step: 1, organization, marker, communities: [], community: {}, hours}),
   mounted: mounted,
   methods: {
     setupBusiness,
@@ -80,7 +84,8 @@ export default {
   },
   components: {
     organizationCard,
-    organizationForm
+    organizationForm,
+    organizationHours
   }
 };
 
@@ -99,6 +104,7 @@ function setupBusiness() {
   return this.$http.post('/auth/organizations', this.organization)
     .then(response => response.json())
     .then(organization => this.organization = organization)
+    .then(organization => this.$http.post(`/organizations/${organization.id}/hours`, this.hours))
     .then(() => this.step = 2);
 }
 

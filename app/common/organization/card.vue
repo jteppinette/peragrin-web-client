@@ -10,7 +10,11 @@
       </v-card-text>
     </v-card-row>
 
-    <v-divider></v-divider>
+    <v-subheader>Hours of Operation</v-subheader>
+    <v-card-row class="hours">
+      <v-card-column><p v-for="day in hours"><strong>{{ weekdays[day.weekday] }}</strong></p></v-card-column>
+      <v-card-column><p v-for="day in hours">{{ day.start | to12hr }} - {{ day.close | to12hr }}</p></v-card-column>
+    </v-card-row>
 
     <v-list subheader v-if="communities.length">
       <v-subheader v-if="communities.length">Communities</v-subheader>
@@ -20,8 +24,6 @@
         </v-list-tile>
       </v-list-item>
     </v-list>
-
-    <v-divider></v-divider>
 
     <v-subheader>Address</v-subheader>
     <v-card-row>
@@ -47,7 +49,32 @@
 </template>
 
 <script>
+import {WEEKDAYS, to12hr} from 'common/time';
+
 export default {
-  props: ['organization', 'communities']
+  data: () => ({weekdays: WEEKDAYS}),
+  props: {
+    organization: {
+      type: Object,
+      required: true,
+    },
+    communities: {
+      type: Array,
+      default: () => []
+    },
+    hours: {
+      type: Array,
+      default: () => []
+    }
+  },
+  filters: {
+    'to12hr': value => to12hr(value)
+  }
 };
 </script>
+
+<style scoped lang="stylus">
+.hours {
+  padding-left: 20px;
+}
+</style>

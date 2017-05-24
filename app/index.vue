@@ -77,8 +77,8 @@ html, body {
   height: 350px !important;
 }
 
-.col {
-  padding-bottom: 10px;
+.col > .stepper, .col > .card {
+  margin-bottom: 10px;
 }
 
 .card__title.primary {
@@ -88,5 +88,10 @@ html, body {
 
 .container > .subheader {
   padding: 0px;
+}
+
+.input-group {
+  margin: 0px;
+  margin-top: 10px;
 }
 </style>

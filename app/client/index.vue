@@ -20,6 +20,14 @@
       <p><strong class="white--text">{{ selected.name }}</strong></p>
     </v-container>
 
+    <v-subheader>Hours of Operation</v-subheader>
+    <v-container>
+      <v-card-row class="white--text hours">
+        <v-card-column><p v-for="day in hours[selected.id]"><strong>{{ weekdays[day.weekday] }}</strong></p></v-card-column>
+        <v-card-column><p v-for="day in hours[selected.id]">{{ day.start | to12hr }} - {{ day.close | to12hr }}</p></v-card-column>
+      </v-card-row>
+    </v-container>
+
     <v-subheader>Address</v-subheader>
     <blockquote style="color: white">
       {{ selected.street }} <br/>
@@ -40,6 +48,8 @@
 </template>
 
 <script>
+import {WEEKDAYS, to12hr} from 'common/time';
+
 const promotions = [
   {name: '10% Off Discount'}, {name: 'BOGO Free'}
 ];
@@ -47,15 +57,25 @@ const promotions = [
 const mobileBreakPoint = 992;
 
 export default {
-  data: () => ({organizations: [], selected: {}, promotions, lon: 0, lat: 0, mobileBreakPoint, sidebar: (window.innerWidth >= mobileBreakPoint)}),
+  data: () => ({weekdays: WEEKDAYS, organizations: [], hours: {}, selected: {}, promotions, lon: 0, lat: 0, mobileBreakPoint, sidebar: (window.innerWidth >= mobileBreakPoint)}),
   mounted,
   methods: {
     select: function({originalEvent: e}, organization) {
       this.selected = organization;
-      this.lon = this.selected.lon;
-      this.lat = this.selected.lat;
       this.sidebar = true;
       e.stopPropagation();
+    }
+  },
+  filters: {
+    'to12hr': value => to12hr(value)
+  },
+  watch: {
+    selected: function(v) {
+      this.lon = v.lon;
+      this.lat = v.lat;
+      this.$http.get(`/organizations/${v.id}/hours`)
+        .then(response => response.json())
+        .then(hours => this.$set(this.hours, v.id, hours));
     }
   }
 };
@@ -68,11 +88,7 @@ function mounted() {
       return this.$http.get(`/communities/${communities[0].id}/organizations`)
         .then(response => response.json())
         .then(organizations => this.organizations = organizations)
-        .then(organizations => {
-          this.selected = organizations[0]
-          this.lon = this.selected.lon;
-          this.lat = this.selected.lat;
-        });
+        .then(organizations => this.selected = organizations[0]);
     });
 }
 </script>
