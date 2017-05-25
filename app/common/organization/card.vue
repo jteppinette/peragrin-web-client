@@ -3,7 +3,7 @@
 
     <v-card-title class="primary">{{ organization.name || 'Your Organization' }}</v-card-title>
 
-    <v-tabs grow scroll-bars v-model="active" light class="tabs-no-border">
+    <v-tabs scroll-bars v-model="active" light class="tabs-no-border">
       <v-tabs-bar slot="activators" :style="{display: promotions.length || communities.length ? 'block' : 'none'}">
         <v-tabs-item ripple href="#general">General</v-tabs-item>
         <v-tabs-item ripple href="#promotions" v-if="promotions.length">Promotions</v-tabs-item>
@@ -67,7 +67,7 @@
 
         </v-list>
 
-        <v-card-row v-if="!disableMap && organization.lon && organization.lat">
+        <v-card-row v-if="active == 'general' && !disableMap && organization.lon && organization.lat">
           <v-map v-if="organization.lon && organization.lat" :zoom="15" :center="[organization.lat, organization.lon]">
             <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
             <v-marker :lat-lng="{'lat': organization.lat, 'lng': organization.lon}">
