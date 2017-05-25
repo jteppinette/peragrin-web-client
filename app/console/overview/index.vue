@@ -2,10 +2,14 @@
 <div class="overview">
 
   <v-row>
-    <v-col xs12 lg8 v-if="community">
-      <v-card>
+    <v-col xs12 lg8>
+      <v-card v-if="community">
         <v-card-title class="primary">{{ community.name }}</v-card-title>
         <community-organizations-list :id="community.id"></community-organizations-list>
+      </v-card>
+      <v-card v-if="organization">
+        <v-card-title class="primary">Promotions</v-card-title>
+        <promotions-list :organizationID="organization.id"></promotions-list>
       </v-card>
     </v-col>
     <v-col xs12 lg4 v-if="organization">
@@ -19,13 +23,15 @@
 <script>
 import communityOrganizationsList from 'common/community/organizations/list';
 import organizationCard from 'common/organization/card';
+import promotionsList from 'common/promotions/list';
 
 export default {
   data: () => ({organization: undefined, hours: [], organizations: [], community: undefined, communities: []}),
   mounted,
   components: {
     communityOrganizationsList,
-    organizationCard
+    organizationCard,
+    promotionsList
   },
   methods: {
     assumeCommunity
@@ -50,6 +56,9 @@ function assumeOrganization(organizations) {
   this.$http.get(`/organizations/${this.organization.id}/hours`)
     .then(response => response.json())
     .then(hours => this.hours = hours);
+  this.$http.get(`/organizations/${this.organization.id}/promotions`)
+    .then(response => response.json())
+    .then(promotions => this.promotions = promotions);
   return this.organization;
 }
 

@@ -35,9 +35,9 @@
       {{ selected.country }}
     </blockquote>
 
-    <v-list subheader>
+    <v-list subheader v-if="promotions[selected.id] ? promotions[selected.id].length : false">
       <v-subheader>Promotions</v-subheader>
-      <v-list-item v-for="promotion in promotions" :key="promotion.name">
+      <v-list-item v-for="promotion in promotions[selected.id]" :key="promotion.name">
         <v-list-tile>
           <v-list-tile-content><v-list-tile-title v-text="promotion.name" /></v-list-tile-content>
         </v-list-tile>
@@ -50,14 +50,10 @@
 <script>
 import {WEEKDAYS, to12hr} from 'common/time';
 
-const promotions = [
-  {name: '10% Off Discount'}, {name: 'BOGO Free'}
-];
-
 const mobileBreakPoint = 992;
 
 export default {
-  data: () => ({weekdays: WEEKDAYS, organizations: [], hours: {}, selected: {}, promotions, lon: 0, lat: 0, mobileBreakPoint, sidebar: (window.innerWidth >= mobileBreakPoint)}),
+  data: () => ({weekdays: WEEKDAYS, organizations: [], hours: {}, selected: {}, promotions: {}, lon: 0, lat: 0, mobileBreakPoint, sidebar: (window.innerWidth >= mobileBreakPoint)}),
   mounted,
   methods: {
     select: function({originalEvent: e}, organization) {
@@ -76,6 +72,9 @@ export default {
       this.$http.get(`/organizations/${v.id}/hours`)
         .then(response => response.json())
         .then(hours => this.$set(this.hours, v.id, hours));
+      this.$http.get(`/organizations/${v.id}/promotions`)
+        .then(response => response.json())
+        .then(promotions => this.$set(this.promotions, v.id, promotions));
     }
   }
 };
