@@ -143,7 +143,7 @@ export default {
 
 <style scoped lang="stylus">
 .card__title {
-  height: 56px;
+  padding: 10px;
 }
 
 .hours {

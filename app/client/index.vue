@@ -127,6 +127,7 @@ function mounted() {
 
   &.navigation-drawer--open {
     width: 400px;
+    max-width: 95vw;
   }
 }
 </style>
