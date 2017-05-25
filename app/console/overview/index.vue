@@ -1,23 +1,22 @@
 <template>
-<div class="overview">
+<v-layout row wrap>
 
-  <v-row>
-    <v-col xs12 lg8>
-      <v-card v-if="community">
-        <v-card-title class="primary">{{ community.name }}</v-card-title>
-        <community-organizations-list :id="community.id"></community-organizations-list>
-      </v-card>
-      <v-card v-if="organization">
-        <v-card-title class="primary">Promotions</v-card-title>
-        <promotions-list :organizationID="organization.id"></promotions-list>
-      </v-card>
-    </v-col>
-    <v-col xs12 lg4 v-if="organization">
-      <organization-card @community:selected="assumeCommunity" :organization="organization" :hours="hours" :communities="communities"></organization-card>
-    </v-col>
-  </v-row>
+  <v-flex xs12 lg8>
+    <v-card v-if="community">
+      <v-card-title class="primary">{{ community.name }}</v-card-title>
+      <community-organizations-list :id="community.id"></community-organizations-list>
+    </v-card>
+    <v-card v-if="organization">
+      <v-card-title class="primary">Promotions</v-card-title>
+      <promotions-list :organizationID="organization.id"></promotions-list>
+    </v-card>
+  </v-flex>
 
-</div>
+  <v-flex xs12 lg4 v-if="organization">
+    <organization-card @community:selected="assumeCommunity" :organization="organization" :hours="hours" :communities="communities" class="elevation-1"></organization-card>
+  </v-flex>
+
+</v-layout>
 </template>
 
 <script>

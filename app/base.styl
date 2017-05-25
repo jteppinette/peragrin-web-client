@@ -1,5 +1,9 @@
 @import '~vuetify/src/stylus/settings/_colors';
  
+$body-font-family := 'Roboto', sans-serif
+$font-size-root := 14px
+$line-height-root := 1.5
+
 $theme := {
   primary: #4DB880
   accent: $red.accent-2
@@ -9,5 +13,31 @@ $theme := {
   error: $red.accent-4
   success: $green.lighten-2
 }
+
+$material-light := {
+  bg-color: #fff
+  fg-color: #000
+  text-color: #000
+  primary-text-percent: .87
+  secondary-text-percent: .54
+  disabledORhints-text-percent: .38
+  divider-percent: .12
+  active-icon-percent: .54
+  inactive-icon-percent: .38
+}
+
+$material-dark := {
+  bg-color: #303030
+  fg-color: #fff
+  text-color: #fff
+  primary-text-percent: 1
+  secondary-text-percent: .70
+  disabledORhints-text-percent: .50
+  divider-percent: .12
+  active-icon-percent: 1
+  inactive-icon-percent: .50
+}
+
+$material-theme := $material-light
 
 @import '~vuetify/src/stylus/settings/_variables';

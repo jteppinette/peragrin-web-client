@@ -1,10 +1,10 @@
 <template>
-  <v-data-table v-model="organizations" :headers="headers" hide-actions>
-    <template slot="items" scope="props">
-      <td class="text-xs-right">{{ props.item.name }}</td>
-      <td class="text-xs-right">{{ props.item.street }}</td>
-    </template>
-  </v-data-table>
+<v-data-table :headers="headers" :items="organizations" hide-actions>
+  <template slot="items" scope="props">
+    <td class="text-xs-right">{{ props.item.name }}</td>
+    <td class="text-xs-right">{{ props.item.street }}</td>
+  </template>
+</v-data-table>
 </template>
 
 <script>

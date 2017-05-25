@@ -1,6 +1,6 @@
 <template>
-<v-row>
-  <v-col xs12>
+<v-layout row wrap>
+  <v-flex xs12>
     <v-subheader>Hours of Operation</v-subheader>
 
     <div class="table__overflow">
@@ -34,8 +34,8 @@
     </table>
     </div>
 
-  </v-col>
-</v-row>
+  </v-flex>
+</v-layout>
 </template>
 
 <script>

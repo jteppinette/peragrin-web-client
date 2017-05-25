@@ -1,59 +1,71 @@
 <template>
-<v-app sidebar-under-toolbar top-toolbar right-fixed-sidebar class="client">
+<v-app>
+  <v-navigation-drawer v-model="navbar" :mini-variant.sync="mini" clipped persistent light>
+
+    <v-list>
+      <v-list-item>
+        <v-list-tile avatar tag="div">
+          <v-list-tile-avatar>
+            <img src="https://randomuser.me/api/portraits/men/85.jpg" />
+          </v-list-tile-avatar>
+          <v-list-tile-content>
+            <v-list-tile-title>John Leider</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-btn icon dark @click.native.stop="mini = !mini">
+              <v-icon>chevron_left</v-icon>
+            </v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+      </v-list-item>
+    </v-list> 
+
+    <v-list>
+      <v-divider></v-divider>
+      <v-list-item>
+        <v-list-tile :router="true" href="/auth/login">
+          <v-list-tile-action><v-icon>lock_open</v-icon></v-list-tile-action>
+          <v-list-tile-content><v-list-tile-title>Login</v-list-tile-title></v-list-tile-content>
+        </v-list-tile>
+      </v-list-item>
+      <v-list-item>
+        <v-list-tile :router="true" href="/client">
+          <v-list-tile-action><v-icon>map</v-icon></v-list-tile-action>
+          <v-list-tile-content><v-list-tile-title>Map</v-list-tile-title></v-list-tile-content>
+        </v-list-tile>
+      </v-list-item>
+    </v-list>
+
+  </v-navigation-drawer>
+
+  <v-navigation-drawer v-model="sidebar" :hide-overlay="true" temporary right light class="organization-drawer">
+    <organization-card :promotions="promotions[selected.id]" :disable-map="true" :organization="selected" :hours="hours[selected.id]"></organization-card>
+  </v-navigation-drawer>
+
   <v-toolbar class="primary elevation-0" fixed>
-    <v-toolbar-logo class="text-xs-right">peragrin</v-toolbar-logo>
-    <v-toolbar-side-icon class="hidden-lg-and-up" @click.native.stop="sidebar = !sidebar" />
+    <v-toolbar-side-icon class="hidden-lg-and-up" @click.native.stop="navbar = !navbar" light></v-toolbar-side-icon>
+    <v-toolbar-title>peragrin</v-toolbar-title>
     <v-toolbar-items class="hidden-md-and-down">
       <v-toolbar-item :router="true" href="/auth/login" ripple>Login</v-toolbar-item>
     </v-toolbar-items>
   </v-toolbar>
-  <v-map v-if="lat && lon" :zoom="14" :center="[lat, lon]">
-    <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
-    <v-marker v-for="organization in organizations" @l-click="(e) => select(e, organization)" :key="organization.id" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}">
-      <v-popup :content="organization.name"></v-popup>
-    </v-marker>
-  </v-map>
-  <v-sidebar v-model="sidebar" :mobile-break-point="mobileBreakPoint" fixed drawer right>
-
-    <v-subheader>General</v-subheader>
-    <v-container>
-      <p><strong class="white--text">{{ selected.name }}</strong></p>
-    </v-container>
-
-    <v-subheader>Hours of Operation</v-subheader>
-    <v-container>
-      <v-card-row class="white--text hours">
-        <v-card-column><p v-for="day in hours[selected.id]"><strong>{{ weekdays[day.weekday] }}</strong></p></v-card-column>
-        <v-card-column><p v-for="day in hours[selected.id]">{{ day.start | to12hr }} - {{ day.close | to12hr }}</p></v-card-column>
-      </v-card-row>
-    </v-container>
-
-    <v-subheader>Address</v-subheader>
-    <blockquote style="color: white">
-      {{ selected.street }} <br/>
-      {{ selected.city }} {{ selected.state }} {{ selected.zip }} <br/>
-      {{ selected.country }}
-    </blockquote>
-
-    <v-list subheader v-if="promotions[selected.id] ? promotions[selected.id].length : false">
-      <v-subheader>Promotions</v-subheader>
-      <v-list-item v-for="promotion in promotions[selected.id]" :key="promotion.name">
-        <v-list-tile>
-          <v-list-tile-content><v-list-tile-title v-text="promotion.name" /></v-list-tile-content>
-        </v-list-tile>
-      </v-list-item>
-    </v-list>
-  </v-sidebar>
+  <main>
+    <v-map v-if="lat && lon" :zoom="14" :center="[lat, lon]">
+      <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+      <v-marker v-for="organization in organizations" @l-click="(e) => select(e, organization)" :key="organization.id" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}">
+        <v-popup :content="organization.name"></v-popup>
+      </v-marker>
+    </v-map>
+  </main>
 </v-app>
 </template>
 
 <script>
 import {WEEKDAYS, to12hr} from 'common/time';
-
-const mobileBreakPoint = 992;
+import organizationCard from 'common/organization/card';
 
 export default {
-  data: () => ({weekdays: WEEKDAYS, organizations: [], hours: {}, selected: {}, promotions: {}, lon: 0, lat: 0, mobileBreakPoint, sidebar: (window.innerWidth >= mobileBreakPoint)}),
+  data: () => ({navbar: true, mini: true, weekdays: WEEKDAYS, organizations: [], hours: {}, selected: {}, promotions: {}, lon: 0, lat: 0, sidebar: false}),
   mounted,
   methods: {
     select: function({originalEvent: e}, organization) {
@@ -76,6 +88,9 @@ export default {
         .then(response => response.json())
         .then(promotions => this.$set(this.promotions, v.id, promotions));
     }
+  },
+  components: {
+    organizationCard
   }
 };
 
@@ -93,22 +108,22 @@ function mounted() {
 </script>
 
 <style scoped lang="stylus">
-.client {
-  .toolbar__logo {
-    font-family: 'Fredoka One', Roboto, sans-serif;
-    padding-left: 15px;
-    font-size: 2.5em;
-  }
+.toolbar__title {
+  font-family: 'Fredoka One', Roboto, sans-serif;
+}
 
-  .toolbar {
-    border-bottom: 6px solid white;
-    border-color: white !important;
-  }
+.vue2leaflet-map {
+  position: fixed;
+  height: 100% !important;
+  top: 56px;
+  z-index: 2;
+}
 
-  .vue2leaflet-map {
-    position: fixed;
-    height: 100% !important;
-    top: 64px;
+.organization-drawer {
+  border: 0;
+
+  &.navigation-drawer--open {
+    width: 400px;
   }
 }
 </style>

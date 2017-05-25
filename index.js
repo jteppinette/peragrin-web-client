@@ -51,8 +51,8 @@ const routes = [
     },
     {
         path: '/setup', component: setup, children: [
-            {path: 'community-leader', component: communityLeaderSetup},
-            {path: 'business-leader', component: businessLeaderSetup}
+            {path: 'community-leader', component: communityLeaderSetup, name: 'Community Leader Setup'},
+            {path: 'business-leader', component: businessLeaderSetup, name: 'Business Leader Setup'}
         ]
     },
     {

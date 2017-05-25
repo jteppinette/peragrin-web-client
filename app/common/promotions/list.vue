@@ -1,13 +1,13 @@
 <template>
-  <v-data-table v-model="promotions" :headers="headers" hide-actions>
-    <template slot="items" scope="props">
-      <td class="text-xs-right">{{ props.item.name }}</td>
-      <td class="text-xs-right">{{ props.item.description }}</td>
-      <td class="text-xs-right">{{ props.item.exclusions }}</td>
-      <td class="text-xs-right">{{ props.item.expiration }}</td>
-      <td class="text-xs-right">{{ props.item.isSingleUse }}</td>
-    </template>
-  </v-data-table>
+<v-data-table :items="promotions" :headers="headers" hide-actions>
+  <template slot="items" scope="props">
+    <td class="text-xs-right">{{ props.item.name }}</td>
+    <td class="text-xs-right">{{ props.item.description }}</td>
+    <td class="text-xs-right">{{ props.item.exclusions }}</td>
+    <td class="text-xs-right">{{ props.item.expiration }}</td>
+    <td class="text-xs-right">{{ props.item.isSingleUse }}</td>
+  </template>
+</v-data-table>
 </template>
 
 <script>
