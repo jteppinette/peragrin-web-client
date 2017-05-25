@@ -59,6 +59,9 @@ var organization = {
   state: '',
   country: '',
   zip: '',
+  email: '',
+  phone: '',
+  website: ''
 };
 
 var hours = [{weekday: 1}, {weekday: 2}, {weekday: 3}, {weekday: 4}, {weekday: 5}];

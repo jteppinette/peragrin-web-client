@@ -3,6 +3,7 @@
   <v-flex xs12 md6>
     <v-subheader>General</v-subheader>
     <v-text-field v-model="value.name" type="text" label="Name"></v-text-field>
+    <v-text-field v-model="value.email" type="text" label="Email"></v-text-field>
     <v-text-field v-model="value.phone" type="text" label="Phone Number"></v-text-field>
     <v-text-field v-model="value.website" type="text" label="Website"></v-text-field>
   </v-flex>

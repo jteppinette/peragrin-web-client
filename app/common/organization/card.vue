@@ -19,8 +19,8 @@
                 <v-icon class="primary--text">phone</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title>(650) 555-1234</v-list-tile-title>
-                <v-list-tile-sub-title>Mobile</v-list-tile-sub-title>
+                <v-list-tile-title><a :href="'tel:'+organization.phone">{{ organization.phone }}</a></v-list-tile-title>
+                <v-list-tile-sub-title>Phone</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
           </v-list-item>
@@ -29,10 +29,22 @@
           <v-list-item>
             <v-list-tile>
               <v-list-tile-action>
-                <v-icon class="primary--text">mail</v-icon>
+                <v-icon class="primary--text">mail_outline</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title>aliconnors@example.com</v-list-tile-title>
+                <v-list-tile-title><a :href="'mailto:'+organization.email">{{ organization.email }}</a></v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list-item>
+
+          <!-- WEBSITE -->
+          <v-list-item>
+            <v-list-tile>
+              <v-list-tile-action>
+                <v-icon class="primary--text">link</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title><a :href="organization.website">{{ organization.website }}</a></v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
           </v-list-item>
@@ -44,7 +56,7 @@
                 <v-icon class="primary--text">location_on</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title>{{ organization.street }}</v-list-tile-title>
+                <v-list-tile-title><a :href="'geopoint:'+organization.lat+','+organization.lon">{{ organization.street }}</a></v-list-tile-title>
                 <v-list-tile-sub-title>{{ organization.city}} , {{ organization.state }} {{ organization.zip }}</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -154,6 +166,11 @@ export default {
       }
     }
  }
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
 </style>
 
