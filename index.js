@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import VueResource from 'vue-resource';
 import Vuetify from 'vuetify';
 import Vue2Leaflet from 'vue2-leaflet';
+import Gravatar from 'vue-gravatar';
 
 import app from './app';
 
@@ -27,6 +28,8 @@ Vue.component('v-map', Vue2Leaflet.Map);
 Vue.component('v-tilelayer', Vue2Leaflet.TileLayer);
 Vue.component('v-marker', Vue2Leaflet.Marker);
 Vue.component('v-popup', Vue2Leaflet.Popup);
+
+Vue.component('v-gravatar', Gravatar);
 
 require('assets/images/logo-white.png');
 

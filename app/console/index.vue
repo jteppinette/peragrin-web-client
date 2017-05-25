@@ -6,10 +6,10 @@
       <v-list-item>
         <v-list-tile avatar tag="div">
           <v-list-tile-avatar>
-            <img src="https://randomuser.me/api/portraits/men/85.jpg" />
+            <v-gravatar :email="email" />
           </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title>John Leider</v-list-tile-title>
+            <v-list-tile-title>{{ email }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-btn icon dark @click.native.stop="mini = !mini">
@@ -78,6 +78,9 @@ export default {
       sessionStorage.clear();
       this.$router.push('/auth/login');
     }
+  },
+  computed: {
+    email: () => sessionStorage.email,
   },
   beforeRouteEnter (to, from, next) {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
