@@ -130,6 +130,8 @@ function mounted() {
 </script>
 
 <style scoped lang="stylus">
+@import '../base';
+
 .toolbar__title {
   font-family: 'Fredoka One', Roboto, sans-serif;
 }
@@ -157,6 +159,10 @@ function mounted() {
     .organization-card {
       overflow: scroll !important;
       height: 100% !important;
+
+      @media screen and (max-width: $grid-breakpoints.sm) {
+        padding-bottom: 40px;
+      }
     }
 
     .back {
