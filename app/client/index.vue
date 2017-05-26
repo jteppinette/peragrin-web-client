@@ -22,7 +22,7 @@
 
     <v-list>
       <v-divider></v-divider>
-      <v-list-item>
+      <v-list-item v-if="!email">
         <v-list-tile :router="true" href="/auth/login">
           <v-list-tile-action><v-icon>lock_open</v-icon></v-list-tile-action>
           <v-list-tile-content><v-list-tile-title>Login</v-list-tile-title></v-list-tile-content>
@@ -46,8 +46,19 @@
     <v-toolbar-side-icon class="hidden-lg-and-up" @click.native.stop="navbar = !navbar" light></v-toolbar-side-icon>
     <v-toolbar-title>peragrin</v-toolbar-title>
     <v-toolbar-items class="hidden-md-and-down">
-      <v-toolbar-item :router="true" href="/auth/login" ripple>Login</v-toolbar-item>
+      <v-toolbar-item v-if="!email" :router="true" href="/auth/login" ripple>Login</v-toolbar-item>
     </v-toolbar-items>
+    <v-menu v-if="email" bottom origin="top right" transition="v-scale-transition">
+      <v-btn light icon slot="activator"><v-icon>account_circle</v-icon></v-btn>
+      <v-list>
+        <v-list-item>
+          <v-list-tile><v-list-tile-title>View Profile</v-list-tile-title></v-list-tile>
+          <v-list-tile><v-list-tile-title>Settings</v-list-tile-title></v-list-tile>
+          <v-list-tile @click.native="logout"><v-list-tile-title>Log Out</v-list-tile-title></v-list-tile>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+
   </v-toolbar>
   <main>
     <v-map v-if="lat && lon" :zoom="14" :center="[lat, lon]">
@@ -65,17 +76,18 @@ import {WEEKDAYS, to12hr} from 'common/time';
 import organizationCard from 'common/organization/card';
 
 export default {
-  data: () => ({navbar: true, mini: true, weekdays: WEEKDAYS, organizations: [], hours: {}, selected: {}, promotions: {}, lon: 0, lat: 0, sidebar: false}),
+  data: () => ({email: sessionStorage.email, navbar: true, mini: true, weekdays: WEEKDAYS, organizations: [], hours: {}, selected: {}, promotions: {}, lon: 0, lat: 0, sidebar: false}),
   mounted,
   methods: {
     select: function({originalEvent: e}, organization) {
       this.selected = organization;
       this.sidebar = true;
       e.stopPropagation();
+    },
+    logout: function() {
+      sessionStorage.clear();
+      this.email = undefined;
     }
-  },
-  computed: {
-    email: () => sessionStorage.email,
   },
   filters: {
     'to12hr': value => to12hr(value)
@@ -119,7 +131,7 @@ function mounted() {
   position: fixed;
   height: 100% !important;
   top: 56px;
-  z-index: 2;
+  z-index: 1;
 }
 
 .organization-drawer {
