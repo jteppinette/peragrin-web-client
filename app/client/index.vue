@@ -39,12 +39,14 @@
   </v-navigation-drawer>
 
   <v-navigation-drawer v-model="sidebar" :hide-overlay="true" temporary right light class="organization-drawer">
-    <organization-card :promotions="promotions[selected.id]" :disable-map="true" :organization="selected" :hours="hours[selected.id]"></organization-card>
-    <v-container class="hidden-sm-and-up">
-      <v-btn @click.native="sidebar = false" block light primary>
-        <v-icon light>chevron_left</v-icon> Back
-      </v-btn>
-    </v-container>
+    <div class="sticky-container">
+      <organization-card :promotions="promotions[selected.id]" :disable-map="true" :organization="selected" :hours="hours[selected.id]" class="organization-card"></organization-card>
+      <div class="hidden-sm-and-up back">
+        <v-btn @click.native="sidebar = false" block light primary>
+          <v-icon light>chevron_left</v-icon> Back
+        </v-btn>
+      </div>
+    </div>
   </v-navigation-drawer>
 
   <v-toolbar class="primary elevation-0" fixed>
@@ -146,6 +148,31 @@ function mounted() {
   &.navigation-drawer--open {
     width: 400px;
     max-width: 90vw;
+  }
+
+  .sticky-container {
+    position: relative;
+    height: 100%;
+
+    .organization-card {
+      overflow: scroll !important;
+      height: 100% !important;
+    }
+
+    .back {
+      padding: 8px;
+      padding-top: 16px;
+      position: absolute;
+      bottom: 0px;
+      width: 100%;
+      background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 29%, rgba(255,255,255,1) 100%); /* FF3.6-15 */
+      background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 29%,rgba(255,255,255,1) 100%); /* Chrome10-25,Safari5.1-6 */
+      background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 29%,rgba(255,255,255,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+
+      .btn {
+        margin: 0px;
+      }
+    }
   }
 }
 </style>
