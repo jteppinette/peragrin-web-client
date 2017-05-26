@@ -11,7 +11,7 @@
 <script>
 import jwtDecode from 'jwt-decode';
 
-const PATRON = {key: 'p', next: '/console/overview', name: 'Patron'},
+const PATRON = {key: 'p', next: '/client', name: 'Patron'},
       BUSINESS_LEADER = {key: 'b', next: '/setup/business-leader', name: 'Business Leader'},
       COMMUNITY_LEADER = {key: 'c', next: '/setup/community-leader', name: 'Community Leader'};
 

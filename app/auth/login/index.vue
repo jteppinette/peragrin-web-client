@@ -24,6 +24,9 @@ function login() {
       sessionStorage.userID = id;
       sessionStorage.email = email;
     })
-    .then(() => this.$router.push(this.$route.query.next || '/console/overview'));
+    .then(() => this.$http.get('/auth/organizations'))
+    .then(response => response.json())
+    .then(organizations => organizations.length ? '/console/overview' : '/client')
+    .then(root => this.$router.push(this.$route.query.next || root));
 }
 </script>
