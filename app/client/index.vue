@@ -40,6 +40,11 @@
 
   <v-navigation-drawer v-model="sidebar" :hide-overlay="true" temporary right light class="organization-drawer">
     <organization-card :promotions="promotions[selected.id]" :disable-map="true" :organization="selected" :hours="hours[selected.id]"></organization-card>
+    <v-container class="hidden-sm-and-up">
+      <v-btn @click.native="sidebar = false" block light primary>
+        <v-icon light>chevron_left</v-icon> Back
+      </v-btn>
+    </v-container>
   </v-navigation-drawer>
 
   <v-toolbar class="primary elevation-0" fixed>
@@ -136,10 +141,11 @@ function mounted() {
 
 .organization-drawer {
   border: 0;
+  padding: 0px;
 
   &.navigation-drawer--open {
     width: 400px;
-    max-width: 95vw;
+    max-width: 90vw;
   }
 }
 </style>
