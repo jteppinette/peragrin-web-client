@@ -11,7 +11,10 @@
 
 <script>
 export default {
-  beforeRouteEnter: (to, from, next) => next(sessionStorage.userID ? {path: '/console/overview'} : undefined)
+  beforeRouteEnter: (to, from, next) => {
+    sessionStorage.clear();
+    return next();
+  }
 };
 </script>
 
