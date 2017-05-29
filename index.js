@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import VueResource from 'vue-resource';
 import Vuetify from 'vuetify';
 import Vue2Leaflet from 'vue2-leaflet';
+import VueMoment from 'vue-moment';
 import Gravatar from 'vue-gravatar';
 
 import app from './app';
@@ -23,6 +24,7 @@ import overview from 'console/overview';
 Vue.use(VueRouter);
 Vue.use(VueResource);
 Vue.use(Vuetify);
+Vue.use(VueMoment);
 
 Vue.component('v-map', Vue2Leaflet.Map);
 Vue.component('v-tilelayer', Vue2Leaflet.TileLayer);
