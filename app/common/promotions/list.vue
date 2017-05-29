@@ -4,8 +4,8 @@
     <td class="text-xs-right">{{ props.item.name }}</td>
     <td class="text-xs-right">{{ props.item.description }}</td>
     <td class="text-xs-right">{{ props.item.exclusions }}</td>
-    <td class="text-xs-right">{{ props.item.expiration }}</td>
-    <td class="text-xs-right">{{ props.item.isSingleUse }}</td>
+    <td class="text-xs-right">{{ props.item.expiration | moment("from", true) }}</td>
+    <td class="text-xs-right"><v-icon v-if="props.item.isSingleUse" dark>check</v-icon></td>
   </template>
 </v-data-table>
 </template>
