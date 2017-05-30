@@ -105,7 +105,7 @@ function logout() {
 @import "~leaflet/dist/leaflet.css";
 
 .leaflet-container {
-  z-index: 5;
+  z-index: 2;
   height: 350px !important;
 }
 
