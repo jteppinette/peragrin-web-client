@@ -40,21 +40,12 @@ const headers = [
 ];
 
 export default {
-  props: ['organizationID'],
-  data: () => ({promotions: [], headers}),
-  watch: {
-    organizationID: function(id) {
-      return getOrganizations.call(this, this.organizationID)
+  props: {
+    promotions: {
+      type: Array,
+      default: () => []
     }
   },
-  mounted: function() {
-    return getPromotions.call(this, this.organizationID);
-  }
+  data: () => ({headers})
 };
-
-function getPromotions(organizationID) {
-  return this.$http.get(`/organizations/${organizationID}/promotions`)
-    .then(response => response.json())
-    .then(promotions => this.promotions = promotions);
-}
 </script>

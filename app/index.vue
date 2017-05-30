@@ -145,4 +145,22 @@ function logout() {
 .toolbar__title {
   font-family: 'Fredoka One', Roboto, sans-serif;
 }
+
+.card__title {
+  padding: 10px;
+
+  .btn.btn--floating {
+    position: absolute;
+    right: 15px;
+    top: 40px;
+  }
+}
+
+.dialog {
+  font-family: Roboto,sans-serif;
+}
+
+.table__overflow.fab .datatable {
+  margin-top: 20px;
+}
 </style>

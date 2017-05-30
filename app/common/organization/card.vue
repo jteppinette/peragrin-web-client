@@ -161,10 +161,6 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-.card__title {
-  padding: 10px;
-}
-
 .hours {
   .list__tile {
     height: 100%;
