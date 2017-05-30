@@ -127,12 +127,19 @@ function logout() {
   margin-top: 10px;
 }
 
+.menu__content {
+  min-width: inherit !important;
+}
 
 // TODO: Remove after https://github.com/vuetifyjs/vuetify/issues/620 is merged.
 .stepper__content {
   overflow: visible !important;
 } .stepper__wrapper {
   transform: none !important;
+}
+
+.stepper__wrapper {
+  min-height: 350px;
 }
 
 .toolbar__title {
