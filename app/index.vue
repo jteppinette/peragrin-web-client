@@ -127,8 +127,12 @@ function logout() {
   margin-top: 10px;
 }
 
-.stepper, .stepper__content, .stepper__wrapper {
-  overflow: visible;
+
+// TODO: Remove after https://github.com/vuetifyjs/vuetify/issues/620 is merged.
+.stepper__content {
+  overflow: visible !important;
+} .stepper__wrapper {
+  transform: none !important;
 }
 
 .toolbar__title {
