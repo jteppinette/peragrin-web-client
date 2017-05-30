@@ -159,8 +159,4 @@ function logout() {
 .dialog {
   font-family: Roboto,sans-serif;
 }
-
-.table__overflow.floating-action .datatable {
-  margin-top: 20px;
-}
 </style>
