@@ -37,7 +37,7 @@
           </v-dialog>
 
         </v-card-title>
-        <promotions-list :promotions="promotions" class="fab"></promotions-list>
+        <promotions-list :promotions="promotions" class="floating-action"></promotions-list>
       </v-card>
     </v-flex>
 

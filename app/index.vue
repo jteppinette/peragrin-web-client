@@ -160,7 +160,7 @@ function logout() {
   font-family: Roboto,sans-serif;
 }
 
-.table__overflow.fab .datatable {
+.table__overflow.floating-action .datatable {
   margin-top: 20px;
 }
 </style>
