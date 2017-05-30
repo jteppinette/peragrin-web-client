@@ -8,25 +8,14 @@
 </template>
 
 <script>
-import jwtDecode from 'jwt-decode';
-
 export default {
   data: () => ({email: '', password: ''}),
   methods: {login}
 };
 
 function login() {
-  return this.$http.post('/auth/login', {email: this.email, password: this.password})
-    .then(response => response.json())
-    .then(function({token}) {
-      var {id, email, organizationID} = jwtDecode(token);
-      sessionStorage.token = token;
-      sessionStorage.userID = id;
-      sessionStorage.email = email;
-    })
-    .then(() => this.$http.get('/auth/organizations'))
-    .then(response => response.json())
-    .then(organizations => organizations.length ? '/console/overview' : '/client')
+  return this.$store.dispatch('login', {email: this.email, password: this.password})
+    .then(({organizations}) => organizations.length ? '/overview' : '/map')
     .then(root => this.$router.push(this.$route.query.next || root));
 }
 </script>

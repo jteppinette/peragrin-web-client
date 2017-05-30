@@ -13,7 +13,7 @@
       <v-list two-line>
 
         <!-- PHONE -->
-        <v-list-item>
+        <v-list-item v-if="organization.phone">
           <v-list-tile>
             <v-list-tile-action>
               <v-icon class="primary--text">phone</v-icon>
@@ -26,7 +26,7 @@
         </v-list-item>
 
         <!-- EMAIL -->
-        <v-list-item>
+        <v-list-item v-if="organization.email">
           <v-list-tile>
             <v-list-tile-action>
               <v-icon class="primary--text">mail_outline</v-icon>
@@ -38,7 +38,7 @@
         </v-list-item>
 
         <!-- WEBSITE -->
-        <v-list-item>
+        <v-list-item v-if="organization.website">
           <v-list-tile>
             <v-list-tile-action>
               <v-icon class="primary--text">link</v-icon>
@@ -50,7 +50,7 @@
         </v-list-item>
 
         <!-- ADDRESS -->
-        <v-list-item>
+        <v-list-item v-if="organization.street">
           <v-list-tile>
             <v-list-tile-action>
               <v-icon class="primary--text">location_on</v-icon>

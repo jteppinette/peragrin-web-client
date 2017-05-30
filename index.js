@@ -1,70 +1,52 @@
 import Vue from 'vue';
-import VueRouter from 'vue-router';
-import VueResource from 'vue-resource';
-import Vuetify from 'vuetify';
-import Vue2Leaflet from 'vue2-leaflet';
 import VueMoment from 'vue-moment';
-import Gravatar from 'vue-gravatar';
+import VueResource from 'vue-resource';
+import VueRouter from 'vue-router';
+import Vuetify from 'vuetify';
+import Vuex from 'vuex';
 
-import app from './app';
-
-import client from 'client';
-
-import auth from 'auth';
-import login from 'auth/login';
-import register from 'auth/register';
-
-import setup from 'setup';
-import communityLeaderSetup from 'setup/community-leader';
-import businessLeaderSetup from 'setup/business-leader';
-
-import console from 'console';
-import overview from 'console/overview';
-
+Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(VueResource);
 Vue.use(Vuetify);
 Vue.use(VueMoment);
+
+import Vue2Leaflet from 'vue2-leaflet';
 
 Vue.component('v-map', Vue2Leaflet.Map);
 Vue.component('v-tilelayer', Vue2Leaflet.TileLayer);
 Vue.component('v-marker', Vue2Leaflet.Marker);
 Vue.component('v-popup', Vue2Leaflet.Popup);
 
-Vue.component('v-gravatar', Gravatar);
+import app from './app';
+import map from 'map';
 
-require('assets/images/logo-white.png');
+import auth from './auth';
+import login from 'login';
+import register from 'register';
 
-import L from 'leaflet';
+import setup from 'setup';
+import communityLeaderSetup from 'setup/community-leader';
+import businessLeaderSetup from 'setup/business-leader';
 
-L.Icon.Default.imagePath = '/';
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-    iconUrl: require('leaflet/dist/images/marker-icon.png'),
-    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-});
+import overview from 'overview';
 
 const routes = [
-    {path: '/', redirect: '/client'},
-    {path: '/client', component: client},
+    {path: '/', redirect: '/map'},
+    {path: '/', component: app, children: [
+        {path: 'map', component: map},
+        {path: 'overview', component: overview},
+        {path: 'setup', component: setup, children: [
+            {path: 'community-leader', component: communityLeaderSetup},
+            {path: 'business-leader', component: businessLeaderSetup}
+        ]}
+    ]},
     {
         path: '/auth', component: auth, children: [
             {path: '', redirect: 'login'},
             {path: 'login', component: login},
             {path: 'register', component: register}
         ],
-    },
-    {
-        path: '/setup', component: setup, children: [
-            {path: 'community-leader', component: communityLeaderSetup, name: 'Community Leader Setup'},
-            {path: 'business-leader', component: businessLeaderSetup, name: 'Business Leader Setup'}
-        ]
-    },
-    {
-        path: '/console', component: console, children: [
-            {path: '', redirect: 'overview'},
-            {path: 'overview', component: overview, name: 'Overview'}
-        ]
     }
 ];
 
@@ -73,8 +55,12 @@ Vue.http.interceptors.push((request, next) => {
     next();
 })
 
+import store from './store';
+import index from './index.vue';
+
 new Vue({
-    el: '#app',
+    el: '#peragrin',
+    store: new Vuex.Store(store),
     router: new VueRouter({routes}),
-    render: h => h(app)
+    render: h => h(index)
 });

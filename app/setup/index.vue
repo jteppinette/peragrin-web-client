@@ -1,15 +1,7 @@
 <template>
-<v-app class="setup">
-  <v-toolbar class="elevation-0">
-    <v-toolbar-title>setup</v-toolbar-title>
-  </v-toolbar>
-  <main>
-    <v-container fluid class="pa-3">
-      <router-view></router-view>
-    </v-container>
-  </main>
-  <v-footer></v-footer>
-</v-app>
+<v-container fluid class="pa-3">
+  <router-view></router-view>
+</v-container>
 </template>
 
 <script>
@@ -19,10 +11,3 @@ export default {
   }
 };
 </script>
-
-<style scoped lang="stylus">
-.toolbar__title {
-  font-family: 'Fredoka One', Roboto, sans-serif;
-}
-</style>
-

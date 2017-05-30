@@ -9,17 +9,8 @@
 </v-app>
 </template>
 
-<script>
-export default {
-  beforeRouteEnter: (to, from, next) => {
-    sessionStorage.clear();
-    return next();
-  }
-};
-</script>
-
 <style lang="stylus">
-@import '../base';
+@import '../settings';
 
 .auth {
   height: 100vh;
@@ -55,6 +46,5 @@ export default {
     color: white;
     font-family: 'Fredoka One', cursive;
   }
-
 }
 </style>

@@ -94,7 +94,7 @@ function createCommunity() {
   return this.$http.post(`/organizations/${this.organization.id}/communities`, this.community)
     .then(response => response.json())
     .then(community => this.community = community)
-    .then(() => this.$router.push('/console/overview'));
+    .then(() => this.$router.push('/overview'));
 }
 
 function setupOrganization() {
@@ -102,6 +102,7 @@ function setupOrganization() {
     .then(response => response.json())
     .then(organization => this.organization = organization)
     .then(organization => this.$http.post(`/organizations/${organization.id}/hours`, this.hours))
+    .then(() => this.$store.dispatch('initializeAccountOrganizations', this.$store.state.account))
     .then(() => this.step = 2);
 }
 

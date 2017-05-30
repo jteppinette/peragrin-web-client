@@ -9,9 +9,7 @@
 </template>
 
 <script>
-import jwtDecode from 'jwt-decode';
-
-const PATRON = {key: 'p', next: '/client', name: 'Patron'},
+const PATRON = {key: 'p', next: '/map', name: 'Patron'},
       BUSINESS_LEADER = {key: 'b', next: '/setup/business-leader', name: 'Business Leader'},
       COMMUNITY_LEADER = {key: 'c', next: '/setup/community-leader', name: 'Community Leader'};
 
@@ -31,14 +29,7 @@ function mounted() {
 }
 
 function register() {
-  return this.$http.post('/auth/register', {email: this.email, password: this.password})
-    .then(response => response.json())
-    .then(function({token}) {
-      var {id, email} = jwtDecode(token);
-      sessionStorage.token = token;
-      sessionStorage.userID = id;
-      sessionStorage.email = email;
-    })
+  return this.$store.dispatch('register', {email: this.email, password: this.password})
     .then(() => this.$router.push(this.next));
 }
 </script>
