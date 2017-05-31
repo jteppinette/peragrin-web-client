@@ -10,6 +10,17 @@
       <v-tabs-item ripple href="#communities" v-if="communities.length">Communities</v-tabs-item>
     </v-tabs-bar>
     <v-tabs-content id="general">
+
+      <!-- CATEGORY -->
+      <v-card-row v-if="organization.category">
+        <v-container fluid>
+          <v-chip class="primary white--text">
+            <v-avatar v-if="organization.category == 'Resturaunt'"><v-icon>local_dining</v-icon></v-avatar>
+            {{ organization.category }}
+          </v-chip>
+        </v-container>
+      </v-card-row>
+
       <v-list two-line>
 
         <!-- PHONE -->
@@ -210,6 +221,10 @@ a {
     .tabs__items {
       border-style: none;
     }
+  }
+
+  .container {
+    padding: 12px;
   }
 }
 </style>
