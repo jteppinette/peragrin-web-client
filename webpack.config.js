@@ -13,7 +13,7 @@ module.exports = {
         rules: [
             {
                 test: /\.js$/,
-                loader: 'buble-loader',
+                loader: 'buble-loader?objectAssign=Object.assign',
                 exclude: /node_modules/
             },
             {
@@ -24,7 +24,8 @@ module.exports = {
                         stylus: extract.extract({
                             loader: ['css-loader?minimize=true', 'stylus-loader'],
                             fallbackLoader: 'vue-style-loader'
-                        })
+                        }),
+                        js: 'buble-loader?objectAssign=Object.assign'
                     }
                 }
             },

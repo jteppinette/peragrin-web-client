@@ -16,9 +16,7 @@
   <!-- MAP -->
   <v-map v-if="lat && lon" :zoom="14" :center="[lat, lon]">
     <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
-    <v-marker v-for="organization in organizations" @l-click="(e) => select(e, organization)" :key="organization.id" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}">
-      <v-popup :content="organization.name"></v-popup>
-    </v-marker>
+    <v-marker v-for="organization in organizations" @l-click="(e) => select(e, organization)" :key="organization.id" :icon="organization.icon" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}"></v-marker>
   </v-map>
 
 </div>
@@ -27,6 +25,7 @@
 <script>
 import {WEEKDAYS, to12hr} from 'common/time';
 import organizationCard from 'common/organization/card';
+import L from 'leaflet';
 
 export default {
   data: () => ({weekdays: WEEKDAYS, organizations: [], hours: {}, selected: {}, promotions: {}, lon: 0, lat: 0, sidebar: false}),
@@ -65,6 +64,9 @@ function mounted() {
     .then((communities) => {
       return this.$http.get(`/communities/${communities[0].id}/organizations`)
         .then(response => response.json())
+        .then(organizations => organizations.map(o => {
+          return o.logo ? {...o, icon: L.icon({iconUrl: o.logo, iconSize: [64, 64], iconAnchor: [32, 32]})} : o;
+        }))
         .then(organizations => this.organizations = organizations)
         .then(organizations => this.selected = organizations[0]);
     });

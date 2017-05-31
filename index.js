@@ -1,3 +1,5 @@
+require('object.assign/shim')();
+
 import Vue from 'vue';
 import VueMoment from 'vue-moment';
 import VueResource from 'vue-resource';

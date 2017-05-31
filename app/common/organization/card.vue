@@ -82,9 +82,7 @@
       <v-card-row v-if="active == 'general' && !disableMap && organization.lon && organization.lat">
         <v-map v-if="organization.lon && organization.lat" :zoom="15" :center="[organization.lat, organization.lon]">
           <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
-          <v-marker :lat-lng="{'lat': organization.lat, 'lng': organization.lon}">
-             <v-popup :content="organization.name"></v-popup>
-          </v-marker>
+          <v-marker :lat-lng="{'lat': organization.lat, 'lng': organization.lon}" :icon="icon"></v-marker>
         </v-map>
       </v-card-row>
 
@@ -139,9 +137,10 @@
 
 <script>
 import {WEEKDAYS, to12hr} from 'common/time';
+import L from 'leaflet';
 
 export default {
-  data: () => ({active: null, weekdays: WEEKDAYS}),
+  data: () => ({icon: undefined, active: null, weekdays: WEEKDAYS}),
   props: {
     promotions: {type: Array, default: () => []},
     organization: {type: Object, required: true},
@@ -152,12 +151,20 @@ export default {
   watch: {
     organization: function() {
       this.active = 'general';
+      initialize.call(this);
     }
   },
+  mounted: initialize,
   filters: {
     'to12hr': value => to12hr(value)
   }
 };
+
+function initialize() {
+  if (this.organization.logo) {
+    this.icon = L.icon({iconUrl: this.organization.logo, iconSize: [64, 64], iconAnchor: [32, 32]});
+  }
+}
 </script>
 
 <style scoped lang="stylus">
