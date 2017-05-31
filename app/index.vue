@@ -110,9 +110,12 @@ function logout() {
   margin-bottom: 10px;
 }
 
-.card__title.primary {
-  color: white;
+.card__title {
   font-family: 'Fredoka One', cursive;
+
+  &.primary {
+    color: white;
+  }
 }
 
 .container > .subheader {

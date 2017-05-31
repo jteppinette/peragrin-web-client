@@ -3,6 +3,8 @@
 
   <v-card-title class="primary">{{ organization.name || 'Your Organization' }}</v-card-title>
 
+  <v-card-row v-if="organization.logo" :img="organization.logo" height="130px"></v-card-row>
+
   <v-tabs scroll-bars v-model="active" light class="tabs-no-border">
     <v-tabs-bar slot="activators" :style="{display: promotions.length || communities.length ? 'block' : 'none'}">
       <v-tabs-item ripple href="#general">General</v-tabs-item>
@@ -172,8 +174,8 @@ export default {
 };
 
 function initialize() {
-  if (this.organization.logo) {
-    this.icon = L.icon({iconUrl: this.organization.logo, iconSize: [64, 64], iconAnchor: [32, 32]});
+  if (this.organization.icon) {
+    this.icon = L.icon({iconUrl: this.organization.icon, iconSize: [64, 64], iconAnchor: [32, 32]});
   }
 }
 </script>
