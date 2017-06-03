@@ -20,9 +20,9 @@
       </v-stepper-content>
 
       <v-stepper-content step="2">
-        <v-map v-if="step == 2 && organization.lon && organization.lat" :zoom="15" :center="[organization.lat, organization.lon]">
+        <v-map v-if="step == 2 && organization.lon && organization.lat" :zoom="zoom" :center="[organization.lat, organization.lon]" v-on:l-zoomend="({target: {_zoom: v}}) => zoom = v">
           <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
-          <v-marker v-on:l-move="move" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}" :draggable="true">
+          <v-marker v-on:l-move="move" :lat-lng="[marker.lat, marker.lon]" :draggable="true">
              <v-popup :content="organization.name"></v-popup>
           </v-marker>
         </v-map>
@@ -33,6 +33,15 @@
       <v-stepper-content step="3">
         <v-container>
           <v-text-field v-model="community.name" type="text" label="Name"></v-text-field>
+
+          <v-subheader>Set the zoom level and map center for your community</v-subheader>
+          <v-map v-if="step == 3" :zoom="zoom" :center="[organization.lat, organization.lon]" v-on:l-zoomend="({target: {_zoom: v}}) => zoom = v">
+            <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+            <v-marker v-on:l-move="move" :lat-lng="[marker.lat, marker.lon]" :draggable="true">
+               <v-popup :content="community.name"></v-popup>
+            </v-marker>
+          </v-map>
+
           <v-btn primary @click.native="createCommunity" class="white--text">Create Community</v-btn>
         </v-container>
       </v-stepper-content>
@@ -53,30 +62,23 @@ import organizationForm from 'common/organization/form';
 import organizationHours from 'common/organization/hours';
 
 var organization = {
-  name: '',
-  street: '',
-  city: '',
-  state: '',
-  country: '',
-  zip: '',
-  email: '',
-  phone: '',
-  website: ''
-};
-
-var hours = [{weekday: 1}, {weekday: 2}, {weekday: 3}, {weekday: 4}, {weekday: 5}];
-
-var community = {
-  name: ''
-}
-
-var marker = {
-  lat: undefined,
-  lng: undefined
-};
+    name: '',
+    street: '',
+    city: '',
+    state: '',
+    country: '',
+    zip: '',
+    email: '',
+    phone: '',
+    website: ''
+  },
+  hours = [{weekday: 1}, {weekday: 2}, {weekday: 3}, {weekday: 4}, {weekday: 5}],
+  community = {
+    name: ''
+  };
 
 export default {
-  data: () => ({step: 1, organization, marker, community, hours}),
+  data: () => ({zoom: 13, step: 1, organization, marker: undefined, community, hours}),
   methods: {
     setupOrganization,
     move,
@@ -91,7 +93,7 @@ export default {
 };
 
 function createCommunity() {
-  return this.$http.post(`/organizations/${this.organization.id}/communities`, this.community)
+  return this.$http.post(`/organizations/${this.organization.id}/communities`, {...this.community, zoom: this.zoom, lon: this.marker.lon, lat: this.marker.lat})
     .then(response => response.json())
     .then(community => this.community = community)
     .then(() => this.$router.push('/overview'));
@@ -101,6 +103,10 @@ function setupOrganization() {
   return this.$http.post('/auth/organizations', this.organization)
     .then(response => response.json())
     .then(organization => this.organization = organization)
+    .then(organization => {
+      this.marker = {lat: organization.lat, lon: organization.lon};
+      return organization;
+    })
     .then(organization => this.$http.post(`/organizations/${organization.id}/hours`, this.hours))
     .then(() => this.$store.dispatch('initializeAccountOrganizations', this.$store.state.account))
     .then(() => this.step = 2);
@@ -113,10 +119,8 @@ function move({latlng}) {
 
 function updateOrganizationLocation() {
   if (!this.marker.lat || !this.marker.lon) return;
-
   this.organization.lat = this.marker.lat;
   this.organization.lon = this.marker.lon;
-
   return this.$http.post(`/organizations/${this.organization.id}`, this.organization)
     .then(response => response.json())
     .then(organization => this.organization = organization);

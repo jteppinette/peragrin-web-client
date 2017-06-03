@@ -8,7 +8,7 @@
       </div>
     </div>
   </v-navigation-drawer>
-  <v-map v-if="latlng" :zoom="14" :center="latlng">
+  <v-map v-if="geoJSONOverlays && latlng && zoom" :zoom="zoom" :center="latlng" v-on:l-zoomend="({target: {_zoom: v}}) => zoom = v">
     <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
     <v-marker v-for="organization in organizations" @l-click="({originalEvent: e}) => select(organization, e)" :key="organization.id" :icon="organization.icon" :lat-lng="[organization.lat, organization.lon]"></v-marker>
     <v-geojson-layer v-for="overlay in geoJSONOverlays" :key="overlay.name" :options="options(overlay)" :geojson="overlay.data"></v-geojson-layer>
@@ -25,7 +25,7 @@ function options({style}) {
 };
 
 export default {
-  data: () => ({options, geoJSONOverlays: undefined, community: undefined, organizations: [], selected: {}, latlng: undefined, sidebar: false}),
+  data: () => ({zoom: 0, options, geoJSONOverlays: undefined, community: undefined, organizations: undefined, selected: {}, latlng: undefined, sidebar: false}),
   mounted,
   methods: {
     select: function(organization, e) {
@@ -51,10 +51,12 @@ function mounted() {
     .then(response => response.json())
     .then(communities => this.community = communities[0])
     .then(community => {
+      this.latlng = [community.lat, community.lon];
+      this.zoom = community.zoom;
       return Promise.all([
         initializeOrganizations.call(this, community.id),
         initializeGeoJSONOverlays.call(this, community.id)
-      ]).then(() => this.select(this.organizations[0]));
+      ]);
     });
 }
 
