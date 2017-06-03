@@ -21,7 +21,7 @@ import organizationCard from 'common/organization/card';
 import L from 'leaflet';
 
 function options({style}) {
-  return {style: f => ({...style.values[f.properties[style.property]], ...style.base})};
+  return {style: f => style.values ? {...style.values[f.properties[style.property]], ...style.base} : style.base};
 };
 
 export default {
