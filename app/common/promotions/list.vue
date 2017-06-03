@@ -7,13 +7,13 @@
       <v-card-row><v-card-title class="primary">Add Promotion</v-card-title></v-card-row>
       <v-card-row>
         <v-card-text>
-          <form @keyup.enter="create">
+          <form class="pt-3" @keyup.enter="create">
 
             <v-text-field v-model="promotion.name" label="Name"></v-text-field>
             <v-text-field v-model="promotion.description" label="Description" rows="1" multi-line></v-text-field>
             <v-text-field v-model="promotion.exclusions" label="Exclusions" rows="1" multi-line></v-text-field>
 
-            <v-subheader class="pa-0" style="height: 0px">Is Single Use?</v-subheader>
+            <v-subheader class="pa-0 pt-2" style="height: 0px">Is Single Use?</v-subheader>
             <v-switch v-model="promotion.isSingleUse" :label="promotion.isSingleUse ? 'This promotion can only be used a single time per patron.' : 'This promotion can be used multiple times by the same patron.'" dark></v-switch>
 
           </form>

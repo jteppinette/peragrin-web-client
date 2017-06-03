@@ -123,8 +123,8 @@ function logout() {
 }
 
 .input-group {
-  margin: 0px;
-  margin-top: 10px;
+  margin: 0px !important;
+  margin-top: 10px !important;
 }
 
 .menu__content {
