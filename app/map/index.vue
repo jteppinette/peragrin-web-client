@@ -29,6 +29,7 @@ export default {
   mounted,
   methods: {
     select: function(organization, e) {
+      this.latlng = [organization.lat, organization.lon];
       if (e) e.stopPropagation();
       var hours = organization.hours ? organization.hours : this.$http.get(`/organizations/${organization.id}/hours`).then(response => response.json());
       var promotions = organization.promotions ? organization.promotions : this.$http.get(`/organizations/${organization.id}/promotions`).then(response => response.json());
@@ -37,7 +38,6 @@ export default {
         this.$set(organization, 'promotions', values[1]);
         this.selected = organization;
         this.sidebar = true;
-        this.latlng = [organization.lat, organization.lon];
       });
     }
   },
