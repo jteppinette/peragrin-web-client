@@ -20,16 +20,14 @@
     </v-card>
   </v-dialog>
 
-  <v-list two-line>
-    <v-list-item v-for="membership in memberships" :key="membership.id">
-      <v-list-tile>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ membership.name }}</v-list-tile-title>
-          <v-list-tile-sub-title>{{ membership.description }}</v-list-tile-sub-title>
-        </v-list-tile-content>
-      </v-list-tile>
-    </v-list-item>
-  </v-list>
+  <v-expansion-panel class="elevation-0">
+    <v-expansion-panel-content v-for="membership in memberships" :key="membership.id">
+      <div slot="header"><strong>{{ membership.name }}</strong><br/><small>{{ membership.description }}</small></div>
+      <v-data-table :items="accounts[membership.id]" :headers="headers" hide-actions>
+        <template slot="items" scope="props"><td class="text-xs-right">{{ props.item.email }}</td></template>
+      </v-data-table>
+    </v-expansion-panel-content>
+  </v-expansion-panel>
 
 </div>
 </template>
@@ -40,9 +38,13 @@ var membership = {
   description: ''
 };
 
+const headers = [
+  {text: 'Email', value: 'email'},
+];
+
 export default {
   props: ['communityID'],
-  data: () => ({memberships: [], membership, dialog: false}),
+  data: () => ({headers, memberships: [], accounts: {}, membership, dialog: false}),
   methods: {create},
   mounted: initialize
 };
@@ -50,7 +52,18 @@ export default {
 function initialize() {
   return this.$http.get(`/communities/${this.communityID}/memberships`)
     .then(response => response.json())
-    .then(memberships => this.memberships = memberships);
+    .then(memberships => this.memberships = memberships)
+    .then(memberships => {
+      for (var i in memberships) {
+        let idx = i;
+        this.$http.get(`/memberships/${memberships[idx].id}/accounts`)
+          .then(response => response.json())
+          .then(accounts => {
+            return accounts;
+          })
+          .then(accounts => this.$set(this.accounts, memberships[idx].id, accounts));
+      }
+    });
 }
 
 function create() {
@@ -61,6 +74,10 @@ function create() {
 </script>
 
 <style lang="stylus" scoped>
+.expansion-panel li:first-child {
+  border-top: none;
+}
+
 .btn.btn--floating {
   position: absolute;
   top: 35px;
