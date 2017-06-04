@@ -2,28 +2,28 @@
 <v-container fluid class="pa-3">
   <v-layout row wrap>
 
-    <v-flex xs12 md8 lg6>
+    <v-flex xs12 md6 lg6>
       <v-card v-if="community">
         <v-card-title class="primary">{{ community.name }}</v-card-title>
         <community-organizations-list :id="community.id"></community-organizations-list>
       </v-card>
     </v-flex>
 
-    <v-flex xs12 md8 lg6>
+    <v-flex xs12 md6 lg6 v-if="community && !community.isAdministrator">
       <v-card v-if="organization">
         <v-card-title class="primary">Promotions</v-card-title>
         <promotions-list :organizationID="organization.id"></promotions-list>
       </v-card>
     </v-flex>
 
-    <v-flex xs12 sm4 md4 lg2 v-if="community && community.isAdministrator">
+    <v-flex xs12 sm4 md2 lg2 v-if="community && community.isAdministrator">
       <v-card>
         <v-card-title class="primary">Memberhips</v-card-title>
         <memberships-list :communityID="community.id"></memberships-list>
       </v-card>
     </v-flex>
 
-    <v-flex xs12 md6 lg4 v-if="organization">
+    <v-flex xs12 sm8 md4 lg4 v-if="organization">
       <organization-card @community:selected="(community) => community = community" :organization="organization" :hours="hours" :communities="communities" class="elevation-1"></organization-card>
     </v-flex>
 
