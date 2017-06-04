@@ -15,12 +15,7 @@
 
       <!-- CATEGORY -->
       <v-card-row v-if="organization.category">
-        <v-container fluid>
-          <v-chip class="primary white--text">
-            <v-avatar v-if="organization.category == 'Resturaunt'"><v-icon>local_dining</v-icon></v-avatar>
-            {{ organization.category }}
-          </v-chip>
-        </v-container>
+        <v-container fluid><v-chip class="primary white--text">{{ organization.category }}</v-chip></v-container>
       </v-card-row>
 
       <v-list two-line>
