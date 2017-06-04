@@ -34,6 +34,8 @@ import businessLeaderSetup from 'setup/business-leader';
 
 import overview from 'overview';
 
+require('./assets/images/favicon-64.png');
+
 const routes = [
     {path: '/', redirect: '/map'},
     {path: '/', component: app, children: [
