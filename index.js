@@ -28,6 +28,8 @@ import auth from './auth';
 import login from 'login';
 import register from 'register';
 
+import profile from 'profile';
+
 import setup from 'setup';
 import communityLeaderSetup from 'setup/community-leader';
 import businessLeaderSetup from 'setup/business-leader';
@@ -41,6 +43,7 @@ const routes = [
     {path: '/', component: app, children: [
         {path: 'map', component: map},
         {path: 'overview', component: overview},
+        {path: 'profile', component: profile},
         {path: 'setup', component: setup, children: [
             {path: 'community-leader', component: communityLeaderSetup},
             {path: 'business-leader', component: businessLeaderSetup}

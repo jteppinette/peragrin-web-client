@@ -31,6 +31,15 @@ export default {
                 })
                 .then(account => context.dispatch('initializeAccountOrganizations', account));
         },
+        update (context, account) {
+            return Vue.http.post('/auth/account', {email: account.email, password: account.password})
+                .then(response => response.json())
+                .then(function({id, email}) {
+                    sessionStorage.email = email;
+                    context.commit('setAccount', {id, email, organizations: context.state.account.organizations});
+                    return {id, email};
+                });
+        },
         initializeAccountOrganizations (context, {id, email}) {
             return Vue.http.get('/auth/organizations')
                 .then(response => response.json())

@@ -51,8 +51,7 @@
       <v-btn light icon slot="activator"><v-icon>account_circle</v-icon></v-btn>
       <v-list>
         <v-list-item>
-          <v-list-tile><v-list-tile-title>View Profile</v-list-tile-title></v-list-tile>
-          <v-list-tile><v-list-tile-title>Settings</v-list-tile-title></v-list-tile>
+          <v-list-tile router href="/profile"><v-list-tile-title>Profile</v-list-tile-title></v-list-tile>
           <v-list-tile @click.native="logout"><v-list-tile-title>Log Out</v-list-tile-title></v-list-tile>
         </v-list-item>
       </v-list>
