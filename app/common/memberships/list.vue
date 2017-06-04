@@ -115,6 +115,11 @@ function addAccount(membership) {
   border-top: none;
 }
 
+.expansion-panel > li {
+  border-right: none;
+  border-left: none;
+}
+
 .btn.btn--floating {
   position: absolute;
   top: 35px;
