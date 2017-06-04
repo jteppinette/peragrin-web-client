@@ -15,7 +15,7 @@ export default {
 
 function login() {
   return this.$store.dispatch('login', {email: this.email, password: this.password})
-    .then(({organizations}) => organizations.length ? '/overview' : '/map')
+    .then(({organizations}) => organizations && organizations.length ? '/overview' : '/map')
     .then(root => this.$router.push(this.$route.query.next || root));
 }
 </script>
