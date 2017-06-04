@@ -74,11 +74,11 @@ const MARKER_BASE = {
   tooltipAnchor: [16, -28],
   shadowSize:  [41, 41]
 };
-const RESTURAUNT = 'Resturaunt';
+const RESTAURANT = 'Restaurant';
 const MARKERS = {
-  [RESTURAUNT]: L.icon({...MARKER_BASE,
-    iconUrl:       require('../../assets/markers/resturaunt.png'),
-    iconRetinaUrl: require('../../assets/markers/resturaunt.png'),
+  [RESTAURANT]: L.icon({...MARKER_BASE,
+    iconUrl:       require('../../assets/markers/restaurant.png'),
+    iconRetinaUrl: require('../../assets/markers/restaurant.png'),
   })
 };
 
@@ -86,7 +86,7 @@ function initializeOrganizations(communityID) {
   return this.$http.get(`/communities/${communityID}/organizations`)
     .then(response => response.json())
     .then(organizations => organizations.map(o => {
-      if (o.category == RESTURAUNT) return {...o, icon: MARKERS[RESTURAUNT]};
+      if (o.category == RESTAURANT) return {...o, icon: MARKERS[RESTAURANT]};
       if (o.icon && o.isAdministrator) return {...o, icon: L.icon({iconUrl: o.icon, iconSize: [64, 64], iconAnchor: [32, 32]})};
       return o;
     }))
