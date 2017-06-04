@@ -106,7 +106,7 @@
       <v-expansion-panel class="elevation-0">
         <v-expansion-panel-content v-for="promotion in promotions" :key="promotion.name">
           <div slot="header"><strong>{{ promotion.name }}</strong><br/><small>{{ promotion.description }}</small></div>
-          <v-card class="pa-3">
+          <v-card>
             <v-card-row v-if="promotion.expiration" class="mb-3">
               <v-icon class="ml-2 mr-4" dark>timer</v-icon>
               <div>
@@ -125,7 +125,7 @@
               </v-container>
             </v-card-row>
             <v-card-row actions>
-              <v-btn default block>Redeem</v-btn>
+              <v-btn default block :disabled="promotion.redeemed" @click.native="redeem(promotion)">{{ promotion.redeemed ? 'Redeemed' : 'Redeem' }}</v-btn>
             </v-card-row>
           </v-card>
         </v-expansion-panel-content>
@@ -168,10 +168,16 @@ export default {
     }
   },
   mounted: initialize,
+  methods: {redeem},
   filters: {
     'to12hr': value => to12hr(value)
   }
 };
+
+function redeem(promotion) {
+  return this.$http.post(`/promotions/${promotion.id}/redeem`)
+    .then(() => this.$set(promotion, 'redeemed', true));
+}
 
 function initialize() {
   if (this.organization.icon) {
