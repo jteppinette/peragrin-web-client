@@ -48,5 +48,5 @@ The following command will print all new logs as rendered JSON. `man jq` to lear
 to render and analyze the JSON logs.
 
 ```
-docker container logs --since `date +%s` -f `docker ps --filter name=web-client -q` | jq .
+docker container logs --since `date +%s` -f `docker ps --filter name=<container-name> -q` | jq .
 ```
