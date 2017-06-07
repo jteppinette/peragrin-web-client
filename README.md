@@ -38,3 +38,15 @@ This client application requires the [Peragrin API](https://github.com/jteppinet
       --link app:upstream
       --name client
       client`
+
+## Logging
+
+The new improved JSON logging can be combined with the powerful tool `jq` to follow and monitor the
+Nginx proxy logs.
+
+The following command will print all new logs as rendered JSON. `man jq` to learn more ways
+to render and analyze the JSON logs.
+
+```
+docker container logs --since `date +%s` -f `docker ps --filter name=web-client -q` | jq .
+```
