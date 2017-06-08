@@ -4,24 +4,22 @@
   <v-dialog v-model="dialog" width="400px">
     <v-btn floating slot="activator" class="white"><v-icon dark>add</v-icon></v-btn>
     <v-card>
-      <v-card-row><v-card-title class="primary">Add Promotion</v-card-title></v-card-row>
+      <v-card-row><v-card-title class="primary">Create Promotion</v-card-title></v-card-row>
+      <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
       <v-card-row>
         <v-card-text>
-          <form class="pt-3" @keyup.enter="create">
-
-            <v-text-field v-model="promotion.name" label="Name"></v-text-field>
-            <v-text-field v-model="promotion.description" label="Description" rows="1" multi-line></v-text-field>
-            <v-text-field v-model="promotion.exclusions" label="Exclusions" rows="1" multi-line></v-text-field>
-
+          <form @submit.prevent="create" novalidate>
+            <v-text-field v-model="promotion.name" :error="error" label="Name"></v-text-field>
+            <v-text-field v-model="promotion.description" :error="error" label="Description" rows="1" multi-line></v-text-field>
+            <v-text-field v-model="promotion.exclusions" :error="error" label="Exclusions" rows="1" multi-line></v-text-field>
             <v-subheader class="pa-0 pt-2" style="height: 0px">Is Single Use?</v-subheader>
-            <v-switch v-model="promotion.isSingleUse" :label="promotion.isSingleUse ? 'This promotion can only be used a single time per patron.' : 'This promotion can be used multiple times by the same patron.'" dark></v-switch>
-
+            <v-switch v-model="promotion.isSingleUse" :error="error" :label="promotion.isSingleUse ? 'This promotion can only be used a single time per patron.' : 'This promotion can be used multiple times by the same patron.'" dark></v-switch>
+            <div class="right">
+              <v-btn flat @click.native="dialog = false">Close</v-btn>
+              <v-btn primary type="submit" class="white--text">Create Promotion</v-btn>
+            </div>
           </form>
         </v-card-text>
-      </v-card-row>
-      <v-card-row actions>
-        <v-btn flat @click.native="dialog = false">Close</v-btn>
-        <v-btn primary class="white--text" @click.native="create">Save</v-btn>
       </v-card-row>
     </v-card>
   </v-dialog>
@@ -57,7 +55,7 @@ var promotion = {
 
 export default {
   props: ['organizationID'],
-  data: () => ({promotions: [], promotion, headers, dialog: false}),
+  data: () => ({promotions: [], promotion, headers, dialog: false, error: false, msg: ''}),
   methods: {create},
   mounted: initialize
 };
@@ -72,6 +70,7 @@ function create() {
   return this.$http.post(`/organizations/${this.organizationID}/promotions`, this.promotion)
     .then(() => this.dialog = false)
     .then(initialize)
+    .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }
 </script>
 
