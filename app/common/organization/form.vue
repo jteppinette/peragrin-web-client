@@ -37,4 +37,9 @@ export default {
 .subheader {
   padding: 0px;
 }
+
+.input-group {
+  margin: 0px !important;
+  margin-top: 10px !important;
+}
 </style>

@@ -121,11 +121,6 @@ function logout() {
   padding: 0px;
 }
 
-.input-group {
-  margin: 0px !important;
-  margin-top: 10px !important;
-}
-
 .menu__content {
   min-width: inherit !important;
 }
