@@ -3,7 +3,7 @@
   <div class="pl-3 pr-3">
     <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
   </div>
-  <v-data-table :headers="headers" :items="organizations" :search="search">
+  <v-data-table :headers="headers" :items="organizations" :search="search" class="no-limit-select">
     <template slot="items" scope="props">
       <td class="text-xs-right">{{ props.item.name }}</td>
       <td class="text-xs-right">{{ props.item.street }}</td>
