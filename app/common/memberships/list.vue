@@ -24,9 +24,9 @@
     <v-expansion-panel-content v-for="membership in memberships" :key="membership.id">
       <div slot="header"><strong>{{ membership.name }}</strong><br/><small>{{ membership.description }}</small></div>
 
-      <v-container fluid>
+      <div class="pa-2">
         <v-dialog v-model="addAccountDialog[membership.id]" width="400px">
-          <v-btn block primary light slot="activator">Add Account</v-btn>
+          <v-btn block primary light slot="activator" class="ma-0">Add Account</v-btn>
           <v-card>
             <v-card-row><v-card-title class="primary">Add {{ membership.name }} Account</v-card-title></v-card-row>
             <v-card-row>
@@ -43,9 +43,12 @@
             </v-card-row>
           </v-card>
         </v-dialog>
-      </v-container>
+      </div>
 
-      <v-data-table v-if="accounts[membership.id] && accounts[membership.id].length" :items="accounts[membership.id]" :headers="headers" hide-actions>
+      <div v-if="accounts[membership.id] && accounts[membership.id].length" class="pl-2 pr-2">
+        <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
+      </div>
+      <v-data-table v-if="accounts[membership.id] && accounts[membership.id].length" :items="accounts[membership.id]" :search="search" class="no-limit-select no-headers">
         <template slot="items" scope="props"><td class="text-xs-right">{{ props.item.email }}</td></template>
       </v-data-table>
 
@@ -66,13 +69,9 @@ var account = {
   password: ''
 };
 
-const headers = [
-  {text: 'Email', value: 'email'},
-];
-
 export default {
   props: ['communityID'],
-  data: () => ({headers, memberships: [], accounts: {}, account, membership, createMembershipDialog: false, addAccountDialog: {}}),
+  data: () => ({memberships: [], accounts: {}, account, membership, createMembershipDialog: false, addAccountDialog: {}, search: ''}),
   methods: {createMembership, addAccount, closeAccountDialog},
   mounted: initialize
 };
@@ -128,5 +127,14 @@ function addAccount(membership) {
 
 .dialog__container {
   width: 100%;
+}
+</style>
+
+<style lang="stylus">
+.no-limit-select .datatable__actions__select {
+  display: none !important;
+}
+.no-headers .datatable thead {
+  display: none;
 }
 </style>
