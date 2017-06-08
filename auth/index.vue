@@ -2,7 +2,7 @@
 <v-app class="auth">
   <main>
     <v-container fluid>
-      <h1 class="pa-5 text-xs-center">peragrin</h1>
+      <h1>peragrin</h1>
       <router-view></router-view>
     </v-container>
   </main>
@@ -42,10 +42,19 @@
   }
 
   h1 {
+    text-align: center;
+    padding: 48px;
     width: 100%;
+    margin-bottom: 0px;
     background-color: #4DB880;
     color: white;
     font-family: 'Fredoka One', cursive;
+
+    @media screen and (max-width: $grid-breakpoints.sm) {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
   }
 }
 </style>

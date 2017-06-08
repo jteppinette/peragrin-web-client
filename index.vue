@@ -22,4 +22,15 @@ export default {
 html, body {
   background-color: white;
 }
+
+.input-group--error {
+  .icon {
+    color: red !important;
+  }
+}
+
+.alert {
+  margin-top: 0px;
+  text-transform: capitalize;
+}
 </style>
