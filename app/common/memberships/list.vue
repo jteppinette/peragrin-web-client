@@ -29,17 +29,18 @@
           <v-btn block primary light slot="activator" class="ma-0">Add Account</v-btn>
           <v-card>
             <v-card-row><v-card-title class="primary">Add {{ membership.name }} Account</v-card-title></v-card-row>
+            <v-alert error dismissible v-model="addAccountError">{{ addAccountMsg }}</v-alert>
             <v-card-row>
               <v-card-text>
-                <form class="pt-3" @keyup.enter="addAccount(membership)">
-                  <v-text-field v-model="account.email" label="Email"></v-text-field>
-                  <v-text-field v-model="account.password" label="Password" type="password"></v-text-field>
+                <form @submit.prevent="addAccount(membership)" novalidate>
+                  <v-text-field v-model="account.email" :error="addAccountError" label="Email"></v-text-field>
+                  <v-text-field v-model="account.password" :error="addAccountError" label="Password" type="password"></v-text-field>
+                  <div class="right">
+                    <v-btn flat @click.native="closeAccountDialog(membership)">Close</v-btn>
+                    <v-btn primary type="submit" class="white--text">Add Account</v-btn>
+                  </div>
                 </form>
               </v-card-text>
-            </v-card-row>
-            <v-card-row actions>
-              <v-btn flat @click.native="closeAccountDialog(membership)">Close</v-btn>
-              <v-btn primary class="white--text" @click.native="addAccount(membership)">Save</v-btn>
             </v-card-row>
           </v-card>
         </v-dialog>
@@ -71,7 +72,17 @@ var account = {
 
 export default {
   props: ['communityID'],
-  data: () => ({memberships: [], accounts: {}, account, membership, createMembershipDialog: false, addAccountDialog: {}, search: ''}),
+  data: () => ({
+    memberships: [],
+    accounts: {},
+    account,
+    membership,
+    createMembershipDialog: false,
+    addAccountDialog: {},
+    addAccountError: false,
+    addAccountMsg: '',
+    search: ''
+  }),
   methods: {createMembership, addAccount, closeAccountDialog},
   mounted: initialize
 };
@@ -105,7 +116,8 @@ function createMembership() {
 function addAccount(membership) {
   return this.$http.post(`/memberships/${membership.id}/accounts`, this.account)
     .then(() => this.$set(this.addAccountDialog, membership.id, false))
-    .then(() => initializeMembershipAccounts.call(this, membership));
+    .then(() => initializeMembershipAccounts.call(this, membership))
+    .catch(({data}) => this.addAccountError = !!(this.addAccountMsg = data && data.msg ? data.msg : 'unknown error'));
 }
 </script>
 
