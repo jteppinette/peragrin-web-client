@@ -8,7 +8,7 @@
       <v-alert error dismissible v-model="createMembershipError">{{ createMembershipMsg }}</v-alert>
       <v-card-row>
         <v-card-text>
-          <form @submit.prevent="createMembership">
+          <form @submit.prevent="createMembership" novalidate>
             <v-text-field v-model="membership.name" :error="createMembershipError" label="Name"></v-text-field>
             <v-text-field v-model="membership.description" :error="createMembershipError" label="Description" rows="1" multi-line></v-text-field>
             <div class="right">
