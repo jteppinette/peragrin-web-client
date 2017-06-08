@@ -41,13 +41,13 @@
   </v-navigation-drawer>
 
   <!-- TOOLBAR -->
-  <v-toolbar v-if="!$route.path.includes('auth')" class="primary elevation-0" fixed>
+  <v-toolbar v-if="!$route.path.includes('auth')" class="primary elevation-0" fixed light>
     <v-toolbar-side-icon class="hidden-lg-and-up" @click.native.stop="navbar = !navbar" light></v-toolbar-side-icon>
-    <v-toolbar-title>peragrin</v-toolbar-title>
+    <v-toolbar-title white>peragrin</v-toolbar-title>
     <v-toolbar-items class="hidden-md-and-down">
       <v-toolbar-item v-if="!account.email" :router="true" href="/auth/login" ripple>Login</v-toolbar-item>
     </v-toolbar-items>
-    <v-menu v-if="account.email" bottom origin="top right" transition="v-scale-transition">
+    <v-menu v-if="account.email" bottom left origin="bottom left" transition="v-scale-transition">
       <v-btn light icon slot="activator"><v-icon>account_circle</v-icon></v-btn>
       <v-list>
         <v-list-item>
