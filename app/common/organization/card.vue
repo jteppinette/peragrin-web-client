@@ -71,7 +71,7 @@
         </v-list-item>
 
         <!-- HOURS OF OPERATION -->
-        <v-list-item class="hours">
+        <v-list-item v-if="hours && hours.length" class="hours">
           <v-list-tile>
             <v-list-tile-action>
               <v-icon class="primary--text">access_time</v-icon>
