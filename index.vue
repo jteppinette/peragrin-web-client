@@ -23,6 +23,10 @@ html, body {
   background-color: white;
 }
 
+html {
+  padding-right: 0px !important;
+}
+
 .input-group--error {
   .icon {
     color: red !important;
