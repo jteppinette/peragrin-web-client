@@ -150,6 +150,14 @@ function logout() {
   }
 }
 
+.navigation-drawer--light.navigation-drawer--right {
+  border-left: none !important;
+}
+
+.expansion-panel>li {
+  border: none !important;
+}
+
 .dialog {
   font-family: Roboto,sans-serif;
 }

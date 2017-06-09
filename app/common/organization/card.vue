@@ -119,8 +119,9 @@
                 <strong>This promotion can only be redeemed once.</strong>
               </v-container>
             </v-card-row>
+            <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
             <v-card-row actions>
-              <v-btn default block :disabled="promotion.redeemed" @click.native="redeem(promotion)">{{ promotion.redeemed ? 'Redeemed' : 'Redeem' }}</v-btn>
+              <v-btn default block :disabled="promotion.redeemed || error" @click.native="redeem(promotion)">{{ promotion.redeemed ? 'Redeemed' : 'Redeem' }}</v-btn>
             </v-card-row>
           </v-card>
         </v-expansion-panel-content>
@@ -148,7 +149,7 @@ import {WEEKDAYS, to12hr} from 'common/time';
 import L from 'leaflet';
 
 export default {
-  data: () => ({icon: undefined, active: null, weekdays: WEEKDAYS}),
+  data: () => ({icon: undefined, active: null, weekdays: WEEKDAYS, error: false, msg: ''}),
   props: {
     promotions: {type: Array, default: () => []},
     organization: {type: Object, required: true},
@@ -171,7 +172,17 @@ export default {
 
 function redeem(promotion) {
   return this.$http.post(`/promotions/${promotion.id}/redeem`)
-    .then(() => this.$set(promotion, 'redeemed', true));
+    .then(() => this.$set(promotion, 'redeemed', true))
+    .catch(({data, status}) => {
+      this.error = true;
+      if (status == 401) {
+        this.msg = 'you must login to access this peragrin feature';
+      } else if (data && data.msg) {
+        this.msg = data.msg;
+      } else {
+        this.msg = 'unknown error';
+      }
+    });
 }
 
 function initialize() {
