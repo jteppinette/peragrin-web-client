@@ -6,7 +6,11 @@
   <v-data-table :headers="headers" :items="organizations" :search="search" class="no-limit-select">
     <template slot="items" scope="props">
       <td class="text-xs-right">{{ props.item.name }}</td>
-      <td class="text-xs-right">{{ props.item.street }}</td>
+      <td class="text-xs-right">{{ props.item.category }}</td>
+      <td class="text-xs-right">
+        <span>{{ props.item.street }}</span><br />
+        <small>{{ props.item.city}} , {{ props.item.state }} {{ props.item.zip }}</small>
+      </td>
     </template>
   </v-data-table>
 </div>
@@ -17,6 +21,11 @@ const headers = [
   {
     text: 'Name',
     value: 'name',
+    sortable: true
+  },
+  {
+    text: 'Category',
+    value: 'category',
     sortable: true
   },
   {

@@ -36,6 +36,12 @@
           <v-list-tile-content><v-list-tile-title>Overview</v-list-tile-title></v-list-tile-content>
         </v-list-tile>
       </v-list-item>
+      <v-list-item v-if="community">
+        <v-list-tile :router="true" href="/organizations">
+          <v-list-tile-action><v-icon>business</v-icon></v-list-tile-action>
+          <v-list-tile-content><v-list-tile-title>Organizations</v-list-tile-title></v-list-tile-content>
+        </v-list-tile>
+      </v-list-item>
     </v-list>
 
   </v-navigation-drawer>
@@ -87,6 +93,9 @@ export default {
     },
     organization () {
       return this.$store.state.organization;
+    },
+    community () {
+      return this.$store.state.community;
     }
   },
   components: {
