@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import jwtDecode from 'jwt-decode';
 
+var initialization = undefined;
+
 export default {
     state: {
         account: {}
@@ -62,12 +64,19 @@ export default {
                 });
         },
         initialize (context) {
-            if (sessionStorage.userID) {
+            if (initialization) return initialization;
+            return initialization = new Promise((resolve, reject) => {
+                if (!sessionStorage.userID) {
+                    context.commit('clearAccount');
+                    resolve(context.state.account);
+                    initialization = undefined;
+                }
                 var account = {id: sessionStorage.userID, email: sessionStorage.email};
                 context.commit('setAccount', account);
-                return context.dispatch('initializeAccountOrganizations', account);
-            }
-            return context.commit('clearAccount');
+                return context.dispatch('initializeAccountOrganizations', account)
+                    .then(resolve, reject)
+                    .then(() => initialization = undefined);
+            });
         },
         logout (context) {
             return context.commit('clearAccount');

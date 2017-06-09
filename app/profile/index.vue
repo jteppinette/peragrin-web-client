@@ -26,6 +26,10 @@ export default {
   methods: {update},
   beforeRouteEnter (to, from, next) {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
+  },
+  mounted () {
+    this.$store.dispatch('initialize')
+      .then(account => this.email = account.email);
   }
 };
 
