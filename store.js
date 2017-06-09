@@ -99,7 +99,7 @@ export default {
                 if (!sessionStorage.userID) {
                     context.commit('clearAccount');
                     resolve(undefined);
-                    initialization = undefined;
+                    return initialization = undefined;
                 }
                 var account = {id: sessionStorage.userID, email: sessionStorage.email};
                 context.commit('setAccount', account);
