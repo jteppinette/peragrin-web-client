@@ -14,7 +14,7 @@
       <v-stepper-content step="1">
         <v-container fluid>
           <organization-form v-model="organization"></organization-form>
-          <organization-hours v-model="hours"></organization-hours>
+          <organization-hours v-model="organization.hours"></organization-hours>
           <v-btn primary @click.native="setupOrganization" class="white--text">Setup Organization</v-btn>
         </v-container>
       </v-stepper-content>
@@ -50,7 +50,7 @@
   </v-flex>
 
   <v-flex lg4 md6 sm12 xs12>
-    <organization-card :organization="organization" :hours="hours" :communities="community.name ? [community] : []" class="elevation-1"></organization-card>
+    <organization-card :organization="organization" :hours="organization.hours" :communities="community.name ? [community] : []" class="elevation-1"></organization-card>
   </v-flex>
 
 </v-layout>
@@ -70,15 +70,15 @@ var organization = {
     zip: '',
     email: '',
     phone: '',
-    website: ''
+    website: '',
+    hours: [{weekday: 1}, {weekday: 2}, {weekday: 3}, {weekday: 4}, {weekday: 5}],
   },
-  hours = [{weekday: 1}, {weekday: 2}, {weekday: 3}, {weekday: 4}, {weekday: 5}],
   community = {
     name: ''
   };
 
 export default {
-  data: () => ({zoom: 13, step: 1, organization, marker: undefined, community, hours}),
+  data: () => ({zoom: 13, step: 1, organization, marker: undefined, community}),
   methods: {
     setupOrganization,
     move,
@@ -107,7 +107,6 @@ function setupOrganization() {
       this.marker = {lat: organization.lat, lon: organization.lon};
       return organization;
     })
-    .then(organization => this.$http.post(`/organizations/${organization.id}/hours`, this.hours))
     .then(() => this.$store.dispatch('initializeAccountOrganizations', this.$store.state.account))
     .then(() => this.step = 2);
 }

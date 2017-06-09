@@ -14,7 +14,7 @@
       <v-stepper-content step="1">
         <v-container fluid>
           <organization-form v-model="organization"></organization-form>
-          <organization-hours v-model="hours"></organization-hours>
+          <organization-hours v-model="organization.hours"></organization-hours>
           <v-btn primary @click.native="setupBusiness" class="white--text">Setup Business</v-btn>
         </v-container>
       </v-stepper-content>
@@ -42,7 +42,7 @@
   </v-flex>
 
   <v-flex lg4 md6 sm12 xs12>
-    <organization-card :organization="organization" :hours="hours" :communities="community.id ? [community] : []" class="elevation-1"></organization-card>
+    <organization-card :organization="organization" :hours="organization.hours" :communities="community.id ? [community] : []" class="elevation-1"></organization-card>
   </v-flex>
 
 </v-layout>
@@ -62,10 +62,10 @@ var organization = {
   zip: '',
   email: '',
   phone: '',
-  website: ''
+  website: '',
+  hours: [{weekday: 1}, {weekday: 2}, {weekday: 3}, {weekday: 4}, {weekday: 5}]
 };
 
-var hours = [{weekday: 1}, {weekday: 2}, {weekday: 3}, {weekday: 4}, {weekday: 5}];
 
 var marker = {
   lat: undefined,
@@ -73,7 +73,7 @@ var marker = {
 }
 
 export default {
-  data: () => ({step: 1, organization, marker, communities: [], community: {}, hours}),
+  data: () => ({step: 1, organization, marker, communities: [], community: {}}),
   mounted: mounted,
   methods: {
     setupBusiness,
@@ -103,7 +103,6 @@ function setupBusiness() {
   return this.$http.post('/auth/organizations', this.organization)
     .then(response => response.json())
     .then(organization => this.organization = organization)
-    .then(organization => this.$http.post(`/organizations/${organization.id}/hours`, this.hours))
     .then(() => this.$store.dispatch('initializeAccountOrganizations', this.$store.state.account))
     .then(() => this.step = 2);
 }
