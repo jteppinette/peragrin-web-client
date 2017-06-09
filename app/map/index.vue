@@ -74,59 +74,15 @@ const MARKER_BASE = {
   tooltipAnchor: [16, -28],
   shadowSize:  [41, 41]
 };
-const RESTAURANT = 'Restaurant';
-const ENTERTAINMENT = 'Entertainment';
-const RETAIL = 'Retail';
-const HEALTH = 'Health';
-const ORGANIZATION = 'Organization';
-const SERVICE = 'Service';
-const REALESTATE = 'Realestate';
-const MARKERS = {
-  [RESTAURANT]: L.icon({...MARKER_BASE,
-    iconUrl:       require('../../assets/markers/restaurant.png'),
-    iconRetinaUrl: require('../../assets/markers/restaurant.png'),
-  }),
-  [ENTERTAINMENT]: L.icon({...MARKER_BASE,
-    iconUrl:       require('../../assets/markers/entertainment.png'),
-    iconRetinaUrl: require('../../assets/markers/entertainment.png'),
-  }),
-  [RETAIL]: L.icon({...MARKER_BASE,
-    iconUrl:       require('../../assets/markers/retail.png'),
-    iconRetinaUrl: require('../../assets/markers/retail.png'),
-  }),
-  [HEALTH]: L.icon({...MARKER_BASE,
-    iconUrl:       require('../../assets/markers/health.png'),
-    iconRetinaUrl: require('../../assets/markers/health.png'),
-  }),
-  [ORGANIZATION]: L.icon({...MARKER_BASE,
-    iconUrl:       require('../../assets/markers/organization.png'),
-    iconRetinaUrl: require('../../assets/markers/organization.png'),
-  }),
-  [SERVICE]: L.icon({...MARKER_BASE,
-    iconUrl:       require('../../assets/markers/service.png'),
-    iconRetinaUrl: require('../../assets/markers/service.png'),
-  }),
-  [REALESTATE]: L.icon({...MARKER_BASE,
-    iconUrl:       require('../../assets/markers/realestate.png'),
-    iconRetinaUrl: require('../../assets/markers/realestate.png'),
-  })
-};
+const MARKERS = ['Restaurant', 'Entertainment', 'Retail', 'Organization', 'Service', 'Realestate', 'Health', 'Community Leader'].reduce((result, key) => {
+  result[key] = L.icon({...MARKER_BASE, iconUrl: require(`../../assets/markers/${key.toLowerCase().replace(' ', '-')}.png`)});
+  return result;
+}, {});
 
 function initializeOrganizations(communityID) {
   return this.$http.get(`/communities/${communityID}/organizations`)
     .then(response => response.json())
-    .then(organizations => organizations.map(o => {
-      if (o.category == RESTAURANT) return {...o, icon: MARKERS[RESTAURANT]};
-      if (o.category == ENTERTAINMENT) return {...o, icon: MARKERS[ENTERTAINMENT]};
-      if (o.category == RETAIL) return {...o, icon: MARKERS[RETAIL]};
-      if (o.category == HEALTH) return {...o, icon: MARKERS[HEALTH]};
-      if (o.category == ORGANIZATION) return {...o, icon: MARKERS[ORGANIZATION]};
-      if (o.category == SERVICE) return {...o, icon: MARKERS[SERVICE]};
-      if (o.category == REALESTATE) return {...o, icon: MARKERS[REALESTATE]};
-      if (o.icon && o.isAdministrator) return {...o, icon: L.icon({iconUrl: o.icon, iconSize: [64, 64], iconAnchor: [32, 32]})};
-      return o;
-    }))
-    .then(organizations => this.organizations = organizations);
+    .then(organizations => this.organizations = organizations.map(o => ({...o, icon: MARKERS[o.category]})))
 }
 </script>
 
