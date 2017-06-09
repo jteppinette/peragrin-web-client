@@ -12,8 +12,13 @@
             <v-text-field v-model="promotion.name" :error="error" label="Name"></v-text-field>
             <v-text-field v-model="promotion.description" :error="error" label="Description" rows="1" multi-line></v-text-field>
             <v-text-field v-model="promotion.exclusions" :error="error" label="Exclusions" rows="1" multi-line></v-text-field>
+
+            <v-subheader class="pa-0 pt-2" style="height: 0px">Required Community Membership</v-subheader>
+            <v-select :items="memberships" v-model="promotion.membershipID" itemText="name" itemValue="id" label="Membership" dark single-line auto></v-select>
+
             <v-subheader class="pa-0 pt-2" style="height: 0px">Is Single Use?</v-subheader>
             <v-switch v-model="promotion.isSingleUse" :error="error" :label="promotion.isSingleUse ? 'This promotion can only be used a single time per patron.' : 'This promotion can be used multiple times by the same patron.'" dark></v-switch>
+
             <div class="right">
               <v-btn flat @click.native="dialog = false">Close</v-btn>
               <v-btn primary type="submit" class="white--text">Create Promotion</v-btn>
@@ -30,6 +35,7 @@
       <td class="text-xs-right">{{ props.item.description }}</td>
       <td class="text-xs-right">{{ props.item.exclusions }}</td>
       <td class="text-xs-right">{{ props.item.expiration | moment("from", true) }}</td>
+      <td class="text-xs-right"><span v-if="membershipsByID && props.item.membershipID">{{ membershipsByID[props.item.membershipID].name }}</span></td>
       <td class="text-xs-right"><v-icon v-if="props.item.isSingleUse" dark>check</v-icon></td>
     </template>
   </v-data-table>
@@ -39,31 +45,41 @@
 
 <script>
 const headers = [
-  {text: 'Name', value: 'name', sortable: true},
-  {text: 'Description', value: 'description', sortable: false},
-  {text: 'Exclusions', value: 'exclusions', sortable: false},
-  {text: 'Expiration', value: 'expiration', sortable: false},
-  {text: 'Is Single Use', value: 'isSingleUse', sortable: false}
-];
-
-var promotion = {
-  name: '',
-  description: '',
-  exclusions: '',
-  isSingleUse: false
-};
+    {text: 'Name', value: 'name', sortable: true},
+    {text: 'Description', value: 'description', sortable: false},
+    {text: 'Exclusions', value: 'exclusions', sortable: false},
+    {text: 'Expiration', value: 'expiration', sortable: false},
+    {text: 'Membership', value: 'membershipID', sortable: false},
+    {text: 'Is Single Use', value: 'isSingleUse', sortable: false}
+  ],
+  promotion = {
+    name: '',
+    description: '',
+    exclusions: '',
+    isSingleUse: false,
+    membershipID: null
+  };
 
 export default {
-  props: ['organizationID'],
-  data: () => ({promotions: [], promotion, headers, dialog: false, error: false, msg: ''}),
+  props: ['organizationID', 'communityID'],
+  data: () => ({promotions: [], memberships: [], membershipsByID: undefined, promotion, headers, dialog: false, error: false, msg: ''}),
   methods: {create},
   mounted: initialize
 };
 
 function initialize() {
-  return this.$http.get(`/organizations/${this.organizationID}/promotions`)
+  this.$http.get(`/organizations/${this.organizationID}/promotions`)
     .then(response => response.json())
     .then(promotions => this.promotions = promotions);
+  this.$http.get(`/communities/${this.communityID}/memberships`)
+    .then(response => response.json())
+    .then(memberships => this.memberships = memberships)
+    .then(memberships => {
+      this.membershipsByID = memberships.reduce((result, v) => {
+        result[v.id] = v;
+        return result;
+      }, {});
+    });
 }
 
 function create() {
