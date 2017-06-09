@@ -29,7 +29,7 @@ export default {
   },
   mounted () {
     this.$store.dispatch('initialize')
-      .then(account => this.email = account.email);
+      .then(({account}) => this.email = account.email);
   }
 };
 

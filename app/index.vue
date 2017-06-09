@@ -5,7 +5,7 @@
   <v-navigation-drawer v-if="!$route.path.includes('auth')" v-model="navbar" :mini-variant.sync="mini" clipped persistent light>
 
     <!-- PROFILE -->
-    <v-list v-if="account.email">
+    <v-list v-if="account">
       <v-list-item>
         <v-list-tile avatar tag="div">
           <v-list-tile-avatar><v-gravatar :email="account.email"></v-gravatar></v-list-tile-avatar>
@@ -17,8 +17,8 @@
 
     <!-- PAGES -->
     <v-list>
-      <v-divider v-if="account.email"></v-divider>
-      <v-list-item v-if="!account.email">
+      <v-divider v-if="account"></v-divider>
+      <v-list-item v-if="!account">
         <v-list-tile :router="true" href="/auth/login">
           <v-list-tile-action><v-icon>lock_open</v-icon></v-list-tile-action>
           <v-list-tile-content><v-list-tile-title>Login</v-list-tile-title></v-list-tile-content>
@@ -30,7 +30,7 @@
           <v-list-tile-content><v-list-tile-title>Map</v-list-tile-title></v-list-tile-content>
         </v-list-tile>
       </v-list-item>
-      <v-list-item v-if="account.organizations">
+      <v-list-item v-if="organization">
         <v-list-tile :router="true" href="/overview">
           <v-list-tile-action><v-icon>dashboard</v-icon></v-list-tile-action>
           <v-list-tile-content><v-list-tile-title>Overview</v-list-tile-title></v-list-tile-content>
@@ -45,9 +45,9 @@
     <v-toolbar-side-icon class="hidden-lg-and-up" @click.native.stop="navbar = !navbar" light></v-toolbar-side-icon>
     <v-toolbar-title white>peragrin</v-toolbar-title>
     <v-toolbar-items class="hidden-md-and-down">
-      <v-toolbar-item v-if="!account.email" :router="true" href="/auth/login" ripple>Login</v-toolbar-item>
+      <v-toolbar-item v-if="!account" :router="true" href="/auth/login" ripple>Login</v-toolbar-item>
     </v-toolbar-items>
-    <v-menu v-if="account.email" bottom left origin="bottom left" transition="v-scale-transition">
+    <v-menu v-if="account" bottom left origin="bottom left" transition="v-scale-transition">
       <v-btn light icon slot="activator"><v-icon>account_circle</v-icon></v-btn>
       <v-list>
         <v-list-item>
@@ -84,6 +84,9 @@ export default {
   computed: {
     account () {
       return this.$store.state.account;
+    },
+    organization () {
+      return this.$store.state.organization;
     }
   },
   components: {

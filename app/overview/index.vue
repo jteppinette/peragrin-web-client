@@ -16,7 +16,7 @@
       </v-card>
     </v-flex>
     <v-flex xs12 sm8 md4 lg4 v-if="organization">
-      <organization-card @community:selected="(community) => community = community" :organization="organization" :hours="hours" :communities="communities" class="elevation-1"></organization-card>
+      <organization-card :organization="organization" class="elevation-1"></organization-card>
     </v-flex>
   </v-layout>
 
@@ -33,7 +33,7 @@
       </v-card>
     </v-flex>
     <v-flex xs12 sm6 md4 lg4 v-if="organization">
-      <organization-card @community:selected="(community) => community = community" :organization="organization" :hours="hours" :communities="communities" class="elevation-1"></organization-card>
+      <organization-card :organization="organization" class="elevation-1"></organization-card>
     </v-flex>
   </v-layout>
 
@@ -47,7 +47,6 @@ import promotionsList from 'common/promotions/list';
 import membershipsList from 'common/memberships/list';
 
 export default {
-  data: () => ({organization: undefined, hours: [], community: undefined, communities: []}),
   components: {
     communityOrganizationsList,
     organizationCard,
@@ -55,42 +54,18 @@ export default {
     membershipsList
   },
   computed: {
-    organizations () {
-      return this.$store.state.account.organizations;
-    }
-  },
-  methods: {assumeOrganization},
-  watch: {
-    organizations (v) {
-      if (!v || !v.length) return;
-      return this.assumeOrganization(v[0])
+    organization () {
+      return this.$store.state.organization;
+    },
+    community () {
+      return this.$store.state.community;
     }
   },
   mounted () {
-    if (!this.organizations || !this.organizations.length) return;
-    return this.assumeOrganization(this.organizations[0])
+    return this.$store.dispatch('initialize');
   },
   beforeRouteEnter (to, from, next) {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
   }
 };
-
-function assumeOrganization(organization) {
-  this.organization = organization;
-  initializeHours.call(this);
-  initializeCommunities.call(this);
-}
-
-function initializeHours() {
-  return this.$http.get(`/organizations/${this.organization.id}/hours`)
-    .then(response => response.json())
-    .then(hours => this.hours = hours);
-}
-
-function initializeCommunities() {
-  return this.$http.get(`/organizations/${this.organization.id}/communities`)
-    .then(response => response.json())
-    .then(communities => this.communities = communities)
-    .then(communities => this.community = communities[0]);
-}
 </script>

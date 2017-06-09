@@ -2,7 +2,7 @@
 <div>
   <v-navigation-drawer v-model="sidebar" :hide-overlay="true" temporary right light class="organization-drawer">
     <div class="sticky-container">
-      <organization-card :promotions="selected.promotions" :disable-map="true" :organization="selected" :hours="selected.hours" class="organization-card"></organization-card>
+      <organization-card :disable-map="true" :organization="selected" class="organization-card"></organization-card>
       <div class="hidden-sm-and-up back">
         <v-btn @click.native="sidebar = false" block light primary><v-icon light>chevron_left</v-icon> Back</v-btn>
       </div>

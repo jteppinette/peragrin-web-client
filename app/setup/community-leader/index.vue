@@ -51,7 +51,7 @@
   </v-flex>
 
   <v-flex lg4 md6 sm12 xs12>
-    <organization-card :organization="organization" :hours="organization.hours" :communities="community.name ? [community] : []" class="elevation-1"></organization-card>
+    <organization-card :organization="organization" class="elevation-1"></organization-card>
   </v-flex>
 
 </v-layout>
@@ -108,7 +108,6 @@ function setupOrganization() {
       this.marker = {lat: organization.lat, lon: organization.lon};
       return organization;
     })
-    .then(() => this.$store.dispatch('initializeAccountOrganizations', this.$store.state.account))
     .then(() => this.step = 2)
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }

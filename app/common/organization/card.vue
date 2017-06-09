@@ -6,10 +6,10 @@
   <v-card-row v-if="organization.logo" :img="organization.logo" height="130px"></v-card-row>
 
   <v-tabs scroll-bars v-model="active" light class="tabs-no-border">
-    <v-tabs-bar slot="activators" :style="{display: promotions.length || communities.length ? 'block' : 'none'}">
+    <v-tabs-bar slot="activators" :style="{display: (organization.promotions && organization.promotions.length) || (organization.communities && organization.communities.length) ? 'block' : 'none'}">
       <v-tabs-item ripple href="#general">General</v-tabs-item>
-      <v-tabs-item ripple href="#promotions" v-if="promotions.length">Promotions</v-tabs-item>
-      <v-tabs-item ripple href="#communities" v-if="communities.length">Communities</v-tabs-item>
+      <v-tabs-item ripple href="#promotions" v-if="organization.promotions && organization.promotions.length">Promotions</v-tabs-item>
+      <v-tabs-item ripple href="#communities" v-if="organization.communities && organization.communities.length">Communities</v-tabs-item>
     </v-tabs-bar>
     <v-tabs-content id="general">
 
@@ -71,13 +71,13 @@
         </v-list-item>
 
         <!-- HOURS OF OPERATION -->
-        <v-list-item v-if="hours && hours.length" class="hours">
+        <v-list-item v-if="organization.hours && organization.hours.length" class="hours">
           <v-list-tile>
             <v-list-tile-action>
               <v-icon class="primary--text">access_time</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <p v-for="day in hours">
+              <p v-for="day in organization.hours">
                 <strong class="text-left">{{ weekdays[day.weekday] }}</strong>
                 <span class="text-right">{{ day.start | to12hr }} - {{ day.close | to12hr }}</span>
               </p>
@@ -87,8 +87,8 @@
 
       </v-list>
 
-      <v-card-row v-if="active == 'general' && !disableMap && organization.lon && organization.lat">
-        <v-map v-if="organization.lon && organization.lat" :zoom="15" :center="[organization.lat, organization.lon]">
+      <v-card-row v-if="loaded && !disableMap && organization.lon && organization.lat">
+        <v-map :zoom="15" :center="[organization.lat, organization.lon]">
           <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
           <v-marker :lat-lng="{'lat': organization.lat, 'lng': organization.lon}" :icon="icon"></v-marker>
         </v-map>
@@ -99,7 +99,7 @@
     <v-tabs-content id="promotions">
 
       <v-expansion-panel class="elevation-0">
-        <v-expansion-panel-content v-for="promotion in promotions" :key="promotion.name">
+        <v-expansion-panel-content v-for="promotion in organization.promotions" :key="promotion.name">
           <div slot="header"><strong>{{ promotion.name }}</strong><br/><small>{{ promotion.description }}</small></div>
           <v-card>
             <v-card-row v-if="promotion.expiration" class="mb-3">
@@ -131,7 +131,7 @@
 
     <v-tabs-content id="communities">
       <v-list>
-        <v-list-item v-for="community in communities" :key="community.name" @click="$emit('community:selected', community)">
+        <v-list-item v-for="community in organization.communities" :key="community.name" @click="$emit('community:selected', community)">
           <v-list-tile>
             <v-list-tile-content><v-list-tile-title v-text="community.name" /></v-list-tile-content>
           </v-list-tile>
@@ -149,21 +149,19 @@ import {WEEKDAYS, to12hr} from 'common/time';
 import L from 'leaflet';
 
 export default {
-  data: () => ({icon: undefined, active: null, weekdays: WEEKDAYS, error: false, msg: ''}),
+  data: () => ({loaded: false, icon: undefined, active: undefined, weekdays: WEEKDAYS, error: false, msg: ''}),
   props: {
-    promotions: {type: Array, default: () => []},
     organization: {type: Object, required: true},
-    communities: {type: Array, default: () => []},
-    hours: {type: Array, default: () => []},
     disableMap: {type: Boolean, default: () => false},
   },
   watch: {
-    organization: function() {
+    organization () {
       this.active = 'general';
-      initialize.call(this);
+    },
+    active () {
+      setTimeout(() => this.loaded = true, 1);
     }
   },
-  mounted: initialize,
   methods: {redeem},
   filters: {
     'to12hr': value => to12hr(value)
@@ -183,12 +181,6 @@ function redeem(promotion) {
         this.msg = 'unknown error';
       }
     });
-}
-
-function initialize() {
-  if (this.organization.icon) {
-    this.icon = L.icon({iconUrl: this.organization.icon, iconSize: [64, 64], iconAnchor: [32, 32]});
-  }
 }
 </script>
 

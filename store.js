@@ -5,7 +5,9 @@ var initialization = undefined;
 
 export default {
     state: {
-        account: {}
+        account: undefined,
+        community: undefined,
+        organization: undefined
     },
     mutations: {
         setAccount (state, payload) {
@@ -14,9 +16,21 @@ export default {
         setAccountOrganizations (state, organizations) {
             Vue.set(state.account, 'organizations', organizations);
         },
+        setOrganizationCommunities (state, communities) {
+            Vue.set(state.organization, 'communities', communities);
+        },
+        setOrganizationHours (state, hours) {
+            Vue.set(state.organization, 'hours', hours);
+        },
+        assumeOrganization (state, organization) {
+            state.organization = organization;
+        },
+        assumeCommunity (state, community) {
+            state.community = community;
+        },
         clearAccount (state) {
             sessionStorage.clear();
-            state.account = {};
+            state.community = state.organization = state.account = undefined;
         }
     },
     actions: {
@@ -29,9 +43,8 @@ export default {
                     sessionStorage.userID = id;
                     sessionStorage.email = email;
                     context.commit('setAccount', {id, email});
-                    return {id, email};
                 })
-                .then(account => context.dispatch('initializeAccountOrganizations', account));
+                .then(() => context.dispatch('initializeAccountOrganizations'));
         },
         update (context, account) {
             return Vue.http.post('/auth/account', {email: account.email, password: account.password})
@@ -39,16 +52,33 @@ export default {
                 .then(function({id, email}) {
                     sessionStorage.email = email;
                     context.commit('setAccount', {id, email, organizations: context.state.account.organizations});
-                    return {id, email};
+                    return context.state.account;
                 });
         },
-        initializeAccountOrganizations (context, {id, email}) {
+        initializeAccountOrganizations (context) {
             return Vue.http.get('/auth/organizations')
                 .then(response => response.json())
                 .then(organizations => {
-                    if (!organizations.length) return {id, email};
+                    if (!organizations.length) return {account: context.state.account};
                     context.commit('setAccountOrganizations', organizations);
-                    return {id, email, organizations};
+                    context.commit('assumeOrganization', organizations[0]);
+                    var hours = Vue.http.get(`/organizations/${organizations[0].id}/hours`)
+                        .then(response => response.json())
+                        .then(hours => context.commit('setOrganizationHours', hours));
+                    var communities = Vue.http.get(`/organizations/${organizations[0].id}/communities`)
+                        .then(response => response.json())
+                        .then(v => {
+                            if (v && v.length) {
+                                context.commit('setOrganizationCommunities', v)
+                                context.commit('assumeCommunity', v[0]);
+                            }
+                        });
+                    return Promise.all([hours, communities])
+                        .then(() => ({
+                            account: context.state.account,
+                            organization: context.state.organization,
+                            community: context.state.community
+                        }));
                 });
         },
         register (context, account) {
@@ -60,7 +90,7 @@ export default {
                     sessionStorage.userID = id;
                     sessionStorage.email = email;
                     context.commit('setAccount', {id, email});
-                    return {id, email};
+                    return context.state.acount;
                 });
         },
         initialize (context) {
@@ -68,12 +98,12 @@ export default {
             return initialization = new Promise((resolve, reject) => {
                 if (!sessionStorage.userID) {
                     context.commit('clearAccount');
-                    resolve(context.state.account);
+                    resolve(undefined);
                     initialization = undefined;
                 }
                 var account = {id: sessionStorage.userID, email: sessionStorage.email};
                 context.commit('setAccount', account);
-                return context.dispatch('initializeAccountOrganizations', account)
+                return context.dispatch('initializeAccountOrganizations')
                     .then(resolve, reject)
                     .then(() => initialization = undefined);
             });
