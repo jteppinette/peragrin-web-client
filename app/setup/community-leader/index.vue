@@ -12,6 +12,7 @@
       </v-stepper-header>
 
       <v-stepper-content step="1">
+        <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
         <v-container fluid>
           <organization-form v-model="organization"></organization-form>
           <organization-hours v-model="organization.hours"></organization-hours>
@@ -78,7 +79,7 @@ var organization = {
   };
 
 export default {
-  data: () => ({zoom: 13, step: 1, organization, marker: undefined, community}),
+  data: () => ({zoom: 13, step: 1, organization, marker: undefined, community, error: false, msg: ''}),
   methods: {
     setupOrganization,
     move,
@@ -108,7 +109,8 @@ function setupOrganization() {
       return organization;
     })
     .then(() => this.$store.dispatch('initializeAccountOrganizations', this.$store.state.account))
-    .then(() => this.step = 2);
+    .then(() => this.step = 2)
+    .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }
 
 function move({latlng}) {

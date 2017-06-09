@@ -12,6 +12,7 @@
       </v-stepper-header>
 
       <v-stepper-content step="1">
+        <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
         <v-container fluid>
           <organization-form v-model="organization"></organization-form>
           <organization-hours v-model="organization.hours"></organization-hours>
@@ -73,7 +74,7 @@ var marker = {
 }
 
 export default {
-  data: () => ({step: 1, organization, marker, communities: [], community: {}}),
+  data: () => ({step: 1, organization, marker, communities: [], community: {}, error: false, msg: ''}),
   mounted: mounted,
   methods: {
     setupBusiness,
@@ -104,7 +105,8 @@ function setupBusiness() {
     .then(response => response.json())
     .then(organization => this.organization = organization)
     .then(() => this.$store.dispatch('initializeAccountOrganizations', this.$store.state.account))
-    .then(() => this.step = 2);
+    .then(() => this.step = 2)
+    .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }
 
 function move({latlng}) {
