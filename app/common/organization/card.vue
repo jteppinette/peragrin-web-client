@@ -19,7 +19,7 @@
     <v-tabs-content id="general">
 
       <v-layout row wrap class="general">
-        <v-flex xs12 sm6 class="pr-0">
+        <v-flex xs12 :class="{sm6: !disableMap}" class="pr-0">
           <organization-details :organization="organization"></organization-details>
         </v-flex>
         <v-flex xs12 sm6 class="pl-0" v-if="loaded && !disableMap && organization.lon && organization.lat">
