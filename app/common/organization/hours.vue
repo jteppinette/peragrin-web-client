@@ -89,4 +89,8 @@ table {
 th.status {
   min-width: 100px;
 }
+
+.input-group {
+  margin: 0px;
+}
 </style>

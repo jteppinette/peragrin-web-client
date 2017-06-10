@@ -172,4 +172,16 @@ function logout() {
 .dialog {
   font-family: Roboto,sans-serif;
 }
+
+.tabs__item {
+  padding: 16px;
+}
+
+.category-chip {
+  padding: 0px 10px;
+
+  .chip {
+    margin: 0px;
+  }
+}
 </style>

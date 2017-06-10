@@ -5,8 +5,8 @@
     <v-card-row class="primary">
       <v-card-title class="white--text">{{ organization.name }}</v-card-title>
     </v-card-row>
-    <v-card-row class="primary">
-      <v-card-text><v-chip outline class="white--text">{{ organization.category }}</v-chip></v-card-text>
+    <v-card-row class="primary" v-if="organization.category">
+      <v-card-text class="category-chip"><v-chip outline class="white--text">{{ organization.category }}</v-chip></v-card-text>
     </v-card-row>
 
     <v-layout row wrap class="general">
@@ -15,7 +15,7 @@
         <organization-details :organization="organization"></organization-details>
       </v-flex>
 
-      <v-flex xs12 md6 class="pl-0">
+      <v-flex xs12 md6>
         <v-map v-if="organization.lat && organization.lon" :zoom="15" :center="[organization.lat, organization.lon]">
           <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
           <v-marker :lat-lng="{'lat': organization.lat, 'lng': organization.lon}"></v-marker>
