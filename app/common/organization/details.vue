@@ -75,7 +75,7 @@ import {WEEKDAYS, to12hr} from 'common/time';
 export default {
   data: () => ({weekdays: WEEKDAYS, today: new Date().getDay()}),
   props: {
-    organization: {type: Object, required: true},
+    organization: {type: Object},
   },
   filters: {
     to12hr: value => to12hr(value)

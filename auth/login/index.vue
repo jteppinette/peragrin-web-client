@@ -18,7 +18,7 @@ export default {
 
 function login() {
   return this.$store.dispatch('login', {email: this.email, password: this.password})
-    .then(({organizations}) => organizations && organizations.length ? '/overview' : '/map')
+    .then(({account}) => account.organizations && account.organizations.length ? '/overview' : '/map')
     .then(root => this.$router.push(this.$route.query.next || root))
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }

@@ -104,8 +104,8 @@ export default {
 };
 
 function logout() {
-  return this.$store.dispatch('logout')
-    .then(() => this.$router.push('/auth/login'));
+  this.$router.push('/auth/login');
+  this.$store.dispatch('logout');
 }
 </script>
 

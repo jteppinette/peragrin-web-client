@@ -87,7 +87,7 @@ export default {
   data: () => ({loaded: false, active: undefined, error: false, msg: ''}),
   components: {organizationDetails},
   props: {
-    organization: {type: Object, required: true},
+    organization: {type: Object},
     disableMap: {type: Boolean, default: () => false},
   },
   watch: {
