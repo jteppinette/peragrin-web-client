@@ -5,7 +5,7 @@
   </div>
   <v-data-table :headers="headers" :items="organizations" :search="search" class="no-limit-select">
     <template slot="items" scope="props">
-      <td class="text-xs-right">{{ props.item.name }}</td>
+      <td class="text-xs-right"><router-link :to="`/organizations/${props.item.id}`">{{ props.item.name }}</router-link></td>
       <td class="text-xs-right">{{ props.item.category }}</td>
       <td class="text-xs-right">
         <span>{{ props.item.street }}</span><br />

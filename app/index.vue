@@ -114,7 +114,6 @@ function logout() {
 
 .leaflet-container {
   z-index: 2;
-  height: 350px !important;
 }
 
 .flex > .stepper, .flex > .card {

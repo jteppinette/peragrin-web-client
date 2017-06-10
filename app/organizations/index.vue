@@ -1,5 +1,5 @@
 <template>
-<v-container fluid class="pa-3">
+<v-container>
   <v-card v-if="community">
     <v-card-title class="primary">{{ community.name }}</v-card-title>
     <community-organizations-list :id="community.id"></community-organizations-list>
