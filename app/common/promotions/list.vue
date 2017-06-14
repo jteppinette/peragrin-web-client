@@ -31,12 +31,44 @@
 
   <v-data-table :items="promotions" :headers="headers" hide-actions>
     <template slot="items" scope="props">
-      <td class="text-xs-right">{{ props.item.name }}</td>
-      <td class="text-xs-right">{{ props.item.description }}</td>
-      <td class="text-xs-right">{{ props.item.exclusions }}</td>
+      <td class="text-xs-right">
+        <v-edit-dialog @open="props.item._name = props.item.name" @save="delete props.item._name; update(props.item)" @cancel="props.item.name = props.item._name" large lazy>
+          <div class="text-xs-right">{{ props.item.name }}</div>
+          <div slot="input" class="mt-3 pb-3 title">Update Name</div>
+          <v-text-field slot="input" label="Name" v-model="props.item.name"></v-text-field>
+        </v-edit-dialog>
+      </td>
+      <td class="text-xs-right">
+        <v-edit-dialog @open="props.item._description = props.item.description" @save="delete props.item._description; update(props.item)" @cancel="props.item.description = props.item._description" large lazy>
+          <div class="text-xs-right">{{ props.item.description }}</div>
+          <div slot="input" class="mt-3 pb-3 title">Update Description</div>
+          <v-text-field slot="input" label="Description" v-model="props.item.description"></v-text-field>
+        </v-edit-dialog>
+      </td>
+      <td class="text-xs-right">
+        <v-edit-dialog @open="props.item._exclusions = props.item.exclusions" @save="delete props.item._exclusions; update(props.item)" @cancel="props.item.exclusions = props.item._exclusions" large lazy>
+          <div class="text-xs-right">{{ props.item.exclusions }}</div>
+          <div slot="input" class="mt-3 pb-3 title">Update Exclusions</div>
+          <v-text-field slot="input" label="Exclusions" v-model="props.item.exclusions" multi-line></v-text-field>
+        </v-edit-dialog>
+      </td>
       <td class="text-xs-right">{{ props.item.expiration | moment("from", true) }}</td>
-      <td class="text-xs-right"><span v-if="membershipsByID && props.item.membershipID">{{ membershipsByID[props.item.membershipID].name }}</span></td>
-      <td class="text-xs-right"><v-icon v-if="props.item.isSingleUse" dark>check</v-icon></td>
+      <td class="text-xs-right">
+        <span v-if="membershipsByID && props.item.membershipID">
+          <v-edit-dialog @open="props.item._membershipID = props.item.membershipID" @save="delete props.item._membershipID; update(props.item)" @cancel="props.item.membershipID = props.item._membershipID" large lazy>
+            <div class="text-xs-right">{{ membershipsByID[props.item.membershipID].name }}</div>
+            <div slot="input" class="mt-3 pb-3 title">Update Community Membership</div>
+            <v-select slot="input" :items="memberships" v-model="props.item.membershipID" itemText="name" itemValue="id" label="Community Membership" dark single-line auto></v-select>
+          </v-edit-dialog>
+        </span>
+      </td>
+      <td class="text-xs-right">
+        <v-edit-dialog @open="props.item._isSingleUse = props.item.isSingleUse" @save="delete props.item._isSingleUse; update(props.item)" @cancel="props.item.isSingleUse = props.item._isSingleUse" large lazy>
+          <div class="text-xs-right"><v-icon v-if="props.item.isSingleUse" dark>check</v-icon></div>
+          <div slot="input" class="mt-3 pb-3 title">Update Is Single Use</div>
+          <v-switch slot="input" v-model="props.item.isSingleUse" :label="props.item.isSingleUse ? 'True' : 'False'" dark></v-switch>
+        </v-edit-dialog>
+      </td>
     </template>
   </v-data-table>
 
@@ -63,7 +95,7 @@ const headers = [
 export default {
   props: ['organizationID', 'communityID'],
   data: () => ({promotions: [], memberships: [], membershipsByID: undefined, promotion, headers, dialog: false, error: false, msg: ''}),
-  methods: {create},
+  methods: {create, update},
   mounted: initialize
 };
 
@@ -87,6 +119,11 @@ function create() {
     .then(() => this.dialog = false)
     .then(initialize)
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
+}
+
+function update(data) {
+  return this.$http.put(`/promotions/${data.id}`, data)
+    .then(({data: promotion}) => data = promotion);
 }
 </script>
 
