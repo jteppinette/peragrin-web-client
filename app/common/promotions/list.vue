@@ -69,6 +69,7 @@
           <v-switch slot="input" v-model="props.item.isSingleUse" :label="props.item.isSingleUse ? 'True' : 'False'" dark></v-switch>
         </v-edit-dialog>
       </td>
+      <td class="text-xs-right"><v-btn @click.native="del(props.item)" light primary>Delete<v-icon right light>delete</v-icon></v-btn></td>
     </template>
   </v-data-table>
 
@@ -82,7 +83,8 @@ const headers = [
     {text: 'Exclusions', value: 'exclusions', sortable: false},
     {text: 'Expiration', value: 'expiration', sortable: false},
     {text: 'Membership', value: 'membershipID', sortable: false},
-    {text: 'Is Single Use', value: 'isSingleUse', sortable: false}
+    {text: 'Is Single Use', value: 'isSingleUse', sortable: false},
+    {sortable: false}
   ],
   promotion = {
     name: '',
@@ -95,7 +97,7 @@ const headers = [
 export default {
   props: ['organizationID', 'communityID'],
   data: () => ({promotions: [], memberships: [], membershipsByID: undefined, promotion, headers, dialog: false, error: false, msg: ''}),
-  methods: {create, update},
+  methods: {create, update, del},
   mounted: initialize
 };
 
@@ -124,6 +126,11 @@ function create() {
 function update(data) {
   return this.$http.put(`/promotions/${data.id}`, data)
     .then(({data: promotion}) => data = promotion);
+}
+
+function del(promotion) {
+  return this.$http.delete(`/promotions/${promotion.id}`)
+    .then(initialize);
 }
 </script>
 
