@@ -95,7 +95,7 @@ export default {
       this.active = 'general';
     },
     active () {
-      setTimeout(() => this.loaded = true, 1);
+      setTimeout(() => this.loaded = true, 500);
     }
   },
   methods: {redeem},
