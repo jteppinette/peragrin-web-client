@@ -1,7 +1,7 @@
 <template>
 <div>
 
-  <v-dialog v-model="dialog" width="800px" scrollable>
+  <v-dialog v-if="community.isAdministrator" v-model="dialog" width="800px" scrollable>
     <v-btn floating slot="activator" class="white"><v-icon dark>add</v-icon></v-btn>
     <v-card>
       <v-card-title class="primary">Create Organization</v-card-title>
@@ -76,15 +76,15 @@ var organization = {
 };
 
 export default {
-  props: ['id'],
+  props: ['community'],
   data: () => ({organizations: [], headers, search: '', organization, error: undefined, msg: '', dialog: false}),
   watch: {
-    id: function(id) {
-      return getOrganizations.call(this, id)
+    community: function(community) {
+      return getOrganizations.call(this, this.community.id)
     }
   },
   mounted: function() {
-    return getOrganizations.call(this, this.id);
+    return getOrganizations.call(this, this.community.id);
   },
   components: {
     organizationForm,
@@ -94,10 +94,11 @@ export default {
 };
 
 function create() {
-  return this.$http.post(`/communities/${this.id}/organizations`, this.organization)
+  return this.$http.post(`/communities/${this.community.id}/organizations`, this.organization)
     .then(response => response.json())
     .then(organization => this.organization = organization)
     .then(() => this.dialog = false)
+    .then(() => getOrganizations.call(this, this.community.id))
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }
 

@@ -6,7 +6,7 @@
     <v-flex xs12>
       <v-card v-if="community">
         <v-card-title class="primary">{{ community.name }}</v-card-title>
-        <community-organizations-list :id="community.id"></community-organizations-list>
+        <community-organizations-list :community="community"></community-organizations-list>
       </v-card>
     </v-flex>
     <v-flex xs12 md4>
@@ -25,7 +25,7 @@
     <v-flex xs12 sm12 md6 lg8>
       <v-card v-if="community">
         <v-card-title class="primary">{{ community.name }}</v-card-title>
-        <community-organizations-list :id="community.id"></community-organizations-list>
+        <community-organizations-list :community="community"></community-organizations-list>
       </v-card>
       <v-card v-if="organization && community">
         <v-card-title class="primary">Promotions</v-card-title>
