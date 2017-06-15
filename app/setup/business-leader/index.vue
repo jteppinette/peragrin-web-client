@@ -66,11 +66,10 @@ var organization = {
   hours: [{weekday: 1}, {weekday: 2}, {weekday: 3}, {weekday: 4}, {weekday: 5}]
 };
 
-
 var marker = {
   lat: undefined,
   lng: undefined
-}
+};
 
 export default {
   data: () => ({step: 1, organization, marker, communities: [], community: {}, error: false, msg: ''}),
