@@ -29,7 +29,7 @@
       </v-card>
       <v-card v-if="organization && community">
         <v-card-title class="primary">Promotions</v-card-title>
-        <promotions-list :communityID="community.id" :organizationID="organization.id"></promotions-list>
+        <promotions-list :community="community" :organizationID="organization.id"></promotions-list>
       </v-card>
     </v-flex>
     <v-flex xs12 sm12 md6 lg4>

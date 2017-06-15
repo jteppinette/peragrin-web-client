@@ -1,7 +1,7 @@
 <template>
 <div>
 
-  <v-dialog v-model="dialog" width="400px">
+  <v-dialog v-if="organizationID == organization.id || community.isAdministrator" v-model="dialog" width="400px">
     <v-btn floating slot="activator" class="white"><v-icon dark>add</v-icon></v-btn>
     <v-card>
       <v-card-row><v-card-title class="primary">Create Promotion</v-card-title></v-card-row>
@@ -95,8 +95,13 @@ const headers = [
   };
 
 export default {
-  props: ['organizationID', 'communityID'],
+  props: ['organizationID', 'community'],
   data: () => ({promotions: [], memberships: [], membershipsByID: undefined, promotion, headers, dialog: false, error: false, msg: ''}),
+  computed: {
+    organization () {
+      return this.$store.state.organization;
+    }
+  },
   methods: {create, update, del},
   mounted: initialize
 };
@@ -105,7 +110,7 @@ function initialize() {
   this.$http.get(`/organizations/${this.organizationID}/promotions`)
     .then(response => response.json())
     .then(promotions => this.promotions = promotions);
-  this.$http.get(`/communities/${this.communityID}/memberships`)
+  this.$http.get(`/communities/${this.community.id}/memberships`)
     .then(response => response.json())
     .then(memberships => this.memberships = memberships)
     .then(memberships => {

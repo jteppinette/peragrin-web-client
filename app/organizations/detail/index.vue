@@ -28,7 +28,7 @@
 
   <v-card v-if="organization && community">
     <v-card-title class="primary">Promotions</v-card-title>
-    <promotions-list :communityID="community.id" :organizationID="id"></promotions-list>
+    <promotions-list :community="community" :organizationID="id"></promotions-list>
   </v-card>
 
 </v-container>
