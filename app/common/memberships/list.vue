@@ -1,7 +1,7 @@
 <template>
 <div>
 
-  <v-dialog v-model="createMembershipDialog" width="400px">
+  <v-dialog v-if="isOwnerAndAdministrator()" v-model="createMembershipDialog" width="400px">
     <v-btn floating slot="activator" class="white"><v-icon dark>add</v-icon></v-btn>
     <v-card>
       <v-card-row><v-card-title class="primary">Create Membership</v-card-title></v-card-row>
@@ -24,7 +24,7 @@
   <v-expansion-panel class="elevation-0">
     <v-expansion-panel-content v-for="membership in memberships" :key="membership.id">
       <div slot="header"><strong>{{ membership.name }}</strong><br/><small>{{ membership.description }}</small></div>
-      <div class="pa-2">
+      <div class="pa-2" v-if="isOwnerAndAdministrator()">
         <v-dialog v-model="addAccountDialog[membership.id]" width="400px">
           <v-btn block primary light slot="activator" class="ma-0">Add Account</v-btn>
           <v-card>
@@ -33,8 +33,8 @@
             <v-card-row>
               <v-card-text>
                 <form @submit.prevent="addAccount(membership)" novalidate>
-                  <v-text-field v-model="account.email" :error="addAccountError" label="Email"></v-text-field>
-                  <v-text-field v-model="account.password" :error="addAccountError" label="Password" type="password"></v-text-field>
+                  <v-text-field v-model="user.email" :error="addAccountError" label="Email"></v-text-field>
+                  <v-text-field v-model="user.password" :error="addAccountError" label="Password" type="password"></v-text-field>
                   <div class="right">
                     <v-btn flat @click.native="closeAccountDialog(membership)">Close</v-btn>
                     <v-btn primary type="submit" class="white--text">Add Account</v-btn>
@@ -46,10 +46,10 @@
         </v-dialog>
       </div>
 
-      <div v-if="accounts[membership.id] && accounts[membership.id].length" class="pl-2 pr-2">
+      <div v-if="users[membership.id] && users[membership.id].length" class="pl-2 pr-2">
         <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
       </div>
-      <v-data-table v-if="accounts[membership.id] && accounts[membership.id].length" :items="accounts[membership.id]" :search="search" class="no-limit-select no-headers">
+      <v-data-table v-if="users[membership.id] && users[membership.id].length" :items="users[membership.id]" :search="search" class="no-limit-select no-headers">
         <template slot="items" scope="props"><td class="text-xs-right">{{ props.item.email }}</td></template>
       </v-data-table>
 
@@ -65,7 +65,7 @@ var membership = {
   description: ''
 };
 
-var account = {
+var user = {
   email: '',
   password: ''
 };
@@ -74,8 +74,8 @@ export default {
   props: ['communityID'],
   data: () => ({
     memberships: [],
-    accounts: {},
-    account,
+    users: {},
+    user,
     membership,
     createMembershipDialog: false,
     createMembershipError: false,
@@ -85,7 +85,12 @@ export default {
     addAccountMsg: '',
     search: ''
   }),
-  methods: {createMembership, addAccount, closeAccountDialog},
+  computed: {
+    account () {
+      return this.$store.state.account;
+    }
+  },
+  methods: {createMembership, addAccount, closeAccountDialog, isOwnerAndAdministrator},
   mounted: initialize
 };
 
@@ -106,7 +111,7 @@ function initialize() {
 function initializeMembershipAccounts(membership) {
   return this.$http.get(`/memberships/${membership.id}/accounts`)
     .then(response => response.json())
-    .then(accounts => this.$set(this.accounts, membership.id, accounts));
+    .then(users => this.$set(this.users, membership.id, users));
 }
 
 function createMembership() {
@@ -117,10 +122,15 @@ function createMembership() {
 }
 
 function addAccount(membership) {
-  return this.$http.post(`/memberships/${membership.id}/accounts`, this.account)
+  return this.$http.post(`/memberships/${membership.id}/accounts`, this.user)
     .then(() => this.$set(this.addAccountDialog, membership.id, false))
     .then(() => initializeMembershipAccounts.call(this, membership))
     .catch(({data}) => this.addAccountError = !!(this.addAccountMsg = data && data.msg ? data.msg : 'unknown error'));
+}
+
+function isOwnerAndAdministrator() {
+  if (!this.account || !this.account.organizations) return false;
+  return this.account.organizations.find(v => v.communities ? v.communities.find(c => c.isAdministrator && c.id == this.communityID) : undefined);
 }
 </script>
 

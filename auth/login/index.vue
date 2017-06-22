@@ -18,7 +18,15 @@ export default {
 
 function login() {
   return this.$store.dispatch('login', {email: this.email, password: this.password})
-    .then(({account}) => account.organizations && account.organizations.length ? '/overview' : '/map')
+    .then(({community, organization}) => {
+      if (!organization) {
+        return '/map';
+      } else if (!community || (community && !community.isAdministrator)) {
+        return `/organizations/${organization.id}`;
+      } else if (community.isAdministrator) {
+        return `/communities/${community.id}`;
+      }
+    })
     .then(root => this.$router.push(this.$route.query.next || root))
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }

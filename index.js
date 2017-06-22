@@ -34,8 +34,10 @@ import setup from 'setup';
 import communityLeaderSetup from 'setup/community-leader';
 import businessLeaderSetup from 'setup/business-leader';
 
-import overview from 'overview';
-import organizations from 'organizations';
+import communitiesManage from 'communities/manage';
+import communitiesDetail from 'communities/detail';
+
+import organizationsManage from 'organizations/manage';
 import organizationsDetail from 'organizations/detail';
 
 require('./assets/images/favicon-64.png');
@@ -44,9 +46,10 @@ const routes = [
     {path: '/', redirect: '/map'},
     {path: '/', component: app, children: [
         {path: 'map', component: map},
-        {path: 'overview', component: overview},
-        {path: 'organizations', component: organizations},
+        {path: 'organizations', component: organizationsManage},
         {path: 'organizations/:id', component: organizationsDetail, props: true},
+        {path: 'communities', component: communitiesManage},
+        {path: 'communities/:id', component: communitiesDetail, props: true},
         {path: 'profile', component: profile},
         {path: 'setup', component: setup, children: [
             {path: 'community-leader', component: communityLeaderSetup},

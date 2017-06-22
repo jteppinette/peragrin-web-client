@@ -1,7 +1,7 @@
 <template>
 <div>
 
-  <v-dialog v-if="community.isAdministrator" v-model="dialog" width="800px" scrollable>
+  <v-dialog v-if="isAdministrator()" v-model="dialog" width="800px" scrollable>
     <v-btn floating slot="activator" class="white"><v-icon dark>add</v-icon></v-btn>
     <v-card>
       <v-card-title class="primary">Create Organization</v-card-title>
@@ -34,6 +34,7 @@
         <span>{{ props.item.street }}</span><br />
         <small>{{ props.item.city}} , {{ props.item.state }} {{ props.item.zip }}</small>
       </td>
+      <td class="text-xs-right"><v-icon v-if="props.item.isAdministrator">check</v-icon></td>
     </template>
   </v-data-table>
 
@@ -59,6 +60,11 @@ const headers = [
     text: 'Street',
     value: 'street',
     sortable: false
+  },
+  {
+    text: 'Administrator',
+    value: 'isAdministrator',
+    sortable: true
   }
 ];
 
@@ -86,11 +92,16 @@ export default {
   mounted: function() {
     return getOrganizations.call(this, this.community.id);
   },
+  computed: {
+    account () {
+      return this.$store.state.account;
+    }
+  },
   components: {
     organizationForm,
     organizationHours
   },
-  methods: {create}
+  methods: {create, isAdministrator}
 };
 
 function create() {
@@ -106,6 +117,11 @@ function getOrganizations(communityID) {
   return this.$http.get(`/communities/${communityID}/organizations`)
     .then(response => response.json())
     .then(organizations => this.organizations = organizations);
+}
+
+function isAdministrator() {
+  if (!this.account || !this.account.organizations) return false;
+  return this.account.organizations.find(v => v.communities ? v.communities.find(c => c.id == this.community.id && c.isAdministrator) : undefined);
 }
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-<v-container class="organization-details">
+<v-container>
 
   <v-card class="elevation-2 mb-3">
     <v-card-row class="primary">
@@ -26,10 +26,32 @@
 
   </v-card>
 
-  <v-card v-if="organization && community">
-    <v-card-title class="primary">Promotions</v-card-title>
-    <promotions-list :community="community" :organizationID="id"></promotions-list>
-  </v-card>
+  <v-layout row wrap v-if="organization && organization.communities">
+
+    <v-flex xs12 md8 lg9>
+      <v-card>
+        <v-card-title class="primary">Promotions</v-card-title>
+        <promotions-list :organizationID="id" :communities="organization.communities"></promotions-list>
+      </v-card>
+    </v-flex>
+
+    <v-flex xs12 md4 lg3>
+      <v-card>
+        <v-card-title class="primary">Communities</v-card-title>
+        <v-list two-line>
+          <v-list-item v-for="community in organization.communities" :key="community.id" v-if="community">
+            <v-list-tile router :to="`/communities/${community.id}`">
+              <v-list-tile-content>
+                <v-list-tile-title>{{ community.name }}</a></v-list-tile-title>
+                <v-list-tile-sub-title v-if="community.isAdministrator">Administrator</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list-item>
+        </v-list>
+      </v-card>
+    </v-flex>
+
+  </v-layout>
 
 </v-container>
 </template>
@@ -42,24 +64,29 @@ export default {
   props: ['id'],
   data: () => ({organization: {}}),
   components: {promotionsList, organizationDetails},
-  computed: {
-    community () {
-      return this.$store.state.community;
-    }
-  },
   mounted () {
+    this.$store.dispatch('initialize');
     this.$http.get(`/organizations/${this.id}`)
       .then(response => response.json())
       .then(organization => this.organization = {...this.organization, ...organization});
     this.$http.get(`/organizations/${this.id}/hours`)
       .then(response => response.json())
       .then(hours => this.$set(this.organization, 'hours', hours));
+    this.$http.get(`/organizations/${this.id}/communities`)
+      .then(response => response.json())
+      .then(communities => this.$set(this.organization, 'communities', communities));
   }
 };
 </script>
 
-<style lang="stylus">
-.organization-details .leaflet-container {
+<style scoped lang="stylus">
+@import '../../../settings';
+
+.leaflet-container {
   height: 380px;
+
+  @media screen and (max-width: $grid-breakpoints.md) {
+    height: 100px;
+  }
 }
 </style>

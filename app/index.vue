@@ -30,16 +30,16 @@
           <v-list-tile-content><v-list-tile-title>Map</v-list-tile-title></v-list-tile-content>
         </v-list-tile>
       </v-list-item>
-      <v-list-item v-if="organization">
-        <v-list-tile :router="true" href="/overview">
-          <v-list-tile-action><v-icon>dashboard</v-icon></v-list-tile-action>
-          <v-list-tile-content><v-list-tile-title>Overview</v-list-tile-title></v-list-tile-content>
-        </v-list-tile>
-      </v-list-item>
-      <v-list-item v-if="community">
+      <v-list-item v-if="account && account.organizations">
         <v-list-tile :router="true" href="/organizations">
           <v-list-tile-action><v-icon>business</v-icon></v-list-tile-action>
           <v-list-tile-content><v-list-tile-title>Organizations</v-list-tile-title></v-list-tile-content>
+        </v-list-tile>
+      </v-list-item>
+      <v-list-item v-if="account && account.organizations && account.organizations.find(v => v.communities)">
+        <v-list-tile :router="true" href="/communities">
+          <v-list-tile-action><v-icon>account_balance</v-icon></v-list-tile-action>
+          <v-list-tile-content><v-list-tile-title>Communities</v-list-tile-title></v-list-tile-content>
         </v-list-tile>
       </v-list-item>
     </v-list>
@@ -90,12 +90,6 @@ export default {
   computed: {
     account () {
       return this.$store.state.account;
-    },
-    organization () {
-      return this.$store.state.organization;
-    },
-    community () {
-      return this.$store.state.community;
     }
   },
   components: {
@@ -128,19 +122,8 @@ function logout() {
   }
 }
 
-.container > .subheader {
-  padding: 0px;
-}
-
 .menu__content {
   min-width: inherit !important;
-}
-
-// TODO: Remove after https://github.com/vuetifyjs/vuetify/issues/620 is merged.
-.stepper__content {
-  overflow: visible !important;
-} .stepper__wrapper {
-  transform: none !important;
 }
 
 .stepper__wrapper {
@@ -171,6 +154,10 @@ function logout() {
 
 .dialog {
   font-family: Roboto,sans-serif;
+}
+
+.container .subheader {
+  padding: 0px;
 }
 
 .tabs__item {

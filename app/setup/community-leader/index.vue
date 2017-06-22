@@ -57,7 +57,6 @@
 </template>
 
 <script>
-import organizationCard from 'common/organization/card';
 import organizationForm from 'common/organization/form';
 import organizationHours from 'common/organization/hours';
 
@@ -85,18 +84,14 @@ export default {
     updateOrganizationLocation,
     createCommunity
   },
-  components: {
-    organizationCard,
-    organizationForm,
-    organizationHours
-  }
+  components: {organizationForm, organizationHours}
 };
 
 function createCommunity() {
   return this.$http.post(`/organizations/${this.organization.id}/communities`, {...this.community, zoom: this.zoom, lon: this.marker.lon, lat: this.marker.lat})
     .then(response => response.json())
     .then(community => this.community = community)
-    .then(() => this.$router.push('/overview'));
+    .then(community => this.$router.push(`/communities/${community.id}`));
 }
 
 function setupOrganization() {

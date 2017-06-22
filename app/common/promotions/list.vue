@@ -1,7 +1,7 @@
 <template>
 <div>
 
-  <v-dialog v-if="organizationID == organization.id || community.isAdministrator" v-model="dialog" width="400px">
+  <v-dialog v-if="isOwnerOrAdministrator()" v-model="dialog" width="400px">
     <v-btn floating slot="activator" class="white"><v-icon dark>add</v-icon></v-btn>
     <v-card>
       <v-card-row><v-card-title class="primary">Create Promotion</v-card-title></v-card-row>
@@ -29,47 +29,52 @@
     </v-card>
   </v-dialog>
 
-  <v-data-table :items="promotions" :headers="headers" hide-actions>
+  <v-data-table :items="promotions" :headers="headers" class="no-limit-select">
     <template slot="items" scope="props">
       <td class="text-xs-right">
-        <v-edit-dialog @open="props.item._name = props.item.name" @save="delete props.item._name; update(props.item)" @cancel="props.item.name = props.item._name" large lazy>
+        <v-edit-dialog v-if="isOwnerOrAdministrator()" @open="props.item._name = props.item.name" @save="delete props.item._name; update(props.item)" @cancel="props.item.name = props.item._name" large lazy>
           <div class="text-xs-right">{{ props.item.name }}</div>
           <div slot="input" class="mt-3 pb-3 title">Update Name</div>
           <v-text-field slot="input" label="Name" v-model="props.item.name"></v-text-field>
         </v-edit-dialog>
+       <div v-else class="text-xs-right">{{ props.item.name }}</div>
       </td>
       <td class="text-xs-right">
-        <v-edit-dialog @open="props.item._description = props.item.description" @save="delete props.item._description; update(props.item)" @cancel="props.item.description = props.item._description" large lazy>
+        <v-edit-dialog v-if="isOwnerOrAdministrator()" @open="props.item._description = props.item.description" @save="delete props.item._description; update(props.item)" @cancel="props.item.description = props.item._description" large lazy>
           <div class="text-xs-right">{{ props.item.description }}</div>
           <div slot="input" class="mt-3 pb-3 title">Update Description</div>
           <v-text-field slot="input" label="Description" v-model="props.item.description"></v-text-field>
         </v-edit-dialog>
+        <div v-else class="text-xs-right">{{ props.item.description }}</div>
       </td>
       <td class="text-xs-right">
-        <v-edit-dialog @open="props.item._exclusions = props.item.exclusions" @save="delete props.item._exclusions; update(props.item)" @cancel="props.item.exclusions = props.item._exclusions" large lazy>
+        <v-edit-dialog v-if="isOwnerOrAdministrator()" @open="props.item._exclusions = props.item.exclusions" @save="delete props.item._exclusions; update(props.item)" @cancel="props.item.exclusions = props.item._exclusions" large lazy>
           <div class="text-xs-right">{{ props.item.exclusions }}</div>
           <div slot="input" class="mt-3 pb-3 title">Update Exclusions</div>
           <v-text-field slot="input" label="Exclusions" v-model="props.item.exclusions" multi-line></v-text-field>
         </v-edit-dialog>
+        <div v-else class="text-xs-right">{{ props.item.exclusions }}</div>
       </td>
       <td class="text-xs-right">{{ props.item.expiration | moment("from", true) }}</td>
       <td class="text-xs-right">
-        <span v-if="membershipsByID && props.item.membershipID">
-          <v-edit-dialog @open="props.item._membershipID = props.item.membershipID" @save="delete props.item._membershipID; update(props.item)" @cancel="props.item.membershipID = props.item._membershipID" large lazy>
-            <div class="text-xs-right">{{ membershipsByID[props.item.membershipID].name }}</div>
+        <span v-if="props.item.membershipID && membershipsByID[props.item.membershipID]">
+          <v-edit-dialog v-if="isOwnerOrAdministrator()" @open="props.item._membershipID = props.item.membershipID" @save="delete props.item._membershipID; update(props.item)" @cancel="props.item.membershipID = props.item._membershipID" large lazy>
+            <div class="text-xs-right">{{ membershipsByID[props.item.membershipID].community.name }} - {{ membershipsByID[props.item.membershipID].name }}</div>
             <div slot="input" class="mt-3 pb-3 title">Update Community Membership</div>
             <v-select slot="input" :items="memberships" v-model="props.item.membershipID" itemText="name" itemValue="id" label="Community Membership" dark single-line auto></v-select>
           </v-edit-dialog>
+          <div v-else class="text-xs-right">{{ membershipsByID[props.item.membershipID].community.name }} - {{ membershipsByID[props.item.membershipID].name }}</div>
         </span>
       </td>
       <td class="text-xs-right">
-        <v-edit-dialog @open="props.item._isSingleUse = props.item.isSingleUse" @save="delete props.item._isSingleUse; update(props.item)" @cancel="props.item.isSingleUse = props.item._isSingleUse" large lazy>
+        <v-edit-dialog v-if="isOwnerOrAdministrator()" @open="props.item._isSingleUse = props.item.isSingleUse" @save="delete props.item._isSingleUse; update(props.item)" @cancel="props.item.isSingleUse = props.item._isSingleUse" large lazy>
           <div class="text-xs-right"><v-icon v-if="props.item.isSingleUse" dark>check</v-icon></div>
           <div slot="input" class="mt-3 pb-3 title">Update Is Single Use</div>
           <v-switch slot="input" v-model="props.item.isSingleUse" :label="props.item.isSingleUse ? 'True' : 'False'" dark></v-switch>
         </v-edit-dialog>
+        <div v-else class="text-xs-right"><v-icon v-if="props.item.isSingleUse" dark>check</v-icon></div>
       </td>
-      <td class="text-xs-right"><v-btn @click.native="del(props.item)" light primary>Delete<v-icon right light>delete</v-icon></v-btn></td>
+      <td class="text-xs-right"><v-btn v-if="isOwnerOrAdministrator()" @click.native="del(props.item)" light primary>Delete<v-icon right light>delete</v-icon></v-btn></td>
     </template>
   </v-data-table>
 
@@ -95,14 +100,14 @@ const headers = [
   };
 
 export default {
-  props: ['organizationID', 'community'],
-  data: () => ({promotions: [], memberships: [], membershipsByID: undefined, promotion, headers, dialog: false, error: false, msg: ''}),
+  props: ['organizationID', 'communities'],
+  data: () => ({promotions: [], memberships: [], membershipsByID: {}, promotion, headers, dialog: false, error: false, msg: ''}),
   computed: {
-    organization () {
-      return this.$store.state.organization;
+    account () {
+      return this.$store.state.account;
     }
   },
-  methods: {create, update, del},
+  methods: {create, update, del, isOwnerOrAdministrator},
   mounted: initialize
 };
 
@@ -110,15 +115,37 @@ function initialize() {
   this.$http.get(`/organizations/${this.organizationID}/promotions`)
     .then(response => response.json())
     .then(promotions => this.promotions = promotions);
-  this.$http.get(`/communities/${this.community.id}/memberships`)
-    .then(response => response.json())
-    .then(memberships => this.memberships = memberships)
-    .then(memberships => {
-      this.membershipsByID = memberships.reduce((result, v) => {
-        result[v.id] = v;
-        return result;
-      }, {});
+  for (let i in this.communities) {
+    this.$http.get(`/communities/${this.communities[i].id}/memberships`)
+      .then(response => response.json())
+      .then(memberships => {
+        this.memberships.push({header: this.communities[i].name});
+        memberships = memberships.map(v => {
+          if (!v.id) return v;
+          v.community = this.communities[i];
+          return v;
+        });
+        this.memberships = this.memberships.concat(memberships);
+        this.membershipsByID = this.memberships.reduce((result, v) => {
+          if (!v.id) return result;
+          result[v.id] = v;
+          return result;
+        }, {});
+      });
+  }
+}
+
+function isOwnerOrAdministrator() {
+  if (!this.account || !this.account.organizations) return false;
+  let isOwner = this.account.organizations.find(v => v.id == this.organizationID);
+  let isAdministrator = this.communities ? this.account.organizations.find(v => {
+    if (!v.communities) return false;
+    let community = v.communities.find(c => {
+      return this.communities.find(u => u.id == c.id);
     });
+    return community.isAdministrator;
+  }) : false;
+  return isOwner || isAdministrator;
 }
 
 function create() {

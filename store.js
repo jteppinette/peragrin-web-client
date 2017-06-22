@@ -6,8 +6,6 @@ var initialization = undefined;
 export default {
     state: {
         account: undefined,
-        community: undefined,
-        organization: undefined
     },
     mutations: {
         setAccount (state, payload) {
@@ -16,21 +14,12 @@ export default {
         setAccountOrganizations (state, organizations) {
             Vue.set(state.account, 'organizations', organizations);
         },
-        setOrganizationCommunities (state, communities) {
-            Vue.set(state.organization, 'communities', communities);
-        },
-        setOrganizationHours (state, hours) {
-            Vue.set(state.organization, 'hours', hours);
-        },
-        assumeOrganization (state, organization) {
-            state.organization = organization;
-        },
-        assumeCommunity (state, community) {
-            state.community = community;
+        setAccountOrganizationCommunities (state, {idx, communities}) {
+            state.account.organizations.splice(idx, 1, {...state.account.organizations[idx], communities, communities});
         },
         clearAccount (state) {
             sessionStorage.clear();
-            state.community = state.organization = state.account = undefined;
+            state.account = undefined;
         }
     },
     actions: {
@@ -60,25 +49,14 @@ export default {
                 .then(response => response.json())
                 .then(organizations => {
                     if (!organizations.length) return {account: context.state.account};
+										for (let idx in organizations) {
+                        Vue.http.get(`/organizations/${organizations[idx].id}/communities`)
+                            .then(response => response.json())
+                            .then(communities => context.commit('setAccountOrganizationCommunities', {idx, communities}));
+
+                    }
                     context.commit('setAccountOrganizations', organizations);
-                    context.commit('assumeOrganization', organizations[0]);
-                    var hours = Vue.http.get(`/organizations/${organizations[0].id}/hours`)
-                        .then(response => response.json())
-                        .then(hours => context.commit('setOrganizationHours', hours));
-                    var communities = Vue.http.get(`/organizations/${organizations[0].id}/communities`)
-                        .then(response => response.json())
-                        .then(v => {
-                            if (v && v.length) {
-                                context.commit('setOrganizationCommunities', v)
-                                context.commit('assumeCommunity', v[0]);
-                            }
-                        });
-                    return Promise.all([hours, communities])
-                        .then(() => ({
-                            account: context.state.account,
-                            organization: context.state.organization,
-                            community: context.state.community
-                        }));
+                    return {account: context.state.account};
                 });
         },
         register (context, account) {
