@@ -39,17 +39,8 @@ export default {
         if (!organization.communities) return l;
         l = l.concat(organization.communities);
       }
+      initializeGeoJSONOverlays.call(this, l);
       return l;
-    }
-  },
-  watch: {
-    communities (v) {
-      for (let i in v) {
-        if (!v[i]) continue;
-        this.$http.get(`/communities/${v[i].id}/geo-json-overlays`)
-          .then(response => response.json())
-          .then(response => this.$set(this.geoJSONOverlays, v[i].id, response));
-      }
     }
   },
   mounted () {
@@ -59,6 +50,15 @@ export default {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
   }
 };
+
+function initializeGeoJSONOverlays(communities) {
+  for (let i in communities) {
+    if (!communities[i]) continue;
+    this.$http.get(`/communities/${communities[i].id}/geo-json-overlays`)
+      .then(response => response.json())
+      .then(response => this.$set(this.geoJSONOverlays, communities[i].id, response));
+  }
+}
 </script>
 
 <style scoped lang="stylus">
