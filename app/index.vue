@@ -171,4 +171,21 @@ function logout() {
     margin: 0px;
   }
 }
+
+.breadcrumbs {
+  padding-left: 0px !important;
+  justify-content: flex-start !important;
+
+  a.breadcrumbs__item {
+    padding-left: 0px !important;
+  }
+
+  li {
+    padding: 0 14px;
+
+    &:first-child {
+      padding: 0px;
+    }
+  }
+}
 </style>

@@ -1,6 +1,11 @@
 <template>
 <v-container>
 
+  <v-breadcrumbs>
+    <v-breadcrumbs-item router to="/organizations">Organizations</v-breadcrumbs-item>
+    <v-breadcrumbs-item disabled>{{ organization.name }}</v-breadcrumbs-item>
+  </v-breadcrumbs>
+
   <v-card class="elevation-2 mb-3">
     <v-card-row class="primary">
       <v-card-title class="white--text">{{ organization.name }}</v-card-title>

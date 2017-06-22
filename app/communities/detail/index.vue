@@ -1,6 +1,11 @@
 <template>
 <v-container>
 
+  <v-breadcrumbs>
+    <v-breadcrumbs-item router to="/communities">Communities</v-breadcrumbs-item>
+    <v-breadcrumbs-item disabled>{{ community.name }}</v-breadcrumbs-item>
+  </v-breadcrumbs>
+
   <v-layout row wrap v-if="community">
     <v-flex xs12 md8>
       <v-card>

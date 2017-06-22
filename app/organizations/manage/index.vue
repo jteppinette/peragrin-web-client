@@ -1,7 +1,10 @@
 <template>
 <v-container>
 
-  <v-subheader>Your Organizations</v-subheader>
+  <v-breadcrumbs>
+    <v-breadcrumbs-item disabled>Organizations</v-breadcrumbs-item>
+  </v-breadcrumbs>
+
   <v-layout row wrap class="mb-3" v-if="account && account.organizations">
     <v-flex xs12 md6 lg4 v-for="organization in account.organizations" v-if="organization" :key="organization.id">
 
@@ -22,7 +25,6 @@
     </v-flex>
   </v-layout>
 
-  <v-subheader>Membered Communities</v-subheader>
   <v-layout row wrap>
     <v-flex xs12 v-for="community in communities" :key="community.id" v-if="community">
       <v-card>

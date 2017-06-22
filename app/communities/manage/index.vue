@@ -1,6 +1,10 @@
 <template>
 <v-container>
-  <v-subheader>Membered Communities</v-subheader>
+
+  <v-breadcrumbs>
+    <v-breadcrumbs-item disabled>Communities</v-breadcrumbs-item>
+  </v-breadcrumbs>
+
   <v-layout row wrap>
     <v-flex xs12 md6 v-for="community in communities" :key="community.id" v-if="community">
       <v-card>
@@ -15,6 +19,7 @@
       </v-card>
     </v-flex>
   </v-layout>
+
 </v-container>
 </template>
 

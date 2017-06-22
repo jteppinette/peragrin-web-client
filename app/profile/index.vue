@@ -1,5 +1,10 @@
 <template>
-<v-container fluid class="pa-3">
+<v-container>
+
+  <v-breadcrumbs>
+    <v-breadcrumbs-item disabled>Profile</v-breadcrumbs-item>
+  </v-breadcrumbs>
+
   <v-layout row wrap>
 
     <v-flex xs12 sm8 md6 lg4>
