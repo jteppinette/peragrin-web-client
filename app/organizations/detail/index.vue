@@ -33,14 +33,14 @@
 
   <v-layout row wrap v-if="organization && organization.communities">
 
-    <v-flex xs12 md8 lg9>
+    <v-flex xs12 md6>
       <v-card>
         <v-card-title class="primary">Promotions</v-card-title>
         <promotions-list :organizationID="id" :communities="organization.communities"></promotions-list>
       </v-card>
     </v-flex>
 
-    <v-flex xs12 md4 lg3>
+    <v-flex xs6 md3>
       <v-card>
         <v-card-title class="primary">Communities</v-card-title>
         <v-list two-line>
@@ -50,6 +50,19 @@
                 <v-list-tile-title>{{ community.name }}</a></v-list-tile-title>
                 <v-list-tile-sub-title v-if="community.isAdministrator">Administrator</v-list-tile-sub-title>
               </v-list-tile-content>
+            </v-list-tile>
+          </v-list-item>
+        </v-list>
+      </v-card>
+    </v-flex>
+
+    <v-flex xs6 md3>
+      <v-card>
+        <v-card-title class="primary">Operators</v-card-title>
+        <v-list>
+          <v-list-item v-for="account in organization.accounts" :key="account.id" v-if="account">
+            <v-list-tile>
+              <v-list-tile-content><v-list-tile-title>{{ account.email }}</a></v-list-tile-title></v-list-tile-content>
             </v-list-tile>
           </v-list-item>
         </v-list>
@@ -80,6 +93,9 @@ export default {
     this.$http.get(`/organizations/${this.id}/communities`)
       .then(response => response.json())
       .then(communities => this.$set(this.organization, 'communities', communities));
+    this.$http.get(`/organizations/${this.id}/accounts`)
+      .then(response => response.json())
+      .then(accounts => this.$set(this.organization, 'accounts', accounts));
   }
 };
 </script>
