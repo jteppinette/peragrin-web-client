@@ -18,13 +18,13 @@ export default {
 
 function login() {
   return this.$store.dispatch('login', {email: this.email, password: this.password})
-    .then(({community, organization}) => {
-      if (!organization) {
+    .then(({account}) => {
+      if (!account.organizations || !account.organizations.length) {
         return '/map';
-      } else if (!community || (community && !community.isAdministrator)) {
-        return `/organizations/${organization.id}`;
-      } else if (community.isAdministrator) {
-        return `/communities/${community.id}`;
+      } else if (account.organizations.find(o => o.communities ? o.communities.find(c => c.isAdministrator) : undefined)) {
+        return '/communities';
+      } else {
+        return '/organizations';
       }
     })
     .then(root => this.$router.push(this.$route.query.next || root))

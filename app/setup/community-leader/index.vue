@@ -91,7 +91,7 @@ function createCommunity() {
   return this.$http.post(`/organizations/${this.organization.id}/communities`, {...this.community, zoom: this.zoom, lon: this.marker.lon, lat: this.marker.lat})
     .then(response => response.json())
     .then(community => this.community = community)
-    .then(community => this.$router.push(`/communities/${community.id}`));
+    .then(community => this.$router.push('/communities'));
 }
 
 function setupOrganization() {

@@ -40,7 +40,7 @@
       <v-container class="community-picker">
         <v-select label="Community" return-object hint="Choose the community you would like to join" persistent-hint :items="communities" v-model="community" auto item-text="name" item-value="name" />
         <v-btn primary @click.native="join" class="white--text">Join Community</v-btn>
-        <v-btn primary :router="true" :to="`/organizations/${organization.id}`" class="white--text">Continue to Console</v-btn>
+        <v-btn primary :router="true" to="/organizations" class="white--text">Continue to Console</v-btn>
       </v-container>
     </v-stepper-content>
 
@@ -90,7 +90,7 @@ function mounted() {
 
 function join() {
   return this.$http.post(`/organizations/${this.organization.id}/communities/${this.community.id}`)
-    .then(() => this.$router.push(`/organizations/${this.organization.id}`));
+    .then(() => this.$router.push('/organizations'));
 }
 
 function setupBusiness() {

@@ -14,9 +14,6 @@ export default {
         setAccountOrganizations (state, organizations) {
             Vue.set(state.account, 'organizations', organizations);
         },
-        setAccountOrganizationCommunities (state, {idx, communities}) {
-            state.account.organizations.splice(idx, 1, {...state.account.organizations[idx], communities, communities});
-        },
         clearAccount (state) {
             sessionStorage.clear();
             state.account = undefined;
@@ -49,14 +46,13 @@ export default {
                 .then(response => response.json())
                 .then(organizations => {
                     if (!organizations.length) return {account: context.state.account};
-										for (let idx in organizations) {
-                        Vue.http.get(`/organizations/${organizations[idx].id}/communities`)
+                    return Promise.all(organizations.map(o => {
+                        return Vue.http.get(`/organizations/${o.id}/communities`)
                             .then(response => response.json())
-                            .then(communities => context.commit('setAccountOrganizationCommunities', {idx, communities}));
-
-                    }
-                    context.commit('setAccountOrganizations', organizations);
-                    return {account: context.state.account};
+                            .then(communities => ({...o, communities: communities}));
+                    }))
+                        .then(organizations => context.commit('setAccountOrganizations', organizations))
+                        .then(() => ({account: context.state.account}));
                 });
         },
         register (context, account) {

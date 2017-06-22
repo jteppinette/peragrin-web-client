@@ -35,7 +35,9 @@ export default {
       if (!this.account || !this.account.organizations || !this.account.organizations.length) return undefined;
       var l = [];
       for (let i in this.account.organizations) {
-        l = l.concat(this.account.organizations[i].communities);
+        let organization = this.account.organizations[i];
+        if (!organization.communities) return l;
+        l = l.concat(organization.communities);
       }
       return l;
     }
