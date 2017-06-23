@@ -64,77 +64,33 @@
 
     </v-card>
   </v-navigation-drawer>
-  <v-map v-if="geoJSONOverlays && latlng && zoom" :zoom="zoom" :center="latlng" v-on:l-zoomend="({target: {_zoom: v}}) => zoom = v">
-    <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
-    <v-marker v-for="organization in organizations" @l-click="({originalEvent: e}) => select(organization, e)" :key="organization.id" :icon="organization.icon" :lat-lng="[organization.lat, organization.lon]"></v-marker>
-    <v-geojson-layer v-for="overlay in geoJSONOverlays" :key="overlay.name" :options="options(overlay)" :geojson="overlay.data"></v-geojson-layer>
-  </v-map>
+  <community-map :community="community" @select="select" v-if="community"></community-map>
 </div>
 </template>
 
 <script>
 import organizationDetails from 'common/organization/details';
-import L from 'leaflet';
-
-function options({style}) {
-  return {style: f => style.values ? {...style.values[f.properties[style.property]], ...style.base} : style.base};
-};
+import communityMap from 'common/community/map';
 
 export default {
-  data: () => ({active: undefined, zoom: 0, options, geoJSONOverlays: undefined, community: undefined, organizations: undefined, selected: {}, latlng: undefined, sidebar: false, msg: '', error: undefined}),
+  data: () => ({active: undefined, community: undefined, selected: {}, sidebar: false, msg: '', error: undefined}),
   mounted,
   methods: {select, redeem},
-  components: {organizationDetails}
+  components: {organizationDetails, communityMap}
 };
 
 function mounted() {
   this.$http.get('/communities')
     .then(response => response.json())
-    .then(communities => this.community = communities[0])
-    .then(community => {
-      this.latlng = [community.lat, community.lon];
-      this.zoom = community.zoom;
-      return Promise.all([
-        initializeOrganizations.call(this, community.id),
-        initializeGeoJSONOverlays.call(this, community.id)
-      ]);
-    });
+    .then(communities => this.community = communities[0]);
 }
 
-function initializeGeoJSONOverlays(communityID) {
-  return this.$http.get(`/communities/${communityID}/geo-json-overlays`)
-    .then(response => response.json())
-    .then(geoJSONOverlays => this.geoJSONOverlays = geoJSONOverlays);
-}
-
-const MARKER_BASE = {
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-  iconSize:    [25, 41],
-  iconAnchor:  [12, 41],
-  popupAnchor: [1, -34],
-  tooltipAnchor: [16, -28],
-  shadowSize:  [41, 41]
-};
-const MARKERS = ['Restaurant', 'Entertainment', 'Retail', 'Organization', 'Service', 'Realestate', 'Health', 'Community Leader'].reduce((result, key) => {
-  result[key] = L.icon({...MARKER_BASE, iconUrl: require(`../../assets/markers/${key.toLowerCase().replace(' ', '-')}.png`)});
-  return result;
-}, {});
-
-function initializeOrganizations(communityID) {
-  return this.$http.get(`/communities/${communityID}/organizations`)
-    .then(response => response.json())
-    .then(organizations => this.organizations = organizations.map(o => ({...o, icon: MARKERS[o.category]})))
-}
-
-function select(organization, e) {
-  this.latlng = [organization.lat, organization.lon];
-  if (e) e.stopPropagation();
-  var hours = organization.hours ? organization.hours : this.$http.get(`/organizations/${organization.id}/hours`).then(response => response.json());
-  var promotions = organization.promotions ? organization.promotions : this.$http.get(`/organizations/${organization.id}/promotions`).then(response => response.json());
+function select(organization) {
+  var hours = this.$http.get(`/organizations/${organization.id}/hours`).then(response => response.json());
+  var promotions = this.$http.get(`/organizations/${organization.id}/promotions`).then(response => response.json());
   return Promise.all([hours, promotions]).then(values => {
-    this.$set(organization, 'hours', values[0]);
-    this.$set(organization, 'promotions', values[1]);
-    this.selected = organization;
+    this.selected = {...organization, hours: values[0], promotions: values[1]};
+    if (!this.selected.promotions.length) this.active = 'general';
     this.sidebar = true;
   });
 }

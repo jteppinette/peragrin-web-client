@@ -11,11 +11,7 @@
         <v-card-title class="primary">
           <router-link :to="`/communities/${community.id}`" class="white--text">{{ community.name }}</router-link>
         </v-card-title>
-        <v-map v-if="geoJSONOverlays[community.id] && community.lat && community.lon" :zoom="community.zoom" :center="[community.lat, community.lon]">
-          <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
-          <v-marker :lat-lng="{'lat': community.lat, 'lng': community.lon}"></v-marker>
-          <v-geojson-layer v-for="overlay in geoJSONOverlays[community.id]" :key="overlay.name" :options="options(overlay)" :geojson="overlay.data"></v-geojson-layer>
-        </v-map>
+        <community-map :community="community"></community-map>
       </v-card>
     </v-flex>
   </v-layout>
@@ -24,14 +20,10 @@
 </template>
 
 <script>
-import L from 'leaflet';
-
-function options({style, options}) {
-  return {style: f => style.values ? {...style.values[f.properties[style.property]], ...style.base} : style.base};
-};
+import communityMap from 'common/community/map';
 
 export default {
-  data: () => ({geoJSONOverlays: {}, options}),
+  components: {communityMap},
   computed: {
     account () {
       return this.$store.state.account;
@@ -44,7 +36,6 @@ export default {
         if (!organization.communities) return l;
         l = l.concat(organization.communities);
       }
-      initializeGeoJSONOverlays.call(this, l);
       return l;
     }
   },
@@ -55,15 +46,6 @@ export default {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
   }
 };
-
-function initializeGeoJSONOverlays(communities) {
-  for (let i in communities) {
-    if (!communities[i]) continue;
-    this.$http.get(`/communities/${communities[i].id}/geo-json-overlays`)
-      .then(response => response.json())
-      .then(response => this.$set(this.geoJSONOverlays, communities[i].id, response));
-  }
-}
 </script>
 
 <style scoped lang="stylus">

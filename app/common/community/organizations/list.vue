@@ -82,11 +82,14 @@ var organization = {
 };
 
 export default {
-  props: ['community'],
+  props: ['community', 'selected'],
   data: () => ({organizations: [], headers, search: '', organization, error: undefined, msg: '', dialog: false}),
   watch: {
     community: function(community) {
       return getOrganizations.call(this, this.community.id)
+    },
+    selected (organization) {
+      if (organization) this.search = organization.name;
     }
   },
   mounted: function() {
