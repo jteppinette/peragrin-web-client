@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import jwtDecode from 'jwt-decode';
+import {MARKERS} from 'common/markers';
 
 var initialization = undefined;
 
@@ -44,6 +45,7 @@ export default {
         initializeAccountOrganizations (context) {
             return Vue.http.get('/auth/organizations')
                 .then(response => response.json())
+                .then(organizations => organizations.map(o => ({...o, icon: MARKERS[o.category]})))
                 .then(organizations => {
                     if (!organizations.length) return {account: context.state.account};
                     return Promise.all(organizations.map(o => {

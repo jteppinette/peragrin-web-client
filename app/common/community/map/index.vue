@@ -7,20 +7,7 @@
 </template>
 
 <script>
-import L from 'leaflet';
-
-const MARKER_BASE = {
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-  iconSize:    [25, 41],
-  iconAnchor:  [12, 41],
-  popupAnchor: [1, -34],
-  tooltipAnchor: [16, -28],
-  shadowSize:  [41, 41]
-};
-const MARKERS = ['Restaurant', 'Entertainment', 'Retail', 'Organization', 'Service', 'Realestate', 'Health', 'Community Leader'].reduce((result, key) => {
-  result[key] = L.icon({...MARKER_BASE, iconUrl: require(`../../../../assets/markers/${key.toLowerCase().replace(' ', '-')}.png`)});
-  return result;
-}, {});
+import {MARKERS} from 'common/markers';
 
 function options({style}) {
   return {style: f => style.values ? {...style.values[f.properties[style.property]], ...style.base} : style.base};
