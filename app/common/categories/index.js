@@ -9,7 +9,9 @@ export const MARKER_BASE = {
   shadowSize:  [41, 41]
 };
 
-export const MARKERS = ['Restaurant', 'Entertainment', 'Retail', 'Organization', 'Service', 'Realestate', 'Health', 'Community Leader'].reduce((result, key) => {
+export const CATEGORIES = ['Restaurant', 'Entertainment', 'Retail', 'Organization', 'Service', 'Realestate', 'Health'];
+
+export const MARKERS = CATEGORIES.concat('Community Leader').reduce((result, key) => {
   result[key] = L.icon({...MARKER_BASE, iconUrl: require(`../../../assets/markers/${key.toLowerCase().replace(' ', '-')}.png`)});
   return result;
 }, {});

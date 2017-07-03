@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import {MARKERS} from 'common/markers';
+import {MARKERS} from 'common/categories';
 
 function options({style}) {
   return {style: f => style.values ? {...style.values[f.properties[style.property]], ...style.base} : style.base};

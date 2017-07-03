@@ -77,7 +77,7 @@
 <script>
 import promotionsList from 'common/promotions/list';
 import organizationDetails from 'common/organization/details';
-import {MARKERS} from 'common/markers';
+import {MARKERS} from 'common/categories';
 
 export default {
   props: ['id'],

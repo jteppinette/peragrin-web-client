@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import jwtDecode from 'jwt-decode';
-import {MARKERS} from 'common/markers';
+import {MARKERS} from 'common/categories';
 
 var initialization = undefined;
 

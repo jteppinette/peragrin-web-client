@@ -6,6 +6,7 @@
   <v-text-field v-model="value.email" type="text" label="Email"></v-text-field>
   <v-text-field v-model="value.phone" type="text" label="Phone Number"></v-text-field>
   <v-text-field v-model="value.website" type="text" label="Website"></v-text-field>
+  <v-select v-if="value.category !== 'Community Leader'" label="Category" :items="categories" v-model="value.category" auto />
 
   <v-subheader>Address</v-subheader>
   <v-text-field v-model="value.street" type="text" label="Street"></v-text-field>
@@ -23,7 +24,10 @@
 </template>
 
 <script>
+import {CATEGORIES} from 'common/categories';
+
 export default {
+  data: () => ({categories: CATEGORIES}),
   props: ['value'],
   watch: {
     value: function(v) {

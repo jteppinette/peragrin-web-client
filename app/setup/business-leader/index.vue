@@ -78,7 +78,8 @@ var organization = {
   email: '',
   phone: '',
   website: '',
-  hours: [{weekday: 1}, {weekday: 2}, {weekday: 3}, {weekday: 4}, {weekday: 5}]
+  hours: [{weekday: 1}, {weekday: 2}, {weekday: 3}, {weekday: 4}, {weekday: 5}],
+  category: ''
 };
 
 var marker = {
