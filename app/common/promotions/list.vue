@@ -1,7 +1,7 @@
 <template>
 <div>
 
-  <v-dialog v-if="isOwnerOrAdministrator()" v-model="dialog" width="400px">
+  <v-dialog v-if="isOwnerOrAdministrator()" v-model="dialog" width="400px" persistent>
     <v-btn floating slot="activator" class="white"><v-icon dark>add</v-icon></v-btn>
     <v-card>
       <v-card-row><v-card-title class="primary">Create Promotion</v-card-title></v-card-row>

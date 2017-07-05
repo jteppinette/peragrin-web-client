@@ -1,7 +1,7 @@
 <template>
 <div>
 
-  <v-dialog v-if="isAdministrator()" v-model="dialog" width="800px" scrollable>
+  <v-dialog v-if="isAdministrator()" v-model="dialog" width="800px" scrollable persistent>
     <v-btn floating slot="activator" class="white"><v-icon dark>add</v-icon></v-btn>
     <v-card>
       <v-card-title class="primary">Create Organization</v-card-title>

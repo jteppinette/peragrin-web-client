@@ -15,7 +15,7 @@
       <v-card-row class="primary" v-if="selected.category">
         <v-card-text class="category-chip"><v-chip outline class="white--text">{{ selected.category }}</v-chip></v-card-text>
       </v-card-row>
-      <v-card-row v-if="selected.logo" :img="selected.logo" height="130px"></v-card-row>
+      <v-card-row v-if="selected.logoURL" :img="selected.logoURL" height="130px"></v-card-row>
 
       <v-tabs scroll-bars v-model="active" light class="tabs-no-border">
 

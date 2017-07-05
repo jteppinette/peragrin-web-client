@@ -14,6 +14,27 @@
       <v-card-text class="category-chip"><v-chip outline class="white--text">{{ organization.category }}</v-chip></v-card-text>
     </v-card-row>
 
+    <v-dialog v-if="isOwnerOrAdministrator()" v-model="dialog" width="800px" scrollable persistent>
+      <v-btn floating slot="activator" class="white"><v-icon dark>edit</v-icon></v-btn>
+      <v-card>
+        <v-card-title class="primary">Update Organization</v-card-title>
+        <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
+        <v-card-row>
+          <v-card-text>
+            <form @submit.prevent="update" novalidate>
+              <organization-form v-model="data"></organization-form>
+              <organization-hours v-model="data.hours"></organization-hours>
+
+              <div class="right">
+                <v-btn flat @click.native="dialog = false">Close</v-btn>
+                <v-btn primary type="submit" class="white--text">Update Organization</v-btn>
+              </div>
+            </form>
+          </v-card-text>
+        </v-card-row>
+      </v-card>
+    </v-dialog>
+
     <v-layout row wrap class="general">
 
       <v-flex xs12 md6 class="pr-0">
@@ -77,28 +98,56 @@
 <script>
 import promotionsList from 'common/promotions/list';
 import organizationDetails from 'common/organization/details';
+import organizationForm from 'common/organization/form';
+import organizationHours from 'common/organization/hours';
 import {MARKERS} from 'common/categories';
 
 export default {
   props: ['id'],
-  data: () => ({organization: {}}),
-  components: {promotionsList, organizationDetails},
+  data: () => ({organization: {}, data: {}, msg: '', error: false, dialog: false}),
+  computed: {
+    account () {
+      return this.$store.state.account;
+    }
+  },
+  components: {promotionsList, organizationDetails, organizationForm, organizationHours},
   mounted () {
     this.$store.dispatch('initialize');
     this.$http.get(`/organizations/${this.id}`)
       .then(response => response.json())
-      .then(organization => this.organization = {...this.organization, ...organization, icon: MARKERS[organization.category]});
-    this.$http.get(`/organizations/${this.id}/hours`)
-      .then(response => response.json())
-      .then(hours => this.$set(this.organization, 'hours', hours));
+      .then(organization => this.organization = {...this.organization, ...organization, icon: MARKERS[organization.category]})
+      .then(organization => this.data = JSON.parse(JSON.stringify(organization)));
     this.$http.get(`/organizations/${this.id}/communities`)
       .then(response => response.json())
       .then(communities => this.$set(this.organization, 'communities', communities));
     this.$http.get(`/organizations/${this.id}/accounts`)
       .then(response => response.json())
       .then(accounts => this.$set(this.organization, 'accounts', accounts));
-  }
+  },
+  methods: {update, isOwnerOrAdministrator}
 };
+
+function update() {
+  return this.$http.post(`/organizations/${this.id}`, this.data)
+    .then(response => response.json())
+    .then(organization => this.organization = {...this.organization, ...organization, icon: MARKERS[organization.category]})
+    .then(organization => this.data = JSON.parse(JSON.stringify(organization)))
+    .then(() => this.dialog = false)
+    .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
+}
+
+function isOwnerOrAdministrator() {
+  if (!this.account || !this.account.organizations) return false;
+  let isOwner = this.account.organizations.find(v => v.id == this.id);
+  let isAdministrator = this.organization.communities ? this.account.organizations.find(v => {
+    if (!v.communities) return false;
+    let community = v.communities.find(c => {
+      return this.organization.communities.find(u => u.id == c.id);
+    });
+    return community.isAdministrator;
+  }) : false;
+  return isOwner || isAdministrator;
+}
 </script>
 
 <style scoped lang="stylus">
@@ -110,5 +159,19 @@ export default {
   @media screen and (max-width: $grid-breakpoints.md) {
     height: 100px;
   }
+}
+
+.btn.btn--floating {
+  position: absolute;
+  top: 95px;
+  right: 15px;
+}
+
+.dialog__container {
+  display: block;
+}
+
+.dialog .card__text {
+  max-height: 80vh;
 }
 </style>

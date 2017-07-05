@@ -144,6 +144,10 @@ function logout() {
   }
 }
 
+.btn.btn--floating {
+  z-index: 3;
+}
+
 .navigation-drawer--light.navigation-drawer--right {
   border-left: none !important;
 }

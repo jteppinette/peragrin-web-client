@@ -1,7 +1,7 @@
 <template>
 <div>
 
-  <v-dialog v-if="isOwnerAndAdministrator()" v-model="createMembershipDialog" width="400px">
+  <v-dialog v-if="isOwnerAndAdministrator()" v-model="createMembershipDialog" width="400px" persistent>
     <v-btn floating slot="activator" class="white"><v-icon dark>add</v-icon></v-btn>
     <v-card>
       <v-card-row><v-card-title class="primary">Create Membership</v-card-title></v-card-row>
@@ -25,7 +25,7 @@
     <v-expansion-panel-content v-for="membership in memberships" :key="membership.id">
       <div slot="header"><strong>{{ membership.name }}</strong><br/><small>{{ membership.description }}</small></div>
       <div class="pa-2" v-if="isOwnerAndAdministrator()">
-        <v-dialog v-model="addAccountDialog[membership.id]" width="400px">
+        <v-dialog v-model="addAccountDialog[membership.id]" width="400px" persistent>
           <v-btn block primary light slot="activator" class="ma-0">Add Account</v-btn>
           <v-card>
             <v-card-row><v-card-title class="primary">Add {{ membership.name }} Account</v-card-title></v-card-row>
