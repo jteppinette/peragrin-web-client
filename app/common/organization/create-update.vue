@@ -8,7 +8,7 @@
       <v-card-text>
         <form @submit.prevent="action.method" novalidate>
           <organization-form v-model="data"></organization-form>
-          <organization-hours v-if="data.hours" v-model="data.hours"></organization-hours>
+          <organization-hours v-model="data.hours"></organization-hours>
 
           <div class="right">
             <v-btn flat @click.native="dialog = false">Close</v-btn>

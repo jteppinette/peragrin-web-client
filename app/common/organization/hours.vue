@@ -65,8 +65,9 @@ export default {
   data: () => ({weekdays: WEEKDAYS, hours: []}),
   props: ['value'],
   mounted: function() {
+    if (!this.value) this.$emit('input', []);
     for (var weekday = 0; weekday < WEEKDAYS.length; weekday++) { 
-      this.hours.splice(weekday, 0, from(weekday, this.value));
+      this.hours.splice(weekday, 0, from(weekday, (this.value || [])));
       this.$watch('hours.'+weekday, update.bind(this, weekday), {deep: true});
     }
   }
