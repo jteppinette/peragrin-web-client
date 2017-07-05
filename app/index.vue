@@ -110,6 +110,10 @@ function logout() {
   z-index: 2;
 }
 
+.toolbar {
+  z-index: 4 !important;
+}
+
 .flex > .stepper, .flex > .card {
   margin-bottom: 10px;
 }
