@@ -1,5 +1,5 @@
 <template>
-<v-container>
+<v-container class="organization-detail">
 
   <v-breadcrumbs>
     <v-breadcrumbs-item router to="/organizations">Organizations</v-breadcrumbs-item>
@@ -14,26 +14,7 @@
       <v-card-text class="category-chip"><v-chip outline class="white--text">{{ organization.category }}</v-chip></v-card-text>
     </v-card-row>
 
-    <v-dialog v-if="isOwnerOrAdministrator()" v-model="dialog" width="800px" scrollable persistent>
-      <v-btn floating slot="activator" class="white"><v-icon dark>edit</v-icon></v-btn>
-      <v-card>
-        <v-card-title class="primary">Update Organization</v-card-title>
-        <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
-        <v-card-row>
-          <v-card-text>
-            <form @submit.prevent="update" novalidate>
-              <organization-form v-model="data"></organization-form>
-              <organization-hours v-model="data.hours"></organization-hours>
-
-              <div class="right">
-                <v-btn flat @click.native="dialog = false">Close</v-btn>
-                <v-btn primary type="submit" class="white--text">Update Organization</v-btn>
-              </div>
-            </form>
-          </v-card-text>
-        </v-card-row>
-      </v-card>
-    </v-dialog>
+    <organization-create-update v-if="organization.id && isOwnerOrAdministrator()" :organization="organization" @updated="o => organization = o"></organization-create-update>
 
     <v-layout row wrap class="general">
 
@@ -44,7 +25,7 @@
       <v-flex xs12 md6>
         <v-map v-if="organization.lat && organization.lon" :zoom="15" :center="[organization.lat, organization.lon]">
           <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
-          <v-marker :icon="organization.icon" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}"></v-marker>
+          <v-marker :icon="icon" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}"></v-marker>
         </v-map>
       </v-flex>
 
@@ -98,25 +79,26 @@
 <script>
 import promotionsList from 'common/promotions/list';
 import organizationDetails from 'common/organization/details';
-import organizationForm from 'common/organization/form';
-import organizationHours from 'common/organization/hours';
+import organizationCreateUpdate from 'common/organization/create-update';
 import {MARKERS} from 'common/categories';
 
 export default {
   props: ['id'],
-  data: () => ({organization: {}, data: {}, msg: '', error: false, dialog: false}),
+  data: () => ({organization: {}}),
   computed: {
     account () {
       return this.$store.state.account;
+    },
+    icon () {
+      return this.organization.category ? MARKERS[this.organization.category] : undefined;
     }
   },
-  components: {promotionsList, organizationDetails, organizationForm, organizationHours},
+  components: {promotionsList, organizationDetails, organizationCreateUpdate},
   mounted () {
     this.$store.dispatch('initialize');
     this.$http.get(`/organizations/${this.id}`)
       .then(response => response.json())
-      .then(organization => this.organization = {...this.organization, ...organization, icon: MARKERS[organization.category]})
-      .then(organization => this.data = JSON.parse(JSON.stringify(organization)));
+      .then(organization => this.organization = {...this.organization, ...organization});
     this.$http.get(`/organizations/${this.id}/communities`)
       .then(response => response.json())
       .then(communities => this.$set(this.organization, 'communities', communities));
@@ -124,17 +106,8 @@ export default {
       .then(response => response.json())
       .then(accounts => this.$set(this.organization, 'accounts', accounts));
   },
-  methods: {update, isOwnerOrAdministrator}
+  methods: {isOwnerOrAdministrator}
 };
-
-function update() {
-  return this.$http.post(`/organizations/${this.id}`, this.data)
-    .then(response => response.json())
-    .then(organization => this.organization = {...this.organization, ...organization, icon: MARKERS[organization.category]})
-    .then(organization => this.data = JSON.parse(JSON.stringify(organization)))
-    .then(() => this.dialog = false)
-    .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
-}
 
 function isOwnerOrAdministrator() {
   if (!this.account || !this.account.organizations) return false;
@@ -160,18 +133,14 @@ function isOwnerOrAdministrator() {
     height: 100px;
   }
 }
+</style>
 
-.btn.btn--floating {
-  position: absolute;
-  top: 95px;
-  right: 15px;
-}
-
-.dialog__container {
-  display: block;
-}
-
-.dialog .card__text {
-  max-height: 80vh;
+<style lang="stylus">
+.organization-detail {
+  .btn.btn--floating {
+    position: absolute;
+    top: 95px;
+    right: 15px;
+  }
 }
 </style>
