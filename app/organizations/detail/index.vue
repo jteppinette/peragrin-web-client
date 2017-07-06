@@ -10,6 +10,7 @@
     <v-card-row class="primary">
       <v-card-title class="white--text">{{ organization.name }}</v-card-title>
     </v-card-row>
+
     <v-card-row class="primary" v-if="organization.category">
       <v-card-text class="category-chip"><v-chip outline class="white--text">{{ organization.category }}</v-chip></v-card-text>
     </v-card-row>
@@ -33,19 +34,12 @@
 
   </v-card>
 
-  <v-layout row wrap v-if="organization && organization.communities">
+  <v-layout row wrap if="organization" class="middle">
 
-    <v-flex xs12 md6>
-      <v-card>
-        <v-card-title class="primary">Promotions</v-card-title>
-        <promotions-list :organizationID="id" :communities="organization.communities"></promotions-list>
-      </v-card>
-    </v-flex>
-
-    <v-flex xs6 md3>
+    <v-flex xs12 sm6 md4>
       <v-card>
         <v-card-title class="primary">Communities</v-card-title>
-        <v-list two-line>
+        <v-list two-line class="card-body">
           <v-list-item v-for="community in organization.communities" :key="community.id" v-if="community">
             <v-list-tile router :to="`/communities/${community.id}`">
               <v-list-tile-content>
@@ -58,19 +52,51 @@
       </v-card>
     </v-flex>
 
-    <v-flex xs6 md3>
+    <v-flex xs12 sm6 md4>
       <v-card>
         <v-card-title class="primary">Operators</v-card-title>
-        <v-list>
+        <v-list two-line class="card-body">
           <v-list-item v-for="account in organization.accounts" :key="account.id" v-if="account">
             <v-list-tile>
-              <v-list-tile-content><v-list-tile-title>{{ account.email }}</a></v-list-tile-title></v-list-tile-content>
+              <v-list-tile-content>
+                <v-list-tile-title>{{ account.email }}</a></v-list-tile-title>
+                <v-list-tile-sub-title><!-- TODO: ACCOUNT META DATA --></v-list-tile-sub-title>
+              </v-list-tile-content>
             </v-list-tile>
           </v-list-item>
         </v-list>
       </v-card>
     </v-flex>
 
+    <v-flex xs12 sm6 md4>
+      <v-card class="upload-logo">
+        <v-card-title class="primary">Logo</v-card-title>
+        <v-dialog v-model="uploadLogoDialog" width="800px" scrollable persistent>
+          <v-btn floating slot="activator" class="white"><v-icon dark>file_upload</v-icon></v-btn>
+          <v-card>
+            <v-card-row><v-card-title class="primary">Upload Logo</v-card-title></v-card-row>
+            <v-card-row>
+              <v-card-text>
+                <v-subheader>All images will be sized to a maxium size of 130px in width and 400px in height. The provided image's aspect ratio will be maintained.</v-subheader>
+                <dropzone id="myVueDropzone" param-name="logo" :url="`/organizations/${id}/logo`" :headers="{'Authorization': `Bearer ${token}`}" @vdropzone-success="uploadLogoSuccess" :resize-width="400" resize-method="crop" :resize-height="130" :thumbnail-width="400" :thumbnail-height="130" :max-number-of-files="1" :max-file-size-in-m-b="100"><input type="hidden"></dropzone>
+                <div class="right"><v-btn flat @click.native="uploadLogoDialog = false">Close</v-btn></div>
+              </v-card-text>
+            </v-card-row>
+          </v-card>
+        </v-dialog>
+        <v-card-row :img="organization.logoURL" height="130px" width="100%" class="card-body"></v-card-row>
+      </v-card>
+    </v-flex>
+
+  </v-layout>
+
+  <v-layout row wrap v-if="organization && organization.communities">
+    <v-flex xs12>
+      <v-card>
+        <v-card-title class="primary">Promotions</v-card-title>
+        <promotions-list :organizationID="id" :communities="organization.communities"></promotions-list>
+      </v-card>
+    </v-flex>
   </v-layout>
 
 </v-container>
@@ -81,10 +107,11 @@ import promotionsList from 'common/promotions/list';
 import organizationDetails from 'common/organization/details';
 import organizationCreateUpdate from 'common/organization/create-update';
 import {MARKERS} from 'common/categories';
+import Dropzone from 'vue2-dropzone';
 
 export default {
   props: ['id'],
-  data: () => ({organization: {}}),
+  data: () => ({organization: {}, token: sessionStorage.token, uploadLogoDialog: false}),
   computed: {
     account () {
       return this.$store.state.account;
@@ -93,7 +120,7 @@ export default {
       return this.organization.category ? MARKERS[this.organization.category] : undefined;
     }
   },
-  components: {promotionsList, organizationDetails, organizationCreateUpdate},
+  components: {promotionsList, organizationDetails, organizationCreateUpdate, Dropzone},
   mounted () {
     this.$store.dispatch('initialize');
     this.$http.get(`/organizations/${this.id}`)
@@ -106,8 +133,14 @@ export default {
       .then(response => response.json())
       .then(accounts => this.$set(this.organization, 'accounts', accounts));
   },
-  methods: {isOwnerOrAdministrator}
+  methods: {isOwnerOrAdministrator, uploadLogoSuccess}
 };
+
+function uploadLogoSuccess(file, {logo, logoURL}) {
+  this.$set(this.organization, 'logo', logo);
+  this.$set(this.organization, 'logoURL', logoURL);
+  this.uploadLogoDialog = false;
+}
 
 function isOwnerOrAdministrator() {
   if (!this.account || !this.account.organizations) return false;
@@ -141,6 +174,20 @@ function isOwnerOrAdministrator() {
     position: absolute;
     top: 95px;
     right: 15px;
+  }
+
+  .upload-logo .btn.btn--floating {
+    position: absolute;
+    top: 35px;
+    right: 15px;
+  }
+
+  .dialog__container {
+    display: block;
+  }
+
+  .middle .card-body {
+    min-height: 130px;
   }
 }
 </style>
