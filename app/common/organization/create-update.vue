@@ -4,19 +4,18 @@
   <v-card>
     <v-card-title class="primary">{{ action.name }}  Organization</v-card-title>
     <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
-    <v-card-row>
-      <v-card-text>
-        <form @submit.prevent="action.method" novalidate>
+    <form @submit.prevent="action.method" novalidate>
+      <v-card-row>
+        <v-card-text>
           <organization-form v-model="data"></organization-form>
           <organization-hours v-model="data.hours"></organization-hours>
-
-          <div class="right">
-            <v-btn flat @click.native="dialog = false">Close</v-btn>
-            <v-btn primary type="submit" class="white--text">{{ action.name }} Organization</v-btn>
-          </div>
-        </form>
-      </v-card-text>
-    </v-card-row>
+        </v-card-text>
+      </v-card-row>
+      <v-card-row actions class="primary">
+        <v-btn flat class="white--text" @click.native="dialog = false">Close</v-btn>
+        <v-btn outline light type="submit">{{ action.name }} Organization</v-btn>
+      </v-card-row>
+    </form>
   </v-card>
 </v-dialog>
 </template>
@@ -67,13 +66,3 @@ function create() {
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }
 </script>
-
-<style scoped lang="stylus">
-.dialog__container {
-  display: block;
-}
-
-.dialog .card__text {
-  max-height: 80vh;
-}
-</style>

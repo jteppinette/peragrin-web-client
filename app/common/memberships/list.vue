@@ -1,23 +1,23 @@
 <template>
 <div>
 
-  <v-dialog v-if="isOwnerAndAdministrator()" v-model="createMembershipDialog" width="400px" persistent>
+  <v-dialog v-if="isOwnerAndAdministrator()" v-model="createMembershipDialog" width="400px" scrollable persistent>
     <v-btn floating slot="activator" class="white"><v-icon dark>add</v-icon></v-btn>
     <v-card>
-      <v-card-row><v-card-title class="primary">Create Membership</v-card-title></v-card-row>
+      <v-card-title class="primary">Create Membership</v-card-title>
       <v-alert error dismissible v-model="createMembershipError">{{ createMembershipMsg }}</v-alert>
-      <v-card-row>
-        <v-card-text>
-          <form @submit.prevent="createMembership" novalidate>
+      <form @submit.prevent="createMembership" novalidate>
+        <v-card-row>
+          <v-card-text>
             <v-text-field v-model="membership.name" :error="createMembershipError" label="Name"></v-text-field>
             <v-text-field v-model="membership.description" :error="createMembershipError" label="Description" rows="1" multi-line></v-text-field>
-            <div class="right">
-              <v-btn flat @click.native="createMembershipDialog = false">Close</v-btn>
-              <v-btn primary type="submit" class="white--text">Create Membership</v-btn>
-            </div>
-          </form>
-        </v-card-text>
-      </v-card-row>
+          </v-card-text>
+        </v-card-row>
+        <v-card-row actions class="primary">
+          <v-btn flat class="white--text" @click.native="createMembershipDialog = false">Close</v-btn>
+          <v-btn outline light type="submit">Create Membership</v-btn>
+        </v-card-row>
+      </form>
     </v-card>
   </v-dialog>
 
@@ -25,23 +25,23 @@
     <v-expansion-panel-content v-for="membership in memberships" :key="membership.id">
       <div slot="header"><strong>{{ membership.name }}</strong><br/><small>{{ membership.description }}</small></div>
       <div class="pa-2" v-if="isOwnerAndAdministrator()">
-        <v-dialog v-model="addAccountDialog[membership.id]" width="400px" persistent>
+        <v-dialog v-model="addAccountDialog[membership.id]" width="400px" scrollable persistent>
           <v-btn block primary light slot="activator" class="ma-0">Add Account</v-btn>
           <v-card>
-            <v-card-row><v-card-title class="primary">Add {{ membership.name }} Account</v-card-title></v-card-row>
+            <v-card-title class="primary">Add {{ membership.name }} Account</v-card-title>
             <v-alert error dismissible v-model="addAccountError">{{ addAccountMsg }}</v-alert>
-            <v-card-row>
-              <v-card-text>
-                <form @submit.prevent="addAccount(membership)" novalidate>
+            <form @submit.prevent="addAccount(membership)" novalidate>
+              <v-card-row>
+                <v-card-text>
                   <v-text-field v-model="user.email" :error="addAccountError" label="Email"></v-text-field>
                   <v-text-field v-model="user.password" :error="addAccountError" label="Password" type="password"></v-text-field>
-                  <div class="right">
-                    <v-btn flat @click.native="closeAccountDialog(membership)">Close</v-btn>
-                    <v-btn primary type="submit" class="white--text">Add Account</v-btn>
-                  </div>
-                </form>
-              </v-card-text>
-            </v-card-row>
+                </v-card-text>
+              </v-card-row>
+              <v-card-row actions class="primary">
+                <v-btn flat class="white--text" @click.native="closeAccountDialog(membership)">Close</v-btn>
+                <v-btn outline light type="submit">Add Account</v-btn>
+              </v-card-row>
+            </form>
           </v-card>
         </v-dialog>
       </div>

@@ -160,8 +160,16 @@ function logout() {
   border: none !important;
 }
 
+.dialog__container {
+  display: block !important;
+}
+
 .dialog {
   font-family: Roboto,sans-serif;
+
+  .card__text {
+    max-height: 70vh !important;
+  }
 }
 
 .container .subheader {
@@ -195,5 +203,11 @@ function logout() {
       padding: 0px;
     }
   }
+}
+
+.card__row--actions {
+  display: block;
+  text-align: right;
+  padding: 5px;
 }
 </style>

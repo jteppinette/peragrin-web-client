@@ -74,13 +74,15 @@
         <v-dialog v-model="uploadLogoDialog" width="800px" scrollable persistent>
           <v-btn floating slot="activator" class="white"><v-icon dark>file_upload</v-icon></v-btn>
           <v-card>
-            <v-card-row><v-card-title class="primary">Upload Logo</v-card-title></v-card-row>
+            <v-card-title class="primary">Upload Logo</v-card-title>
             <v-card-row>
               <v-card-text>
                 <v-subheader>All images will be sized to a maxium size of 130px in width and 400px in height. The provided image's aspect ratio will be maintained.</v-subheader>
                 <dropzone id="myVueDropzone" param-name="logo" :url="`/organizations/${id}/logo`" :headers="{'Authorization': `Bearer ${token}`}" @vdropzone-success="uploadLogoSuccess" :resize-width="400" resize-method="crop" :resize-height="130" :thumbnail-width="400" :thumbnail-height="130" :max-number-of-files="1" :max-file-size-in-m-b="100"><input type="hidden"></dropzone>
-                <div class="right"><v-btn flat @click.native="uploadLogoDialog = false">Close</v-btn></div>
               </v-card-text>
+            </v-card-row>
+            <v-card-row actions class="primary">
+              <v-btn flat class="white--text" @click.native="uploadLogoDialog = false">Close</v-btn>
             </v-card-row>
           </v-card>
         </v-dialog>
@@ -180,10 +182,6 @@ function isOwnerOrAdministrator() {
     position: absolute;
     top: 35px;
     right: 15px;
-  }
-
-  .dialog__container {
-    display: block;
   }
 
   .middle .card-body {
