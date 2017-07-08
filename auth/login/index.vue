@@ -6,6 +6,8 @@
     <v-text-field v-model="password" :error="error" prepend-icon="lock" type="password" label="Password"></v-text-field>
     <v-btn type="submit" class="white--text" block primary>Login</v-btn>
     <p class="pt-2 text-xs-center"><router-link class="black--text" to="/auth/register">If you do not have an account, then click here to register.</router-link></p>
+    <v-divider></v-divider>
+    <p class="pt-2 text-xs-center"><router-link class="black--text" to="/auth/forgot-password">If you forgot your password, then click here to request a password reset email.</router-link></p>
   </form>
 </div>
 </template>

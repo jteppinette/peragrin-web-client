@@ -27,6 +27,8 @@ import map from 'map';
 import auth from './auth';
 import login from 'login';
 import register from 'register';
+import forgotPassword from 'forgot-password';
+import setPassword from 'set-password';
 
 import profile from 'profile';
 
@@ -60,7 +62,9 @@ const routes = [
         path: '/auth', component: auth, children: [
             {path: '', redirect: 'login'},
             {path: 'login', component: login},
-            {path: 'register', component: register}
+            {path: 'register', component: register},
+            {path: 'forgot-password', component: forgotPassword},
+            {path: 'set-password', component: setPassword}
         ],
     }
 ];
