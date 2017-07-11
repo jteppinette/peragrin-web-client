@@ -34,7 +34,6 @@
               <v-card-row>
                 <v-card-text>
                   <v-text-field v-model="user.email" :error="addAccountError" label="Email"></v-text-field>
-                  <v-text-field v-model="user.password" :error="addAccountError" label="Password" type="password"></v-text-field>
                 </v-card-text>
               </v-card-row>
               <v-card-row actions class="primary">
@@ -66,8 +65,7 @@ var membership = {
 };
 
 var user = {
-  email: '',
-  password: ''
+  email: ''
 };
 
 export default {
