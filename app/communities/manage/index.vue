@@ -8,10 +8,11 @@
   <v-layout row wrap>
     <v-flex xs12 md6 v-for="community in communities" :key="community.id" v-if="community">
       <v-card>
-        <v-card-title class="primary">
-          <router-link :to="`/communities/${community.id}`" class="white--text">{{ community.name }}</router-link>
-        </v-card-title>
+        <v-card-title primary-title class="primary headline">{{ community.name }}</v-card-title>
         <community-map :community="community"></community-map>
+        <v-card-actions>
+          <v-btn flat :to="`/communities/${community.id}`">Manage</v-btn>
+        </v-card-actions>
       </v-card>
     </v-flex>
   </v-layout>

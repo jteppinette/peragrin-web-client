@@ -1,7 +1,13 @@
 <template>
-<div class="community-organizations-list">
+<div>
 
-  <organization-create-update v-if="isAdministrator()" :communityID="community.id" @created="o => getOrganizations(community.id)"></organization-create-update>
+  <v-card-text style="position: relative">
+    <organization-create-update v-if="isAdministrator()" :communityID="community.id" @created="o => getOrganizations(community.id)">
+      <template slot="activator" scope="props">
+        <v-btn fab right top absolute><v-icon>{{ props.action.icon }}</v-icon></v-btn>
+      </template>
+    </organization-create-update>
+  </v-card-text>
 
   <div class="pt-3 pl-3 pr-3">
     <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
@@ -82,13 +88,3 @@ function isAdministrator() {
   return this.account.organizations.find(v => v.communities ? v.communities.find(c => c.id == this.community.id && c.isAdministrator) : undefined);
 }
 </script>
-
-<style lang="stylus">
-.community-organizations-list {
-  .btn.btn--floating {
-    position: absolute;
-    top: 35px;
-    right: 15px;
-  }
-}
-</style>

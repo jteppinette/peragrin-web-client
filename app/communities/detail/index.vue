@@ -2,14 +2,14 @@
 <v-container>
 
   <v-breadcrumbs>
-    <v-breadcrumbs-item router to="/communities">Communities</v-breadcrumbs-item>
+    <v-breadcrumbs-item to="/communities">Communities</v-breadcrumbs-item>
     <v-breadcrumbs-item disabled v-if="community">{{ community.name }}</v-breadcrumbs-item>
   </v-breadcrumbs>
 
   <v-layout row wrap v-if="community">
     <v-flex xs12>
       <v-card>
-        <v-card-title class="primary">{{ community.name }}</v-card-title>
+        <v-card-title primary-title class="primary headline">{{ community.name }}</v-card-title>
         <community-organizations-list :community="community" :selected="selected"></community-organizations-list>
       </v-card>
     </v-flex>
@@ -18,13 +18,13 @@
   <v-layout row wrap v-if="community">
     <v-flex xs12 sm6>
       <v-card>
-        <v-card-title class="primary">Memberhips</v-card-title>
+        <v-card-title class="primary title">Memberhips</v-card-title>
         <memberships-list :communityID="community.id"></memberships-list>
       </v-card>
     </v-flex>
     <v-flex xs12 sm6>
       <v-card>
-        <v-card-title class="primary">Map</v-card-title>
+        <v-card-title class="primary title">Map</v-card-title>
         <community-map :community="community" @select="organization => selected = organization"></community-map>
       </v-card>
     </v-flex>

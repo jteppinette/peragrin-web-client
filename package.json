@@ -32,7 +32,7 @@
     "vue-router": "^2.4.0",
     "vue2-dropzone": "^2.3.4",
     "vue2-leaflet": "0.0.50",
-    "vuetify": "0.12.7",
+    "vuetify": "0.13.1",
     "vuex": "^2.3.1"
   }
 }

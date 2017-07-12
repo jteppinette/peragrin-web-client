@@ -1,70 +1,50 @@
 <template>
-<v-list two-line>
+<v-list two-line class="pt-0 pb-0">
 
   <!-- PHONE -->
-  <v-list-item v-if="organization.phone">
-    <v-list-tile>
-      <v-list-tile-action>
-        <v-icon class="primary--text">phone</v-icon>
-      </v-list-tile-action>
-      <v-list-tile-content>
-        <v-list-tile-title><a :href="'tel:'+organization.phone">{{ organization.phone }}</a></v-list-tile-title>
-        <v-list-tile-sub-title>Phone</v-list-tile-sub-title>
-      </v-list-tile-content>
-    </v-list-tile>
-  </v-list-item>
+  <v-list-tile v-if="organization.phone" :href="'tel:'+organization.phone">
+    <v-list-tile-action><v-icon class="primary--text">phone</v-icon></v-list-tile-action>
+    <v-list-tile-content>
+      <v-list-tile-title>{{ organization.phone }}</v-list-tile-title>
+      <v-list-tile-sub-title>Phone</v-list-tile-sub-title>
+    </v-list-tile-content>
+  </v-list-tile>
 
   <!-- EMAIL -->
-  <v-list-item v-if="organization.email">
-    <v-list-tile>
-      <v-list-tile-action>
-        <v-icon class="primary--text">mail_outline</v-icon>
-      </v-list-tile-action>
-      <v-list-tile-content>
-        <v-list-tile-title><a :href="'mailto:'+organization.email">{{ organization.email }}</a></v-list-tile-title>
-      </v-list-tile-content>
-    </v-list-tile>
-  </v-list-item>
+  <v-list-tile v-if="organization.email" :href="'mailto:'+organization.email">
+    <v-list-tile-action><v-icon class="primary--text">mail_outline</v-icon></v-list-tile-action>
+    <v-list-tile-content>
+      <v-list-tile-title>{{ organization.email }}</v-list-tile-title>
+    </v-list-tile-content>
+  </v-list-tile>
 
   <!-- WEBSITE -->
-  <v-list-item v-if="organization.website">
-    <v-list-tile>
-      <v-list-tile-action>
-        <v-icon class="primary--text">link</v-icon>
-      </v-list-tile-action>
-      <v-list-tile-content>
-        <v-list-tile-title><a :href="organization.website">{{ organization.website }}</a></v-list-tile-title>
-      </v-list-tile-content>
-    </v-list-tile>
-  </v-list-item>
+  <v-list-tile v-if="organization.website" :href="organization.website">
+    <v-list-tile-action><v-icon class="primary--text">link</v-icon></v-list-tile-action>
+    <v-list-tile-content>
+      <v-list-tile-title>{{ organization.website }}</v-list-tile-title>
+    </v-list-tile-content>
+  </v-list-tile>
 
   <!-- ADDRESS -->
-  <v-list-item v-if="organization.street">
-    <v-list-tile>
-      <v-list-tile-action>
-        <v-icon class="primary--text">location_on</v-icon>
-      </v-list-tile-action>
-      <v-list-tile-content>
-        <v-list-tile-title><a :href="'geo:'+organization.lat+','+organization.lon">{{ organization.street }}</a></v-list-tile-title>
-        <v-list-tile-sub-title>{{ organization.city}} , {{ organization.state }} {{ organization.zip }}</v-list-tile-sub-title>
-      </v-list-tile-content>
-    </v-list-tile>
-  </v-list-item>
+  <v-list-tile v-if="organization.street" :href="'geo:'+organization.lat+','+organization.lon">
+    <v-list-tile-action><v-icon class="primary--text">location_on</v-icon></v-list-tile-action>
+    <v-list-tile-content>
+      <v-list-tile-title>{{ organization.street }}</v-list-tile-title>
+      <v-list-tile-sub-title>{{ organization.city}} , {{ organization.state }} {{ organization.zip }}</v-list-tile-sub-title>
+    </v-list-tile-content>
+  </v-list-tile>
 
   <!-- HOURS OF OPERATION -->
-  <v-list-item v-if="hours">
-    <v-list-tile>
-      <v-list-tile-action>
-        <v-icon class="primary--text">access_time</v-icon>
-      </v-list-tile-action>
-      <v-list-tile-content>
-        <v-list-tile-title>{{ weekdays[today] }}</v-list-tile-title>
-        <v-list-tile-sub-title>
-          <span v-for="v in hours" class="text-xs-left pr-3">{{ v.start | to12hr }} - {{ v.close | to12hr }}</span>
-        </v-list-tile-sub-title>
-      </v-list-tile-content>
-    </v-list-tile>
-  </v-list-item>
+  <v-list-tile v-if="hours">
+    <v-list-tile-action><v-icon class="primary--text">access_time</v-icon></v-list-tile-action>
+    <v-list-tile-content>
+      <v-list-tile-title>{{ weekdays[today] }}</v-list-tile-title>
+      <v-list-tile-sub-title>
+        <span v-for="v in hours" class="text-xs-left pr-3">{{ v.start | to12hr }} - {{ v.close | to12hr }}</span>
+      </v-list-tile-sub-title>
+    </v-list-tile-content>
+  </v-list-tile>
 
 </v-list>
 </template>

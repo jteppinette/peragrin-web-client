@@ -1,32 +1,33 @@
 <template>
 <div>
 
-  <v-dialog v-if="isOwnerOrAdministrator()" v-model="dialog" width="400px" scrollable persistent>
-    <v-btn floating slot="activator" class="white"><v-icon dark>add</v-icon></v-btn>
-    <v-card>
-      <v-card-title class="primary">Create Promotion</v-card-title>
-      <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
-      <form @submit.prevent="create" novalidate>
-        <v-card-row>
+  <v-card-text style="position: relative">
+    <v-dialog v-if="isOwnerOrAdministrator()" v-model="dialog" width="400px" scrollable persistent>
+      <v-btn fab absolute top right slot="activator"><v-icon>add</v-icon></v-btn>
+      <v-card>
+        <v-card-title class="primary title">Create Promotion</v-card-title>
+        <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
+        <form @submit.prevent="create" novalidate>
           <v-card-text>
             <v-text-field v-model="promotion.name" :error="error" label="Name"></v-text-field>
             <v-text-field v-model="promotion.description" :error="error" label="Description" rows="1" multi-line></v-text-field>
             <v-text-field v-model="promotion.exclusions" :error="error" label="Exclusions" rows="1" multi-line></v-text-field>
 
             <v-subheader class="pa-0 pt-2" style="height: 0px">Required Community Membership</v-subheader>
-            <v-select :items="memberships" v-model="promotion.membershipID" itemText="name" itemValue="id" label="Membership" dark single-line auto></v-select>
+            <v-select :items="memberships" v-model="promotion.membershipID" itemText="name" itemValue="id" label="Membership" single-line auto></v-select>
 
             <v-subheader class="pa-0 pt-2" style="height: 0px">Is Single Use?</v-subheader>
-            <v-switch v-model="promotion.isSingleUse" :error="error" :label="promotion.isSingleUse ? 'This promotion can only be used a single time per patron.' : 'This promotion can be used multiple times by the same patron.'" dark></v-switch>
+            <v-switch v-model="promotion.isSingleUse" :error="error" :label="promotion.isSingleUse ? 'This promotion can only be used a single time per patron.' : 'This promotion can be used multiple times by the same patron.'"></v-switch>
           </v-card-text>
-        </v-card-row>
-        <v-card-row actions class="primary">
-          <v-btn flat class="white--text" @click.native="dialog = false">Close</v-btn>
-          <v-btn outline light type="submit">Create Promotion</v-btn>
-        </v-card-row>
-      </form>
-    </v-card>
-  </v-dialog>
+          <v-card-actions class="primary">
+            <v-spacer></v-spacer>
+            <v-btn flat class="white--text" @click.native="dialog = false">Close</v-btn>
+            <v-btn outline class="white--text" type="submit">Create</v-btn>
+          </v-card-actions>
+        </form>
+      </v-card>
+    </v-dialog>
+  </v-card-text>
 
   <v-data-table :items="promotions" :headers="headers" class="no-limit-select">
     <template slot="items" scope="props">
@@ -73,7 +74,7 @@
         </v-edit-dialog>
         <div v-else class="text-xs-right"><v-icon v-if="props.item.isSingleUse" dark>check</v-icon></div>
       </td>
-      <td class="text-xs-right"><v-btn v-if="isOwnerOrAdministrator()" @click.native="del(props.item)" light primary>Delete<v-icon right light>delete</v-icon></v-btn></td>
+      <td class="text-xs-right"><v-btn v-if="isOwnerOrAdministrator()" @click.native="del(props.item)" primary>Delete<v-icon right class="white--text">delete</v-icon></v-btn></td>
     </template>
   </v-data-table>
 
@@ -164,11 +165,3 @@ function del(promotion) {
     .then(initialize);
 }
 </script>
-
-<style lang="stylus" scoped>
-.btn.btn--floating {
-  position: absolute;
-  top: 35px;
-  right: 15px;
-}
-</style>

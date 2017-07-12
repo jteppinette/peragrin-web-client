@@ -5,11 +5,11 @@
 
     <div class="table__overflow">
     <table>
-      <thead>
+      <thead class="text-xs-left">
         <th></th>
         <th class="status"></th>
-        <th></th>
-        <th></th>
+        <th><span v-if="hours.find(h => h.status)">Start</span></th>
+        <th><span v-if="hours.find(h => h.status)">Close</span></th>
       </thead>
       <tbody>
         <tr v-for="(day, i) in hours">
@@ -18,16 +18,16 @@
             <v-switch :label="day.status ? 'Open' : 'Closed'" primary v-model="day.status" light />
           </td>
           <td>
-            <v-dialog v-if="day.status" lazy>
-              <v-text-field slot="activator" v-model="day.start" type="text" label="Start"></v-text-field>
+            <v-menu v-if="day.status" lazy :close-on-content-click="false">
+              <v-text-field slot="activator" v-model="day.start" type="text"></v-text-field>
               <v-time-picker v-model="day.start"></v-time-picker>
-            </v-dialog>
+            </v-menu>
           </td>
           <td>
-            <v-dialog v-if="day.status" lazy>
-              <v-text-field slot="activator" v-model="day.close" type="text" label="End"></v-text-field>
+            <v-menu v-if="day.status" lazy :close-on-content-click="false">
+              <v-text-field slot="activator" v-model="day.close" type="text"></v-text-field>
               <v-time-picker v-model="day.close"></v-time-picker>
-            </v-dialog>
+            </v-menu>
           </td>
         </tr>
       </tbody>

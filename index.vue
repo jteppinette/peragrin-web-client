@@ -13,7 +13,7 @@ export default {
 <style lang="stylus">
 @import './settings';
 
-@import '~vuetify/src/stylus/tools/_mixins'
+@import './node_modules/vuetify/src/stylus/tools/*'
 @import './node_modules/vuetify/src/stylus/generic/*'
 @import './node_modules/vuetify/src/stylus/elements/*'
 @import './node_modules/vuetify/src/stylus/components/*'
@@ -36,5 +36,13 @@ html {
 .alert {
   margin-top: 0px;
   text-transform: capitalize;
+}
+
+.toolbar {
+  z-index: 4 !important;
+
+  &__title {
+    font-family: 'Fredoka One', Roboto, sans-serif;
+  }
 }
 </style>

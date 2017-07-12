@@ -9,15 +9,17 @@
 
     <v-flex xs12 sm8 md6 lg4>
       <v-card>
-        <v-card-title class="primary">Account</v-card-title>
+        <v-card-title class="primary title">Account</v-card-title>
         <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
-        <v-container fluid>
-          <form @submit.prevent="update" novalidate>
+        <form @submit.prevent="update" novalidate>
+          <v-card-text>
             <v-text-field v-model="email" :error="error" prepend-icon="mail" type="email" label="Email"></v-text-field>
             <v-text-field v-model="password" :error="error" prepend-icon="lock" type="password" label="Password"></v-text-field>
-            <v-btn type="submit" class="white--text" block primary>Update Account</v-btn>
-          </form>
-        </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn block primary type="submit">Update Account</v-btn>
+          </v-card-actions>
+        </form>
       </v-card>
     </v-flex>
 

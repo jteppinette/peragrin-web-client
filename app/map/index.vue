@@ -1,28 +1,28 @@
 <template>
 <div>
-  <v-navigation-drawer v-model="sidebar" :hide-overlay="true" temporary right light class="organization-drawer">
-    <v-card class="elevation-0">
+  <v-navigation-drawer v-model="sidebar" hide-overlay temporary right class="organization-drawer">
+    <v-card flat img>
 
-      <v-card-row class="primary">
-        <v-card-title class="white--text">
-          <span>
-            <v-btn @click.native="sidebar = false" light icon class="hidden-sm-and-up"><v-icon large>chevron_left</v-icon></v-btn>
-            {{ selected.name }}
-          </span>
-        </v-card-title>
+      <v-card-title class="primary">
+        <span>
+          <v-btn @click.native="sidebar = false" icon class="hidden-sm-and-up ma-0" style="bottom: 5px"><v-icon large class="white--text">chevron_left</v-icon></v-btn>
+          <span class="headline">{{ selected.name }}</span>
+        </span>
+      </v-card-title>
 
-      </v-card-row>
-      <v-card-row class="primary" v-if="selected.category">
-        <v-card-text class="category-chip"><v-chip outline class="white--text">{{ selected.category }}</v-chip></v-card-text>
-      </v-card-row>
-      <v-card-row v-if="selected.logoURL" :img="selected.logoURL" height="130px"></v-card-row>
+      <v-card-text v-if="selected.category" class="primary">
+        <v-chip outline class="ma-0 white--text">{{ selected.category }}</v-chip>
+      </v-card-text>
 
-      <v-tabs scroll-bars v-model="active" light class="tabs-no-border">
+      <v-card-media v-if="selected.logoURL" :src="selected.logoURL" height="130px"></v-card-media>
+
+      <v-tabs dark :scrollable="false" v-model="active" class="tabs-no-border">
 
         <!-- BAR -->
         <v-tabs-bar slot="activators">
           <v-tabs-item ripple href="#general">General</v-tabs-item>
           <v-tabs-item ripple href="#promotions" v-if="selected.promotions && selected.promotions.length">Promotions</v-tabs-item>
+          <v-tabs-slider class="white"></v-tabs-slider>
         </v-tabs-bar>
 
         <!-- GENERAL -->
@@ -32,29 +32,49 @@
         <v-tabs-content id="promotions">
           <v-expansion-panel class="elevation-0">
             <v-expansion-panel-content v-for="promotion in selected.promotions" :key="promotion.name">
-              <div slot="header"><strong>{{ promotion.name }}</strong><br/><small>{{ promotion.description }}</small></div>
+              <div slot="header"><strong>{{ promotion.name }}</strong><br><small>{{ promotion.description }}</small></div>
               <v-card>
-                <v-card-row v-if="promotion.expiration" class="mb-3">
-                  <v-icon class="ml-2 mr-4" dark>timer</v-icon>
-                  <div>
-                    <div><strong>Expiration</strong></div>{{ promotion.expiration | moment("from", true) }}
-                  </div>
-                </v-card-row>
-                <v-card-row v-if="promotion.exclusions" class="mb-3">
-                  <v-icon class="ml-2 mr-4" dark>warning</v-icon>
-                  <div>
-                    <div><strong>Exclusions</strong></div>{{ promotion.exclusions }}
-                  </div>
-                </v-card-row>
-                <v-card-row v-if="promotion.isSingleUse">
-                  <v-container fluid>
-                    <strong>This promotion can only be redeemed once.</strong>
-                  </v-container>
-                </v-card-row>
-                <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
-                <v-card-row actions>
-                  <v-btn default block :disabled="promotion.redeemed || error" @click.native="redeem(promotion)">{{ promotion.redeemed ? 'Redeemed' : 'Redeem' }}</v-btn>
-                </v-card-row>
+                <v-card-text>
+                  <v-card class="elevation-3 white--text">
+
+                    <v-card-title class="primary">
+                      <div>
+                        <span class="title">{{ promotion.name }}</span>
+                        <p class="mb-0">{{ promotion.description }}</p>
+                      </div>
+                    </v-card-title>
+
+                    <v-list two-line class="pt-0 pb-0">
+                      <v-list-tile v-if="promotion.expiration">
+                        <v-list-tile-action><v-icon>timer</v-icon></v-list-tile-action>
+                        <v-list-tile-content>
+                          <v-list-tile-title>Expiration</v-list-tile-title>
+                          <v-list-tile-sub-title>{{ promotion.expiration | moment("from", true) }}</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                      <v-list-tile v-if="promotion.exclusions">
+                        <v-list-tile-action><v-icon>warning</v-icon></v-list-tile-action>
+                        <v-list-tile-content>
+                          <v-list-tile-title>Exclusions</v-list-tile-title>
+                          <v-list-tile-sub-title>{{ promotion.exclusions }}</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                      <v-list-tile v-if="promotion.isSingleUse">
+                        <v-list-tile-action><v-icon>looks_one</v-icon></v-list-tile-action>
+                        <v-list-tile-content>
+                          <v-list-tile-title>Single Use</v-list-tile-title>
+                          <v-list-tile-sub-title>This promotion can only be redeemed once.</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                    </v-list>
+
+                    <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
+                    <v-card-actions>
+                      <v-btn primary block :disabled="promotion.redeemed || error" @click.native="redeem(promotion)">{{ promotion.redeemed ? 'Redeemed' : 'Redeem' }}</v-btn>
+                    </v-card-actions>
+
+                  </v-card>
+                </v-card-text>
               </v-card>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -112,11 +132,17 @@ function redeem(promotion) {
 </script>
 
 <style scoped lang="stylus">
+@import '../../settings';
+
 .vue2leaflet-map {
   position: fixed;
   height: 100% !important;
-  top: 56px;
   z-index: 1;
+  top: 64px;
+
+  @media only screen and (min-width: 666px) and (max-width: $grid-breakpoints.lg) {
+    top: 48px;
+  }
 }
 </style>
 
@@ -136,6 +162,10 @@ function redeem(promotion) {
     padding-top: 1rem;
     padding-bottom: 1rem;
     height: inherit;
+
+    > div {
+      margin-right: 30px
+    }
   }
 
   .tabs-no-border {
