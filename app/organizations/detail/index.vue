@@ -172,7 +172,9 @@ function isOwnerOrAdministrator() {
   }
 }
 
-.middle .card-body {
-  min-height: 130px;
+.middle {
+  .card-body {
+    min-height: 130px;
+  }
 }
 </style>

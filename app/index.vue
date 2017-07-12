@@ -102,8 +102,12 @@ function logout() {
   z-index: 2;
 }
 
-.layout {
-  margin-bottom: 8px;
+.container {
+  > .layout {
+    > .flex {
+      margin-bottom: 8px;
+    }
+  }
 }
 
 .card__title {

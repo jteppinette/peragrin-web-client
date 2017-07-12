@@ -1,7 +1,5 @@
 <template>
-<v-container fluid class="pa-3 setup">
-  <router-view></router-view>
-</v-container>
+<router-view class="setup"></router-view>
 </template>
 
 <script>

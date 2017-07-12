@@ -17,17 +17,15 @@
 
     <v-stepper-content step="1">
       <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
-      <v-container fluid>
-        <v-layout row wrap>
-          <v-flex xs12 md6 class="pr-5">
-            <organization-form v-model="organization"></organization-form>
-          </v-flex>
-          <v-flex xs12 md6>
-            <organization-hours v-model="organization.hours"></organization-hours>
-          </v-flex>
-        </v-layout>
-        <v-btn primary @click.native="setupOrganization" class="white--text">Setup Organization</v-btn>
-      </v-container>
+      <v-layout row wrap>
+        <v-flex xs12 md6>
+          <organization-form v-model="organization"></organization-form>
+        </v-flex>
+        <v-flex xs12 md6>
+          <organization-hours v-model="organization.hours"></organization-hours>
+        </v-flex>
+      </v-layout>
+      <v-btn primary @click.native="setupOrganization" class="white--text">Setup Organization</v-btn>
     </v-stepper-content>
 
     <v-stepper-content step="2">

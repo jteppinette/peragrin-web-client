@@ -19,22 +19,20 @@
 
     <v-stepper-content step="1">
       <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
-      <v-container fluid>
-        <v-layout row wrap>
-          <v-flex xs12 md6 class="pr-5">
-            <organization-form v-model="organization"></organization-form>
-          </v-flex>
-          <v-flex xs12 md6>
-            <organization-hours v-model="organization.hours"></organization-hours>
-          </v-flex>
-        </v-layout>
-        <v-btn primary @click.native="setupBusiness" class="white--text">Setup Business</v-btn>
-      </v-container>
+      <v-layout row wrap>
+        <v-flex xs12 md6>
+          <organization-form v-model="organization"></organization-form>
+        </v-flex>
+        <v-flex xs12 md6>
+          <organization-hours v-model="organization.hours"></organization-hours>
+        </v-flex>
+      </v-layout>
+      <v-btn primary @click.native="setupBusiness" class="white--text">Setup Business</v-btn>
     </v-stepper-content>
 
     <v-stepper-content step="2">
       <v-container fluid v-if="organization.id">
-        <v-subheader>All images will be sized to a maxium size of 130px in width and 400px in height. The provided image's aspect ratio will be maintained.</v-subheader>
+        <p>All images will be sized to a maxium size of 130px in width and 400px in height. The provided image's aspect ratio will be maintained.</p>
         <dropzone id="myVueDropzone" param-name="logo" :url="`/organizations/${organization.id}/logo`" :headers="{'Authorization': `Bearer ${token}`}" @vdropzone-success="(file, {logo}) => organization.logo = logo" :resize-width="400" resize-method="crop" :resize-height="130" :thumbnail-width="400" :thumbnail-height="130" :max-number-of-files="1" :max-file-size-in-m-b="100"><input type="hidden"></dropzone>
         <v-btn flat @click.native="step = 3">Continue</v-btn>
       </v-container>
