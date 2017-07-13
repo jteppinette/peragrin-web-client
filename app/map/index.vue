@@ -84,16 +84,30 @@
 
     </v-card>
   </v-navigation-drawer>
-  <community-map :community="community" @select="select" v-if="community"></community-map>
+  
+  <v-toolbar flat class="categories pr-3">
+    <v-btn v-for="category in categories" class="hidden-sm-and-down" :class="{'white--text': filter.category == category.name}" :primary="filter.category == category.name" @click.native="filter.category = category.name" :key="category.name">{{ category.name }}</v-btn>
+    <v-btn v-for="category in categories" icon class="hidden-md-and-up" style="min-width: 36px" :class="{primary: filter.category == category.name}" @click.native="filter.category = category.name" :key="category.name"><v-icon :class="{'white--text': filter.category == category.name}">{{ category.icon }}</v-icon></v-btn>
+    <v-spacer></v-spacer>
+    <v-btn style="min-width: 36px" icon @click.native="filter.category = ''"><v-icon>cancel</v-icon></v-btn>
+  </v-toolbar>
+
+  <community-map :filter="filter" :community="community" @select="select" v-if="community"></community-map>
+
 </div>
 </template>
 
 <script>
 import organizationDetails from 'common/organization/details';
 import communityMap from 'common/community/map';
+import {ICONS} from 'common/categories';
+
+let filter = {
+  category: ''
+};
 
 export default {
-  data: () => ({active: undefined, community: undefined, selected: {}, sidebar: false, msg: '', error: undefined}),
+  data: () => ({active: undefined, community: undefined, selected: {}, sidebar: false, msg: '', error: undefined, filter, categories: ICONS}),
   mounted,
   methods: {select, redeem},
   components: {organizationDetails, communityMap}
@@ -138,16 +152,25 @@ function redeem(promotion) {
   position: fixed;
   height: 100% !important;
   z-index: 1;
-  top: 64px;
+  top: 128px;
 
-  @media only screen and (min-width: 666px) and (max-width: $grid-breakpoints.lg) {
-    top: 48px;
+  @media only screen and (min-width: 576px) and (max-width: $grid-breakpoints.lg) {
+    top: 96px;
   }
 }
 </style>
 
 <style lang="stylus">
+.categories.toolbar {
+  z-index: 10;
+
+  .toolbar__content {
+    overflow-x: scroll;
+  }
+}
+
 .organization-drawer {
+  z-index: 7 !important;
   border: 0;
   padding: 0px;
 

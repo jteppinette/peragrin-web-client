@@ -98,6 +98,12 @@ function logout() {
 @import '../settings';
 @import "~leaflet/dist/leaflet.css";
 
+.toolbar--absolute+main, .toolbar--fixed+main {
+  @media only screen and (min-width: 576px) and (max-width: $grid-breakpoints.lg) {
+    padding-top: 48px !important;
+  }
+}
+
 .leaflet-container {
   z-index: 2;
 }
