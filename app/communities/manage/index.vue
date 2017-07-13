@@ -34,8 +34,8 @@ export default {
       var l = [];
       for (let i in this.account.organizations) {
         let organization = this.account.organizations[i];
-        if (!organization.communities) return l;
-        l = l.concat(organization.communities);
+        if (!organization.communities) continue;
+        l = l.concat(organization.communities.filter(c => !l.find(v => v.id == c.id)));
       }
       return l;
     }
