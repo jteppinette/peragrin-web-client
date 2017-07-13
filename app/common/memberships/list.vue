@@ -45,9 +45,9 @@
         </v-dialog>
       </div>
 
-      <div v-if="users[membership.id] && users[membership.id].length" class="pl-2 pr-2">
-        <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
-      </div>
+      <v-toolbar v-if="users[membership.id] && users[membership.id].length" flat>
+        <v-text-field solo prepend-icon="search" :label="!search ? 'Search' : ''" v-model="search" class="ma-2 elevation-0"></v-text-field>
+      </v-toolbar>
       <v-data-table v-if="users[membership.id] && users[membership.id].length" :items="users[membership.id]" :search="search" class="no-limit-select no-headers">
         <template slot="items" scope="props"><td class="text-xs-right">{{ props.item.email }}</td></template>
       </v-data-table>

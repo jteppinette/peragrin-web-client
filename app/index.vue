@@ -189,4 +189,8 @@ function logout() {
     padding-right: 0px !important;
   }
 }
+
+.card .toolbar .toolbar__content {
+  height: 64px !important;
+}
 </style>

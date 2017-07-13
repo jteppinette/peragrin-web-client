@@ -1,17 +1,15 @@
 <template>
 <div>
 
-  <v-card-text style="position: relative">
+  <v-toolbar flat>
+    <v-text-field solo prepend-icon="search" :label="!search ? 'Search' : ''" v-model="search" class="ma-2 elevation-0"></v-text-field>
+    <v-spacer></v-spacer>
     <organization-create-update v-if="isAdministrator()" :communityID="community.id" @created="o => getOrganizations(community.id)">
       <template slot="activator" scope="props">
-        <v-btn fab right top absolute><v-icon>{{ props.action.icon }}</v-icon></v-btn>
+        <v-btn fab absolute top right><v-icon>{{ props.action.icon }}</v-icon></v-btn>
       </template>
     </organization-create-update>
-  </v-card-text>
-
-  <div class="pt-3 pl-3 pr-3">
-    <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
-  </div>
+  </v-toolbar>
 
   <v-data-table :headers="headers" :items="organizations" :search="search" class="no-limit-select">
     <template slot="items" scope="props">
