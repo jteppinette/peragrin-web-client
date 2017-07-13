@@ -57,7 +57,26 @@
 
     <v-flex xs12 sm6 md4>
       <v-card>
-        <v-card-title class="primary title">Operators</v-card-title>
+        <v-card-title class="primary" style="position: relative">
+          <span class="title">Operators</span>
+          <v-dialog v-model="addOperatorDialog" width="400px" scrollable persistent>
+            <v-btn fab absolute right bottom slot="activator"><v-icon>add</v-icon></v-btn>
+            <v-card>
+              <v-card-title class="primary title">Add Operator</v-card-title>
+              <v-alert error dismissible v-model="addOperatorError">{{ addOperatorMsg }}</v-alert>
+              <form @submit.prevent="addOperator" novalidate>
+                <v-card-text>
+                  <v-text-field v-model="operator.email" :error="addOperatorError" label="Email"></v-text-field>
+                </v-card-text>
+                <v-card-actions class="primary">
+                  <v-spacer></v-spacer>
+                  <v-btn flat class="white--text" @click.native="addOperatorDialog = false">Close</v-btn>
+                  <v-btn outline class="white--text" type="submit">Add</v-btn>
+                </v-card-actions>
+              </form>
+            </v-card>
+          </v-dialog>
+        </v-card-title>
         <v-list two-line class="card-body">
           <v-list-tile v-for="account in organization.accounts" :key="account.id" v-if="account">
             <v-list-tile-content>
@@ -116,7 +135,7 @@ import Dropzone from 'vue2-dropzone';
 
 export default {
   props: ['id'],
-  data: () => ({organization: {}, token: sessionStorage.token, uploadLogoDialog: false}),
+  data: () => ({organization: {}, token: sessionStorage.token, uploadLogoDialog: false, addOperatorDialog: false, addOperatorError: false, addOperatorMsg: '', operator: {email: ''}}),
   computed: {
     account () {
       return this.$store.state.account;
@@ -134,12 +153,23 @@ export default {
     this.$http.get(`/organizations/${this.id}/communities`)
       .then(response => response.json())
       .then(communities => this.$set(this.organization, 'communities', communities));
-    this.$http.get(`/organizations/${this.id}/accounts`)
-      .then(response => response.json())
-      .then(accounts => this.$set(this.organization, 'accounts', accounts));
+    this.initializeOperators();
   },
-  methods: {isOwnerOrAdministrator, uploadLogoSuccess}
+  methods: {isOwnerOrAdministrator, uploadLogoSuccess, addOperator, initializeOperators}
 };
+
+function initializeOperators() {
+  this.$http.get(`/organizations/${this.id}/accounts`)
+    .then(response => response.json())
+    .then(accounts => this.$set(this.organization, 'accounts', accounts));
+}
+
+function addOperator() {
+  this.$http.post(`/organizations/${this.id}/accounts`, this.operator)
+    .then(() => this.addOperatorDialog = false)
+    .catch(({data}) => this.addOperatorError = !!(this.addOperatorMsg = data && data.msg ? data.msg : 'unknown error'))
+    .then(initializeOperators);
+}
 
 function uploadLogoSuccess(file, {logo, logoURL}) {
   this.$set(this.organization, 'logo', logo);
