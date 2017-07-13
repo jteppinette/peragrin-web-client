@@ -85,11 +85,9 @@
     </v-card>
   </v-navigation-drawer>
   
-  <v-toolbar flat class="categories pr-3">
-    <v-btn v-for="category in categories" class="hidden-sm-and-down" :class="{'white--text': filter.category == category.name}" :primary="filter.category == category.name" @click.native="filter.category = category.name" :key="category.name">{{ category.name }}</v-btn>
-    <v-btn v-for="category in categories" icon class="hidden-md-and-up" style="min-width: 36px" :class="{primary: filter.category == category.name}" @click.native="filter.category = category.name" :key="category.name"><v-icon :class="{'white--text': filter.category == category.name}">{{ category.icon }}</v-icon></v-btn>
-    <v-spacer></v-spacer>
-    <v-btn style="min-width: 36px" icon @click.native="filter.category = ''"><v-icon>cancel</v-icon></v-btn>
+  <v-toolbar flat class="categories">
+    <v-btn v-for="category in categories" class="hidden-sm-and-down" :class="{'white--text': filter.category == category.name}" :primary="filter.category == category.name" @click.native="filter.category = filter.category == category.name ? '' : category.name" :key="category.name">{{ category.name }}</v-btn>
+    <v-btn v-for="category in categories" icon class="hidden-md-and-up" style="min-width: 36px" :class="{primary: filter.category == category.name}" @click.native="filter.category = filter.category == category.name ? '' : category.name" :key="category.name"><v-icon :class="{'white--text': filter.category == category.name}">{{ category.icon }}</v-icon></v-btn>
   </v-toolbar>
 
   <community-map :filter="filter" :community="community" @select="select" v-if="community"></community-map>
