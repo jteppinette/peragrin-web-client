@@ -152,7 +152,7 @@ function redeem(promotion) {
   z-index: 1;
   top: 128px;
 
-  @media only screen and (min-width: 576px) and (max-width: $grid-breakpoints.lg) {
+  @media screen and (min-width: 622px) and (max-width: $grid-breakpoints.lg) {
     top: 96px;
   }
 }
@@ -160,7 +160,7 @@ function redeem(promotion) {
 
 <style lang="stylus">
 .categories.toolbar {
-  z-index: 5;
+  z-index: 4;
 
   .toolbar__content {
     overflow-x: scroll;

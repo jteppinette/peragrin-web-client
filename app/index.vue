@@ -1,5 +1,5 @@
 <template>
-<v-app>
+<v-app toolbar>
 
   <!-- SIDE NAVIGATION -->
   <v-navigation-drawer v-if="!$route.path.includes('auth')" v-model="navbar" :mini-variant.sync="mini" clipped persistent>
@@ -99,7 +99,7 @@ function logout() {
 @import "~leaflet/dist/leaflet.css";
 
 .toolbar--absolute+main, .toolbar--fixed+main {
-  @media only screen and (min-width: 576px) and (max-width: $grid-breakpoints.lg) {
+  @media screen and (min-width: 622px) and (max-width: $grid-breakpoints.lg) {
     padding-top: 48px !important;
   }
 }
