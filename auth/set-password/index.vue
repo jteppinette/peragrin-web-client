@@ -4,7 +4,7 @@
   <form @submit.prevent="set" class="pa-3" novalidate>
     <v-text-field v-model="account.email" :error="error" prepend-icon="mail" type="email" label="Email" disabled></v-text-field>
     <v-text-field v-model="password" :error="error" prepend-icon="lock" type="password" label="Password"></v-text-field>
-    <v-text-field v-model="confirm" :error="error" :rules="[() => (password && confirm) && (password !== confirm) ? 'Your passwords do not match.' : undefined]" prepend-icon="check" type="password" label="Confirm Password"></v-text-field>
+    <v-text-field v-model="confirm" :error="error" :rules="[() => (password && confirm) && (password !== confirm) ? 'Your passwords do not match.' : true]" prepend-icon="check" type="password" label="Confirm Password"></v-text-field>
     <v-btn type="submit" class="white--text" block primary :disabled="!password || !confirm || password !== confirm">Set Password</v-btn>
   </form>
 </div>
