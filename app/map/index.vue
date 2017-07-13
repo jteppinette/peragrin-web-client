@@ -85,10 +85,10 @@
     </v-card>
   </v-navigation-drawer>
   
-  <v-toolbar flat class="categories">
-    <v-btn v-for="category in categories" class="hidden-sm-and-down" :class="{'white--text': filter.category == category.name}" :primary="filter.category == category.name" @click.native="filter.category = filter.category == category.name ? '' : category.name" :key="category.name">{{ category.name }}</v-btn>
+  <v-container fluid class="pl-2 pr-2 pt-0 pb-0 elevation-1 grey lighten-4">
+    <v-btn flat v-for="category in categories" class="hidden-sm-and-down" @click.native="filter.category = filter.category == category.name ? '' : category.name" :key="category.name"><v-icon left :class="{'primary--text': filter.category == category.name}">{{ category.icon }}</v-icon> {{ category.name }}</v-btn>
     <v-btn v-for="category in categories" icon class="hidden-md-and-up" style="min-width: 36px" :class="{primary: filter.category == category.name}" @click.native="filter.category = filter.category == category.name ? '' : category.name" :key="category.name"><v-icon :class="{'white--text': filter.category == category.name}">{{ category.icon }}</v-icon></v-btn>
-  </v-toolbar>
+  </v-container>
 
   <community-map :filter="filter" :community="community" @select="select" v-if="community"></community-map>
 
@@ -144,29 +144,22 @@ function redeem(promotion) {
 </script>
 
 <style scoped lang="stylus">
-@import '../../settings';
-
 .vue2leaflet-map {
   position: fixed;
   height: 100% !important;
   z-index: 1;
-  top: 128px;
+  top: 96px;
+}
 
-  @media screen and (min-width: 622px) and (max-width: $grid-breakpoints.lg) {
-    top: 96px;
-  }
+.container {
+  z-index: 2;
+  position: fixed;
+  overflow-x: scroll;
+  white-space: nowrap;
 }
 </style>
 
 <style lang="stylus">
-.categories.toolbar {
-  z-index: 4;
-
-  .toolbar__content {
-    overflow-x: scroll;
-  }
-}
-
 .organization-drawer {
   z-index: 7 !important;
   border: 0;

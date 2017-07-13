@@ -19,10 +19,6 @@ export default {
 @import './node_modules/vuetify/src/stylus/components/*'
 @import './node_modules/vuetify/src/stylus/trumps/*'
 
-html, body {
-  background-color: white;
-}
-
 html {
   padding-right: 0px !important;
 }
