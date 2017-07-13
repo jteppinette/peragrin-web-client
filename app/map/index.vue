@@ -162,7 +162,7 @@ function redeem(promotion) {
 
 <style lang="stylus">
 .categories.toolbar {
-  z-index: 6;
+  z-index: 5;
 
   .toolbar__content {
     overflow-x: scroll;
