@@ -162,6 +162,10 @@ function redeem(promotion) {
   .btn__content, .btn__content:before {
     transition: initial !important;
   }
+
+  .btn {
+    transition: initial !important;
+  }
 }
 
 .organization-drawer {
