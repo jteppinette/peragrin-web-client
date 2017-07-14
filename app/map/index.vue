@@ -85,9 +85,9 @@
     </v-card>
   </v-navigation-drawer>
   
-  <v-container fluid class="pl-2 pr-2 pt-0 pb-0 elevation-1 grey lighten-4">
-    <v-btn flat v-for="category in categories" class="hidden-sm-and-down" @click.native="filter.category = filter.category == category.name ? '' : category.name" :key="category.name"><v-icon left :class="{'primary--text': filter.category == category.name}">{{ category.icon }}</v-icon> {{ category.name }}</v-btn>
-    <v-btn v-for="category in categories" icon class="hidden-md-and-up" style="min-width: 36px" :class="{primary: filter.category == category.name}" @click.native="filter.category = filter.category == category.name ? '' : category.name" :key="category.name"><v-icon :class="{'white--text': filter.category == category.name}">{{ category.icon }}</v-icon></v-btn>
+  <v-container fluid class="pl-2 pr-2 pt-0 pb-0 elevation-1 grey lighten-4 categories">
+    <v-btn :ripple="false" flat v-for="category in categories" class="hidden-sm-and-down" @click.native="filter.category = filter.category == category.name ? '' : category.name" :key="category.name"><v-icon left :class="{'primary--text': filter.category == category.name}">{{ category.icon }}</v-icon> {{ category.name }}</v-btn>
+    <v-btn :ripple="false" flat v-for="category in categories" :icon="filter.category != category.name" class="hidden-md-and-up" @click.native="filter.category = filter.category == category.name ? '' : category.name" :key="category.name"><v-icon :left="filter.category == category.name" :class="{'primary--text': filter.category == category.name}">{{ category.icon }}</v-icon>{{ filter.category == category.name ? category.name : '' }}</v-btn>
   </v-container>
 
   <community-map :filter="filter" :community="community" @select="select" v-if="community"></community-map>
@@ -150,16 +150,20 @@ function redeem(promotion) {
   z-index: 1;
   top: 96px;
 }
+</style>
 
-.container {
+<style lang="stylus">
+.container.categories {
   z-index: 2;
   position: fixed;
   overflow-x: scroll;
   white-space: nowrap;
-}
-</style>
 
-<style lang="stylus">
+  .btn__content, .btn__content:before {
+    transition: initial !important;
+  }
+}
+
 .organization-drawer {
   z-index: 7 !important;
   border: 0;
