@@ -159,12 +159,11 @@ function redeem(promotion) {
   overflow-x: scroll;
   white-space: nowrap;
 
-  .btn__content, .btn__content:before {
-    transition: initial !important;
-  }
-
-  .btn {
-    transition: initial !important;
+  .btn, .btn__content, .btn__content:before {
+    -moz-transition: none;
+    -webkit-transition: none;
+    -o-transition: color 0 ease-in;
+    transition: none;
   }
 }
 
