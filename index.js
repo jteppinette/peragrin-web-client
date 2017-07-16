@@ -38,6 +38,7 @@ import businessLeaderSetup from 'setup/business-leader';
 
 import communitiesManage from 'communities/manage';
 import communitiesDetail from 'communities/detail';
+import communitiesMembershipsDetail from 'communities/memberships/detail';
 
 import organizationsManage from 'organizations/manage';
 import organizationsDetail from 'organizations/detail';
@@ -52,6 +53,7 @@ const routes = [
         {path: 'organizations/:id', component: organizationsDetail, props: true},
         {path: 'communities', component: communitiesManage},
         {path: 'communities/:id', component: communitiesDetail, props: true},
+        {path: 'communities/:communityID/memberships/:membershipID', component: communitiesMembershipsDetail, props: true},
         {path: 'profile', component: profile},
         {path: 'setup', component: setup, children: [
             {path: 'community-leader', component: communityLeaderSetup},

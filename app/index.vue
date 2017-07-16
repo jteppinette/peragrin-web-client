@@ -193,4 +193,19 @@ function logout() {
 .card .toolbar .toolbar__content {
   height: 64px !important;
 }
+
+.no-limit-select .datatable__actions__select {
+  display: none !important;
+}
+.no-headers .datatable thead {
+  display: none;
+}
+
+.speed-dial {
+  z-index: 3;
+}
+
+.speed-dial--bottom.speed-dial--absolute {
+  bottom: 0% !important;
+}
 </style>
