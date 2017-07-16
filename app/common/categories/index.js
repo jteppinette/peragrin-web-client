@@ -16,19 +16,17 @@ export const MARKER_BASE = {
   shadowSize:  [41, 41]
 };
 
-export const CATEGORIES = ['Restaurant', 'Entertainment', 'Retail', 'Organization', 'Service', 'Realestate', 'Health'];
-
-export const ICONS = [
-    {icon: 'restaurant_menu', name: 'Restaurant'},
-    {icon: 'local_activity', name: 'Entertainment'},
-    {icon: 'shopping_basket', name: 'Retail'},
-    {icon: 'group_work', name: 'Organization'},
-    {icon: 'build', name: 'Service'},
-    {icon: 'home', name: 'Realestate'},
-    {icon: 'favorite', name: 'Health'}
+export const CATEGORIES = [
+    {name: 'Restaurant', icon: 'restaurant_menu'},
+    {name: 'Entertainment', icon: 'local_activity'},
+    {name: 'Retail', icon: 'shopping_basket'},
+    {name: 'Organization', icon: 'group_work'},
+    {name: 'Service', icon: 'build'},
+    {name: 'Realestate', icon: 'home'},
+    {name: 'Health', icon: 'favorite'}
 ];
 
-export const MARKERS = CATEGORIES.concat('Community Leader').reduce((result, key) => {
-  result[key] = L.icon({...MARKER_BASE, iconUrl: require(`../../../assets/markers/${key.toLowerCase().replace(' ', '-')}.png`)});
+export const MARKERS = CATEGORIES.concat({name: 'Community Leader'}).reduce((result, category) => {
+  result[category.name] = L.icon({...MARKER_BASE, iconUrl: require(`../../../assets/markers/${category.name.toLowerCase().replace(' ', '-')}.png`)});
   return result;
 }, {});

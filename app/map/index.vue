@@ -98,14 +98,14 @@
 <script>
 import organizationDetails from 'common/organization/details';
 import communityMap from 'common/community/map';
-import {ICONS} from 'common/categories';
+import {CATEGORIES} from 'common/categories';
 
 let filter = {
   category: ''
 };
 
 export default {
-  data: () => ({active: undefined, community: undefined, selected: {}, sidebar: false, msg: '', error: undefined, filter, categories: ICONS}),
+  data: () => ({active: undefined, community: undefined, selected: {}, sidebar: false, msg: '', error: undefined, filter, categories: CATEGORIES}),
   mounted,
   methods: {select, redeem},
   components: {organizationDetails, communityMap}

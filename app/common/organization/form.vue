@@ -6,7 +6,12 @@
   <v-text-field v-model="value.email" type="text" label="Email"></v-text-field>
   <v-text-field v-model="value.phone" type="text" label="Phone Number"></v-text-field>
   <v-text-field v-model="value.website" type="text" label="Website"></v-text-field>
-  <v-select v-if="value.category !== 'Community Leader'" label="Category" :items="categories" v-model="value.category" auto />
+  <v-select v-if="value.category !== 'Community Leader'" label="Category" item-text="name" item-value="name" :items="categories" v-model="value.category" auto>
+    <template slot="item" scope="data">
+      <v-list-tile-avatar><v-icon>{{ data.item.icon }}</v-icon></v-list-tile-avatar>
+      <v-list-tile-content><v-list-tile-title>{{ data.item.name }}</v-list-tile-title></v-list-tile-content>
+    </template>
+  </v-select>
 
   <v-subheader>Address</v-subheader>
   <v-text-field v-model="value.street" type="text" label="Street"></v-text-field>
