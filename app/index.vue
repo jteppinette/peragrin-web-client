@@ -2,12 +2,12 @@
 <v-app toolbar>
 
   <!-- SIDE NAVIGATION -->
-  <v-navigation-drawer v-if="!$route.path.includes('auth')" v-model="navbar" :mini-variant.sync="mini" clipped persistent>
+  <v-navigation-drawer v-model="navbar" :mini-variant.sync="mini" clipped persistent>
 
     <!-- PROFILE -->
     <v-list v-if="account">
       <v-list-tile avatar tag="div">
-        <v-list-tile-avatar><v-gravatar :email="account.email"></v-gravatar></v-list-tile-avatar>
+        <v-list-tile-avatar><gravatar :email="account.email"></gravatar></v-list-tile-avatar>
         <v-list-tile-content><v-list-tile-title>{{ account.email }}</v-list-tile-title></v-list-tile-content>
         <v-list-tile-action><v-btn icon @click.native.stop="mini = !mini"><v-icon>chevron_left</v-icon></v-btn></v-list-tile-action>
       </v-list-tile>
@@ -37,11 +37,11 @@
   </v-navigation-drawer>
 
   <!-- TOOLBAR -->
-  <v-toolbar v-if="!$route.path.includes('auth')" class="primary elevation-0" dark fixed>
+  <v-toolbar class="primary elevation-0" dark fixed>
     <v-toolbar-side-icon class="hidden-lg-and-up" @click.native.stop="navbar = !navbar"></v-toolbar-side-icon>
     <v-toolbar-title>peragrin</v-toolbar-title>
     <v-spacer></v-spacer>
-    <router-link class="hidden-md-and-down white--text" v-if="!account" to="/auth/login">Login</router-link>
+    <router-link class="hidden-xs-only white--text" v-if="!account" to="/auth/login">Login</router-link>
     <v-menu v-if="account" bottom left origin="bottom left" transition="v-scale-transition">
       <v-btn icon slot="activator"><v-icon class="white--text">account_circle</v-icon></v-btn>
       <v-list>
@@ -64,15 +64,6 @@
 </template>
 
 <script>
-import L from 'leaflet';
-
-L.Icon.Default.imagePath = '/';
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-    iconUrl: require('leaflet/dist/images/marker-icon.png'),
-    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-});
-
 import Gravatar from 'vue-gravatar';
 
 export default {
@@ -83,9 +74,7 @@ export default {
       return this.$store.state.account;
     }
   },
-  components: {
-    'v-gravatar': Gravatar
-  }
+  components: {Gravatar}
 };
 
 function logout() {
@@ -95,12 +84,27 @@ function logout() {
 </script>
 
 <style lang="stylus">
+
+/***********/
+/* IMPORTS */
+/***********/
+
 @import '../settings';
 @import "~leaflet/dist/leaflet.css";
+
+
+/***********/
+/* LEAFLET */
+/***********/
 
 .leaflet-container {
   z-index: 2;
 }
+
+
+/**********/
+/* LAYOUT */
+/**********/
 
 .container {
   > .layout {
@@ -108,41 +112,95 @@ function logout() {
       margin-bottom: 8px;
     }
   }
-}
 
-.card__title {
-
-  &.title, &.headline, .title, .headline {
-    font-family: 'Fredoka One', cursive;
-  }
-
-  &.primary {
-    color: white;
+  .subheader {
+    padding: 0px;
   }
 }
+
+
+/*********/
+/* CARDS */
+/*********/
+
+.card {
+
+  .card__title {
+
+    &.title, &.headline, .title, .headline {
+      font-family: 'Fredoka One', cursive;
+    }
+
+    &.primary {
+      color: white;
+    }
+  }
+
+  .toolbar .toolbar__content {
+    height: 64px !important;
+  }
+}
+
+
+/********/
+/* MENU */
+/********/
 
 .menu__content {
   min-width: inherit !important;
 }
 
+/***********/
+/* STEPPER */
+/***********/
+
 .stepper__wrapper {
   min-height: 350px;
 }
+
+
+/***********/
+/* BUTTONS */
+/***********/
 
 .btn.btn--floating {
   z-index: 3;
 }
 
+.speed-dial {
+  z-index: 3;
+}
+
+.speed-dial--bottom.speed-dial--absolute {
+  bottom: 0% !important;
+}
+
+
+/*********************/
+/* NAVIGATION DRAWER */
+/*********************/
+
 .navigation-drawer--light.navigation-drawer--right {
   border-left: none !important;
 }
+
+
+/*******************/
+/* EXPANSION PANEL */
+/*******************/
 
 .expansion-panel>li {
   border: none !important;
 }
 
+
+/**********/
+/* DIALOG */
+/**********/
+
 .dialog__container {
   display: block !important;
+  margin: 0px !important;
 }
 
 .dialog {
@@ -153,13 +211,19 @@ function logout() {
   }
 }
 
-.container .subheader {
-  padding: 0px;
-}
+
+/********/
+/* TABS */
+/********/
 
 .tabs__item {
   padding: 16px;
 }
+
+
+/***************/
+/* BREADCRUMBS */
+/***************/
 
 .breadcrumbs {
   padding-left: 0px !important;
@@ -178,6 +242,11 @@ function logout() {
   }
 }
 
+
+/*************/
+/* UTILITIES */
+/*************/
+
 .pl-0-lg {
   @media (min-width: $grid-breakpoints.md) {
     padding-left: 0px !important;
@@ -190,9 +259,10 @@ function logout() {
   }
 }
 
-.card .toolbar .toolbar__content {
-  height: 64px !important;
-}
+
+/***************/
+/* DATA TABLES */
+/***************/
 
 .no-limit-select .datatable__actions__select {
   display: none !important;
@@ -201,11 +271,19 @@ function logout() {
   display: none;
 }
 
-.speed-dial {
-  z-index: 3;
-}
 
-.speed-dial--bottom.speed-dial--absolute {
-  bottom: 0% !important;
+/***********/
+/* TOOLBAR */
+/***********/
+
+.toolbar {
+
+  &.primary {
+    z-index: 4 !important;
+  }
+
+  &__title {
+    font-family: 'Fredoka One', Roboto, sans-serif;
+  }
 }
 </style>

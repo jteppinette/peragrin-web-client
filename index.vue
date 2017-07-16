@@ -33,19 +33,4 @@ html {
   margin-top: 0px;
   text-transform: capitalize;
 }
-
-.toolbar {
-
-  &.primary {
-    z-index: 4 !important;
-  }
-
-  &__title {
-    font-family: 'Fredoka One', Roboto, sans-serif;
-  }
-}
-
-.dialog__container {
-  margin: 0px !important;
-}
 </style>
