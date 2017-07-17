@@ -26,7 +26,7 @@
         </v-tabs-bar>
 
         <!-- GENERAL -->
-        <v-tabs-content id="general"><organization-details :organization="selected"></organization-details></v-tabs-content>
+        <v-tabs-content id="general"><organizations-details :organization="selected"></organizations-details></v-tabs-content>
 
         <!-- PROMOTIONS -->
         <v-tabs-content id="promotions">
@@ -90,14 +90,14 @@
     <v-btn :ripple="false" flat v-for="category in categories" :icon="filter.category != category.name" class="hidden-md-and-up" @click.native="filter.category = filter.category == category.name ? '' : category.name" :key="category.name"><v-icon :left="filter.category == category.name" :class="{'primary--text': filter.category == category.name}">{{ category.icon }}</v-icon>{{ filter.category == category.name ? category.name : '' }}</v-btn>
   </v-container>
 
-  <community-map :filter="filter" :community="community" @select="select" v-if="community"></community-map>
+  <communities-map :filter="filter" :community="community" @select="select" v-if="community"></communities-map>
 
 </div>
 </template>
 
 <script>
-import organizationDetails from 'common/organization/details';
-import communityMap from 'common/community/map';
+import organizationsDetails from 'common/organizations/details';
+import communitiesMap from 'common/communities/map';
 import {CATEGORIES} from 'common/categories';
 
 let filter = {
@@ -108,7 +108,7 @@ export default {
   data: () => ({active: undefined, community: undefined, selected: {}, sidebar: false, msg: '', error: undefined, filter, categories: CATEGORIES}),
   mounted,
   methods: {select, redeem},
-  components: {organizationDetails, communityMap}
+  components: {organizationsDetails, communitiesMap}
 };
 
 function mounted() {

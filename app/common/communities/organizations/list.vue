@@ -4,11 +4,11 @@
   <v-toolbar flat>
     <v-text-field solo prepend-icon="search" :label="!search ? 'Search' : ''" v-model="search" class="ma-2 elevation-0"></v-text-field>
     <v-spacer></v-spacer>
-    <organization-create-update v-if="isAdministrator()" :communityID="community.id" @created="o => getOrganizations(community.id)">
+    <organizations-create-update v-if="isAdministrator()" :communityID="community.id" @created="o => getOrganizations(community.id)">
       <template slot="activator" scope="props">
         <v-btn fab absolute top right><v-icon>{{ props.action.icon }}</v-icon></v-btn>
       </template>
-    </organization-create-update>
+    </organizations-create-update>
   </v-toolbar>
 
   <v-data-table :headers="headers" :items="organizations" :search="search" class="no-limit-select">
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import organizationCreateUpdate from 'common/organization/create-update';
+import organizationsCreateUpdate from 'common/organizations/create-update';
 
 const headers = [
   {
@@ -71,7 +71,7 @@ export default {
       return this.$store.state.account;
     }
   },
-  components: {organizationCreateUpdate},
+  components: {organizationsCreateUpdate},
   methods: {getOrganizations, isAdministrator}
 };
 

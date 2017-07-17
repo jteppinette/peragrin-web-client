@@ -12,7 +12,7 @@
         <v-card-title primary-title class="primary headline">{{ organization.name }}</v-card-title>
         <v-card-text class="primary"><v-chip v-if="organization.category" outline class="ma-0 white--text">{{ organization.category }}</v-chip></v-card-text>
 
-        <organization-details :organization="organization"></organization-details>
+        <organizations-details :organization="organization"></organizations-details>
         <v-map v-if="organization.lat && organization.lon" :zoom="15" :center="[organization.lat, organization.lon]">
           <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
           <v-marker :lat-lng="{'lat': organization.lat, 'lng': organization.lon}" :icon="organization.icon"></v-marker>
@@ -30,10 +30,10 @@
 </template>
 
 <script>
-import organizationDetails from 'common/organization/details';
+import organizationsDetails from 'common/organizations/details';
 
 export default {
-  components: {organizationDetails},
+  components: {organizationsDetails},
   computed: {
     account () {
       return this.$store.state.account;

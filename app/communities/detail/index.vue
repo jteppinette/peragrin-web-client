@@ -10,7 +10,7 @@
     <v-flex xs12>
       <v-card>
         <v-card-title primary-title class="primary headline">{{ community.name }}</v-card-title>
-        <community-organizations-list :community="community" :selected="selected"></community-organizations-list>
+        <communities-organizations-list :community="community" :selected="selected"></communities-organizations-list>
       </v-card>
     </v-flex>
   </v-layout>
@@ -37,7 +37,7 @@
     <v-flex xs12 sm6>
       <v-card>
         <v-card-title class="primary title">Map</v-card-title>
-        <community-map :community="community" @select="organization => selected = organization"></community-map>
+        <communities-map :community="community" @select="organization => selected = organization"></communities-map>
       </v-card>
     </v-flex>
   </v-layout>
@@ -46,14 +46,14 @@
 </template>
 
 <script>
-import communityOrganizationsList from 'common/community/organizations/list';
-import communityMap from 'common/community/map';
+import communitiesOrganizationsList from 'common/communities/organizations/list';
+import communitiesMap from 'common/communities/map';
 import membershipsCreateUpdate from 'common/memberships/create-update';
 
 export default {
   props: ['id'],
   data: () => ({community: undefined, selected: undefined, memberships: undefined, isAdministrator: false}),
-  components: {communityOrganizationsList, communityMap, membershipsCreateUpdate},
+  components: {communitiesOrganizationsList, communitiesMap, membershipsCreateUpdate},
   computed: {
     account () {
       return this.$store.state.account;

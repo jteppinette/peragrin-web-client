@@ -1,5 +1,5 @@
 <template>
-<v-container class="organization-detail">
+<v-container>
 
   <v-breadcrumbs>
     <v-breadcrumbs-item to="/organizations">Organizations</v-breadcrumbs-item>
@@ -13,17 +13,17 @@
       <v-card-title primary-title class="primary headline">{{ organization.name }}</v-card-title>
       <v-card-text class="primary" style="position: relative">
         <v-chip v-if="organization.category" outline class="ma-0 white--text">{{ organization.category }}</v-chip>
-        <organization-create-update v-if="organization.id && isOwnerOrAdministrator()" :organization="organization" @updated="o => organization = o">
+        <organizations-create-update v-if="organization.id && isOwnerOrAdministrator()" :organization="organization" @updated="o => organization = o">
           <template slot="activator" scope="props">
             <v-btn fab right bottom absolute><v-icon>{{ props.action.icon }}</v-icon></v-btn>
           </template>
-        </organization-create-update>
+        </organizations-create-update>
       </v-card-text>
 
       <v-layout row wrap class="general">
 
         <v-flex xs12 md6 class="pr-0-lg">
-          <organization-details :organization="organization"></organization-details>
+          <organizations-details :organization="organization"></organizations-details>
         </v-flex>
 
         <v-flex xs12 md6 class="pl-0-lg">
@@ -128,8 +128,8 @@
 
 <script>
 import promotionsList from 'common/promotions/list';
-import organizationDetails from 'common/organization/details';
-import organizationCreateUpdate from 'common/organization/create-update';
+import organizationsDetails from 'common/organizations/details';
+import organizationsCreateUpdate from 'common/organizations/create-update';
 import {MARKERS} from 'common/categories';
 import Dropzone from 'vue2-dropzone';
 
@@ -144,7 +144,7 @@ export default {
       return this.organization.category ? MARKERS[this.organization.category] : undefined;
     }
   },
-  components: {promotionsList, organizationDetails, organizationCreateUpdate, Dropzone},
+  components: {promotionsList, organizationsDetails, organizationsCreateUpdate, Dropzone},
   mounted () {
     this.$store.dispatch('initialize');
     this.$http.get(`/organizations/${this.id}`)

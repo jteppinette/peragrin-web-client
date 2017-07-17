@@ -21,10 +21,10 @@
       <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
       <v-layout row wrap>
         <v-flex xs12 md6>
-          <organization-form v-model="organization"></organization-form>
+          <organizations-form v-model="organization"></organizations-form>
         </v-flex>
         <v-flex xs12 md6>
-          <organization-hours v-model="organization.hours"></organization-hours>
+          <organizations-hours v-model="organization.hours"></organizations-hours>
         </v-flex>
       </v-layout>
       <v-btn primary @click.native="setupBusiness" class="white--text">Setup Business</v-btn>
@@ -62,8 +62,8 @@
 </template>
 
 <script>
-import organizationForm from 'common/organization/form';
-import organizationHours from 'common/organization/hours';
+import organizationsForm from 'common/organizations/form';
+import organizationsHours from 'common/organizations/hours';
 import Dropzone from 'vue2-dropzone';
 
 var organization = {
@@ -89,7 +89,7 @@ export default {
   data: () => ({step: 1, organization, marker, communities: [], community: {}, error: false, msg: '', token: sessionStorage.token}),
   mounted: mounted,
   methods: {setupBusiness, move, updateBusinessLocation, join},
-  components: {organizationForm, organizationHours, Dropzone}
+  components: {organizationsForm, organizationsHours, Dropzone}
 };
 
 function mounted() {

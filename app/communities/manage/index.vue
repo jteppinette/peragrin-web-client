@@ -9,7 +9,7 @@
     <v-flex xs12 md6 v-for="community in communities" :key="community.id" v-if="community">
       <v-card>
         <v-card-title primary-title class="primary headline">{{ community.name }}</v-card-title>
-        <community-map :community="community"></community-map>
+        <communities-map :community="community"></communities-map>
         <v-card-actions>
           <v-btn flat :to="`/communities/${community.id}`">Manage</v-btn>
         </v-card-actions>
@@ -21,10 +21,10 @@
 </template>
 
 <script>
-import communityMap from 'common/community/map';
+import communitiesMap from 'common/communities/map';
 
 export default {
-  components: {communityMap},
+  components: {communitiesMap},
   computed: {
     account () {
       return this.$store.state.account;

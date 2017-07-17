@@ -19,10 +19,10 @@
       <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
       <v-layout row wrap>
         <v-flex xs12 md6>
-          <organization-form v-model="organization"></organization-form>
+          <organizations-form v-model="organization"></organizations-form>
         </v-flex>
         <v-flex xs12 md6>
-          <organization-hours v-model="organization.hours"></organization-hours>
+          <organizations-hours v-model="organization.hours"></organizations-hours>
         </v-flex>
       </v-layout>
       <v-btn primary @click.native="setupOrganization" class="white--text">Setup Organization</v-btn>
@@ -60,8 +60,8 @@
 </template>
 
 <script>
-import organizationForm from 'common/organization/form';
-import organizationHours from 'common/organization/hours';
+import organizationsForm from 'common/organizations/form';
+import organizationsHours from 'common/organizations/hours';
 
 var organization = {
     name: '',
@@ -88,7 +88,7 @@ export default {
     updateOrganizationLocation,
     createCommunity
   },
-  components: {organizationForm, organizationHours}
+  components: {organizationsForm, organizationsHours}
 };
 
 function createCommunity() {
