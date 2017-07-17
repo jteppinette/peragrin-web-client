@@ -4,11 +4,8 @@
   <v-toolbar flat>
     <v-text-field solo prepend-icon="search" :label="!search ? 'Search' : ''" v-model="search" class="ma-2 elevation-0"></v-text-field>
     <v-spacer></v-spacer>
-    <organizations-create-update v-if="isAdministrator()" :communityID="community.id" @created="o => getOrganizations(community.id)">
-      <template slot="activator" scope="props">
-        <v-btn fab absolute top right><v-icon>{{ props.action.icon }}</v-icon></v-btn>
-      </template>
-    </organizations-create-update>
+    <v-btn v-if="isAdministrator()" @click.native.stop="dialogs.organizationsCreateUpdate = !dialogs.organizationsCreateUpdate" fab absolute top right><v-icon>add</v-icon></v-btn>
+    <organizations-create-update v-model="dialogs.organizationsCreateUpdate" :communityID="community.id" @created="o => getOrganizations(community.id)"></organizations-create-update>
   </v-toolbar>
 
   <v-data-table :headers="headers" :items="organizations" :search="search" class="no-limit-select">
@@ -52,9 +49,13 @@ const headers = [
   }
 ];
 
+let dialogs = {
+  organizationsCreateUpdate: false
+};
+
 export default {
-  props: ['community', 'selected'],
-  data: () => ({organizations: [], headers, search: ''}),
+  props: ['community', 'selected', 'value'],
+  data: () => ({organizations: [], headers, search: '', dialogs}),
   watch: {
     community: function(community) {
       return getOrganizations.call(this, this.community.id)

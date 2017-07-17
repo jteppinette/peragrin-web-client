@@ -20,8 +20,8 @@
       <v-card>
         <v-card-title class="primary" style="position: relative">
           <span class="title">Memberhips</span>
-          <memberships-create-update :communityID="id" @created="() => getMemberships()">
-            <template slot="activator" scope="props"><v-btn fab absolute bottom right><v-icon>{{ props.action.icon }}</v-icon></v-btn></template>
+          <v-btn v-if="isAdministrator" @click.native.stop="dialogs.membershipsCreateUpdate = !dialogs.membershipsCreateUpdate" fab absolute bottom right><v-icon>add</v-icon></v-btn>
+          <memberships-create-update v-model="dialogs.membershipsCreateUpdate" :communityID="id" @created="() => getMemberships()">
           </memberships-create-update>
         </v-card-title>
         <v-list two-line>
@@ -50,9 +50,13 @@ import communitiesOrganizationsList from 'common/communities/organizations/list'
 import communitiesMap from 'common/communities/map';
 import membershipsCreateUpdate from 'common/memberships/create-update';
 
+let dialogs = {
+  membershipsCreateUpdate: false
+};
+
 export default {
   props: ['id'],
-  data: () => ({community: undefined, selected: undefined, memberships: undefined, isAdministrator: false}),
+  data: () => ({community: undefined, selected: undefined, memberships: undefined, isAdministrator: false, dialogs}),
   components: {communitiesOrganizationsList, communitiesMap, membershipsCreateUpdate},
   computed: {
     account () {

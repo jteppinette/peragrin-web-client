@@ -13,11 +13,8 @@
       <v-card-title primary-title class="primary headline">{{ organization.name }}</v-card-title>
       <v-card-text class="primary" style="position: relative">
         <v-chip v-if="organization.category" outline class="ma-0 white--text">{{ organization.category }}</v-chip>
-        <organizations-create-update v-if="organization.id && isOwnerOrAdministrator()" :organization="organization" @updated="o => organization = o">
-          <template slot="activator" scope="props">
-            <v-btn fab right bottom absolute><v-icon>{{ props.action.icon }}</v-icon></v-btn>
-          </template>
-        </organizations-create-update>
+        <v-btn v-if="isOwnerOrAdministrator()" @click.native.stop="dialogs.organizationsCreateUpdate = !dialogs.organizationsCreateUpdate" fab right bottom absolute><v-icon>edit</v-icon></v-btn>
+        <organizations-create-update v-model="dialogs.organizationsCreateUpdate" v-if="organization.id" :organization="organization" @updated="o => organization = o"></organizations-create-update>
       </v-card-text>
 
       <v-layout row wrap class="general">
@@ -59,7 +56,7 @@
       <v-card>
         <v-card-title class="primary" style="position: relative">
           <span class="title">Operators</span>
-          <v-dialog v-model="addOperatorDialog" width="400px" scrollable persistent>
+          <v-dialog v-model="dialogs.addOperator" width="400px" scrollable persistent>
             <v-btn fab absolute right bottom slot="activator"><v-icon>add</v-icon></v-btn>
             <v-card>
               <v-card-title class="primary title">Add Operator</v-card-title>
@@ -70,7 +67,7 @@
                 </v-card-text>
                 <v-card-actions class="primary">
                   <v-spacer></v-spacer>
-                  <v-btn flat class="white--text" @click.native="addOperatorDialog = false">Close</v-btn>
+                  <v-btn flat class="white--text" @click.native="dialogs.addOperator = false">Close</v-btn>
                   <v-btn outline class="white--text" type="submit">Add</v-btn>
                 </v-card-actions>
               </form>
@@ -92,7 +89,7 @@
       <v-card img>
         <v-card-title class="primary" style="position: relative">
           <span class="title">Logo</span>
-          <v-dialog v-model="uploadLogoDialog" width="800px" scrollable persistent>
+          <v-dialog v-model="dialogs.uploadLogo" width="800px" scrollable persistent>
             <v-btn fab absolute right bottom slot="activator"><v-icon>file_upload</v-icon></v-btn>
             <v-card>
               <v-card-title class="primary title">Upload Logo</v-card-title>
@@ -102,7 +99,7 @@
               </v-card-text>
               <v-card-actions class="primary">
                 <v-spacer></v-spacer>
-                <v-btn flat class="white--text" @click.native="uploadLogoDialog = false">Close</v-btn>
+                <v-btn flat class="white--text" @click.native="dialogs.uploadLogo = false">Close</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -133,9 +130,15 @@ import organizationsCreateUpdate from 'common/organizations/create-update';
 import {MARKERS} from 'common/categories';
 import Dropzone from 'vue2-dropzone';
 
+let dialogs = {
+  organizationsCreateUpdate: false,
+  uploadLogo: false,
+  addOperator: false
+};
+
 export default {
   props: ['id'],
-  data: () => ({organization: {}, token: sessionStorage.token, uploadLogoDialog: false, addOperatorDialog: false, addOperatorError: false, addOperatorMsg: '', operator: {email: ''}}),
+  data: () => ({organization: {}, token: sessionStorage.token, dialogs, addOperatorError: false, addOperatorMsg: '', operator: {email: ''}}),
   computed: {
     account () {
       return this.$store.state.account;
@@ -166,7 +169,7 @@ function initializeOperators() {
 
 function addOperator() {
   this.$http.post(`/organizations/${this.id}/accounts`, this.operator)
-    .then(() => this.addOperatorDialog = false)
+    .then(() => this.dialogs.addOperator = false)
     .catch(({data}) => this.addOperatorError = !!(this.addOperatorMsg = data && data.msg ? data.msg : 'unknown error'))
     .then(initializeOperators);
 }
@@ -174,7 +177,7 @@ function addOperator() {
 function uploadLogoSuccess(file, {logo, logoURL}) {
   this.$set(this.organization, 'logo', logo);
   this.$set(this.organization, 'logoURL', logoURL);
-  this.uploadLogoDialog = false;
+  this.dialogs.uploadLogo = false;
 }
 
 function isOwnerOrAdministrator() {

@@ -1,6 +1,5 @@
 <template>
-<v-dialog v-model="dialog" width="800px" scrollable persistent>
-  <div slot="activator"><slot slot="activator" name="activator" :action="action"></slot></div>
+<v-dialog v-model="value" width="800px" scrollable persistent>
   <v-card>
     <v-card-title class="primary title">{{ action.name }} Organization</v-card-title>
     <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
@@ -11,7 +10,7 @@
       </v-card-text>
       <v-card-actions class="primary">
         <v-spacer></v-spacer>
-        <v-btn flat class="white--text" @click.native="dialog = false">Close</v-btn>
+        <v-btn flat class="white--text" @click.native="$emit('input', false)">Close</v-btn>
         <v-btn outline class="white--text" type="submit">{{ action.name }}</v-btn>
       </v-card-actions>
     </form>
@@ -23,8 +22,8 @@ import organizationsForm from 'common/organizations/form';
 import organizationsHours from 'common/organizations/hours';
 
 export default {
-  props: ['organization', 'communityID'],
-  data: () => ({msg: '', error: false, dialog: false}),
+  props: ['organization', 'communityID', 'value'],
+  data: () => ({msg: '', error: false}),
   components: {organizationsForm, organizationsHours},
   computed: {
     action () {
@@ -53,7 +52,7 @@ function update() {
   return this.$http.post(`/organizations/${this.organization.id}`, this.data)
     .then(response => response.json())
     .then(organization => this.$emit('updated', {...this.organization, ...organization}))
-    .then(() => this.dialog = false)
+    .then(() => this.$emit('input', false))
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }
 
@@ -61,7 +60,7 @@ function create() {
   return this.$http.post(`/communities/${this.communityID}/organizations`, this.data)
     .then(response => response.json())
     .then(organization => this.$emit('created', organization))
-    .then(() => this.dialog = false)
+    .then(() => this.$emit('input', false))
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }
 </script>
