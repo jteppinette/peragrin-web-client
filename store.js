@@ -23,8 +23,7 @@ export default {
     actions: {
         login (context, account) {
             return Vue.http.post('/auth/login', {email: account.email, password: account.password})
-                .then(response => response.json())
-                .then(function({token}) {
+                .then(({data: {token}}) => {
                     var {id, email} = jwtDecode(token);
                     sessionStorage.token = token;
                     sessionStorage.userID = id;
@@ -35,8 +34,7 @@ export default {
         },
         update (context, account) {
             return Vue.http.post('/auth/account', {email: account.email, password: account.password})
-                .then(response => response.json())
-                .then(function({id, email}) {
+                .then(({data: {id, email}}) => {
                     sessionStorage.email = email;
                     context.commit('setAccount', {id, email, organizations: context.state.account.organizations});
                     return context.state.account;
@@ -44,14 +42,12 @@ export default {
         },
         initializeAccountOrganizations (context) {
             return Vue.http.get('/auth/organizations')
-                .then(response => response.json())
-                .then(organizations => organizations.map(o => ({...o, icon: MARKERS[o.category]})))
+                .then(({data: organizations}) => organizations.map(o => ({...o, icon: MARKERS[o.category]})))
                 .then(organizations => {
                     if (!organizations.length) return {account: context.state.account};
                     return Promise.all(organizations.map(o => {
                         return Vue.http.get(`/organizations/${o.id}/communities`)
-                            .then(response => response.json())
-                            .then(communities => ({...o, communities: communities}));
+                            .then(({data: communities}) => ({...o, communities: communities}));
                     }))
                         .then(organizations => context.commit('setAccountOrganizations', organizations))
                         .then(() => ({account: context.state.account}));
@@ -59,8 +55,7 @@ export default {
         },
         register (context, account) {
             return Vue.http.post('/auth/register', {email: account.email, password: account.password})
-                .then(response => response.json())
-                .then(function({token}) {
+                .then(({data: {token}}) => {
                     var {id, email} = jwtDecode(token);
                     sessionStorage.token = token;
                     sessionStorage.userID = id;

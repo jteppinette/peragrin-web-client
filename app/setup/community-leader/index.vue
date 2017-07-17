@@ -82,26 +82,19 @@ var organization = {
 
 export default {
   data: () => ({zoom: 13, step: 1, organization, marker: undefined, community, error: false, msg: ''}),
-  methods: {
-    setupOrganization,
-    move,
-    updateOrganizationLocation,
-    createCommunity
-  },
+  methods: {setupOrganization, move, updateOrganizationLocation, createCommunity},
   components: {organizationsForm, organizationsHours}
 };
 
 function createCommunity() {
   return this.$http.post(`/organizations/${this.organization.id}/communities`, {...this.community, zoom: this.zoom, lon: this.marker.lon, lat: this.marker.lat})
-    .then(response => response.json())
-    .then(community => this.community = community)
+    .then(({data: community}) => this.community = community)
     .then(community => this.$router.push('/communities'));
 }
 
 function setupOrganization() {
   return this.$http.post('/auth/organizations', this.organization)
-    .then(response => response.json())
-    .then(organization => this.organization = organization)
+    .then(({organization}) => this.organization = organization)
     .then(organization => {
       this.marker = {lat: organization.lat, lon: organization.lon};
       return organization;
@@ -120,7 +113,6 @@ function updateOrganizationLocation() {
   this.organization.lat = this.marker.lat;
   this.organization.lon = this.marker.lon;
   return this.$http.post(`/organizations/${this.organization.id}`, this.organization)
-    .then(response => response.json())
-    .then(organization => this.organization = organization);
+    .then(({data: organization}) => this.organization = organization);
 }
 </script>

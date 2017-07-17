@@ -87,15 +87,14 @@ var marker = {
 
 export default {
   data: () => ({step: 1, organization, marker, communities: [], community: {}, error: false, msg: '', token: sessionStorage.token}),
-  mounted: mounted,
+  mounted: initialize,
   methods: {setupBusiness, move, updateBusinessLocation, join},
   components: {organizationsForm, organizationsHours, Dropzone}
 };
 
-function mounted() {
+function initialize() {
   return this.$http.get('/communities')
-    .then(response => response.json())
-    .then(communities => this.communities = communities);
+    .then(({data: communities}) => this.communities = communities);
 }
 
 function join() {
@@ -105,8 +104,7 @@ function join() {
 
 function setupBusiness() {
   return this.$http.post('/auth/organizations', this.organization)
-    .then(response => response.json())
-    .then(organization => this.organization = organization)
+    .then(({data: organization}) => this.organization = organization)
     .then(() => this.step = 2)
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }
@@ -123,7 +121,6 @@ function updateBusinessLocation() {
   this.organization.lon = this.marker.lon;
 
   return this.$http.post(`/organizations/${this.organization.id}`, this.organization)
-    .then(response => response.json())
-    .then(organization => this.organization = organization);
+    .then(({data: organization}) => this.organization = organization);
 }
 </script>

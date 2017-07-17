@@ -35,16 +35,14 @@ export default {
 
 function update() {
   return this.$http.post(`/memberships/${this.membership.id}`, this.data)
-    .then(response => response.json())
-    .then(membership => this.$emit('updated', membership))
+    .then(({data: membership}) => this.$emit('updated', membership))
     .then(() => this.$emit('input', false))
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }
 
 function create() {
   return this.$http.post(`/communities/${this.communityID}/memberships`, this.data)
-    .then(response => response.json())
-    .then(membership => this.$emit('created', membership))
+    .then(({data: membership}) => this.$emit('created', membership))
     .then(() => this.$emit('input', false))
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }

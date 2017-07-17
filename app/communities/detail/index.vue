@@ -6,22 +6,25 @@
     <v-breadcrumbs-item disabled v-if="community">{{ community.name }}</v-breadcrumbs-item>
   </v-breadcrumbs>
 
+  <!-- COMMUNITY ORGANIZATIONS LIST -->
   <v-layout row wrap v-if="community">
     <v-flex xs12>
       <v-card>
         <v-card-title primary-title class="primary headline">{{ community.name }}</v-card-title>
-        <communities-organizations-list :community="community" :selected="selected"></communities-organizations-list>
+        <communities-organizations-list :community="community" :search="selected.name"></communities-organizations-list>
       </v-card>
     </v-flex>
   </v-layout>
 
   <v-layout row wrap v-if="community">
+
+    <!-- MEMBERSHIPS -->
     <v-flex xs12 sm6>
       <v-card>
         <v-card-title class="primary" style="position: relative">
           <span class="title">Memberhips</span>
           <v-btn v-if="isAdministrator" @click.native.stop="dialogs.membershipsCreateUpdate = !dialogs.membershipsCreateUpdate" fab absolute bottom right><v-icon>add</v-icon></v-btn>
-          <memberships-create-update v-model="dialogs.membershipsCreateUpdate" :communityID="id" @created="() => getMemberships()">
+          <memberships-create-update v-model="dialogs.membershipsCreateUpdate" :communityID="id" @created="() => initializeMemberships()">
           </memberships-create-update>
         </v-card-title>
         <v-list two-line>
@@ -34,12 +37,15 @@
         </v-list>
       </v-card>
     </v-flex>
+
+    <!-- MAP -->
     <v-flex xs12 sm6>
       <v-card>
         <v-card-title class="primary title">Map</v-card-title>
         <communities-map :community="community" @select="organization => selected = organization"></communities-map>
       </v-card>
     </v-flex>
+
   </v-layout>
 
 </v-container>
@@ -56,33 +62,40 @@ let dialogs = {
 
 export default {
   props: ['id'],
-  data: () => ({community: undefined, selected: undefined, memberships: undefined, isAdministrator: false, dialogs}),
+  data: () => ({community: undefined, selected: {}, memberships: undefined, isAdministrator: false, dialogs}),
   components: {communitiesOrganizationsList, communitiesMap, membershipsCreateUpdate},
   computed: {
     account () {
       return this.$store.state.account;
     }
   },
-  mounted () {
-    this.$store.dispatch('initialize')
-      .then(() => {
-        this.isAdministrator = !!(this.account.organizations && this.account.organizations.find(v => v.communities ? v.communities.find(c => c.isAdministrator && c.id == this.id) : undefined)); 
-      });
-    this.$http.get(`/communities/${this.id}`)
-      .then(response => response.json())
-      .then(community => this.community = community);
-    this.getMemberships();
-  },
+  mounted: initialize,
   beforeRouteEnter (to, from, next) {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
   },
-  methods: {getMemberships}
+  methods: {initializeMemberships, initializeCommunity, initializeIsAdministrator}
 };
 
-function getMemberships() {
+function initialize() {
+  return Promise.all([
+    this.$store.dispatch('initialize').then(this.initializeIsAdministrator),
+    this.initializeMemberships(),
+    this.initializeCommunity()
+  ]);
+}
+
+function initializeIsAdministrator() {
+    return this.isAdministrator = !!(this.account.organizations && this.account.organizations.find(v => v.communities ? v.communities.find(c => c.isAdministrator && c.id == this.id) : undefined)); 
+}
+
+function initializeCommunity() {
+  return this.$http.get(`/communities/${this.id}`)
+    .then(({data: community}) => this.community = community);
+}
+
+function initializeMemberships() {
   return this.$http.get(`/communities/${this.id}/memberships`)
-    .then(response => response.json())
-    .then(memberships => this.memberships = memberships)
+    .then(({data: memberships}) => this.memberships = memberships)
 }
 </script>
 

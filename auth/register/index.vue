@@ -21,10 +21,10 @@ const ROLES = [PATRON, BUSINESS_LEADER, COMMUNITY_LEADER];
 export default {
   data: () => ({email: '', password: '', next: PATRON.next, roles: ROLES, locked: false, error: false, msg: ''}),
   methods: {register},
-  mounted
+  mounted: initialize
 };
 
-function mounted() {
+function initialize() {
   if (this.$route.query.role) {
     this.next = ROLES.find(e => e.key === this.$route.query.role).next;
     this.locked = true;

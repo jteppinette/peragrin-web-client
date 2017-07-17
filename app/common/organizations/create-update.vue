@@ -50,16 +50,14 @@ export default {
 
 function update() {
   return this.$http.post(`/organizations/${this.organization.id}`, this.data)
-    .then(response => response.json())
-    .then(organization => this.$emit('updated', {...this.organization, ...organization}))
+    .then(({data: organization}) => this.$emit('updated', {...this.organization, ...organization}))
     .then(() => this.$emit('input', false))
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }
 
 function create() {
   return this.$http.post(`/communities/${this.communityID}/organizations`, this.data)
-    .then(response => response.json())
-    .then(organization => this.$emit('created', organization))
+    .then(({data: organization}) => this.$emit('created', organization))
     .then(() => this.$emit('input', false))
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }

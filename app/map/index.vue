@@ -106,20 +106,19 @@ let filter = {
 
 export default {
   data: () => ({active: undefined, community: undefined, selected: {}, sidebar: false, msg: '', error: undefined, filter, categories: CATEGORIES}),
-  mounted,
+  mounted: initialize,
   methods: {select, redeem},
   components: {organizationsDetails, communitiesMap}
 };
 
-function mounted() {
-  this.$http.get('/communities')
-    .then(response => response.json())
-    .then(communities => this.community = communities[0]);
+function initialize() {
+  return this.$http.get('/communities')
+    .then(({data: communities}) => this.community = communities[0]);
 }
 
 function select(organization) {
-  var hours = this.$http.get(`/organizations/${organization.id}/hours`).then(response => response.json());
-  var promotions = this.$http.get(`/organizations/${organization.id}/promotions`).then(response => response.json());
+  var hours = this.$http.get(`/organizations/${organization.id}/hours`).then(response => response.data);
+  var promotions = this.$http.get(`/organizations/${organization.id}/promotions`).then(response => response.data);
   return Promise.all([hours, promotions]).then(values => {
     this.selected = {...organization, hours: values[0], promotions: values[1]};
     if (!this.selected.promotions.length) this.active = 'general';

@@ -26,8 +26,7 @@ export default {
 
 function add() {
   return this.$http.post(`/memberships/${this.membership.id}/accounts`, {email: this.email})
-    .then(response => response.json())
-    .then(account => this.$emit('success', account))
+    .then(({data: account}) => this.$emit('success', account))
     .then(() => this.$emit('input', false))
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }

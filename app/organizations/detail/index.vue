@@ -13,16 +13,18 @@
       <v-card-title primary-title class="primary headline">{{ organization.name }}</v-card-title>
       <v-card-text class="primary" style="position: relative">
         <v-chip v-if="organization.category" outline class="ma-0 white--text">{{ organization.category }}</v-chip>
-        <v-btn v-if="isOwnerOrAdministrator()" @click.native.stop="dialogs.organizationsCreateUpdate = !dialogs.organizationsCreateUpdate" fab right bottom absolute><v-icon>edit</v-icon></v-btn>
+        <v-btn v-if="isAdministrator" @click.native.stop="dialogs.organizationsCreateUpdate = !dialogs.organizationsCreateUpdate" fab right bottom absolute><v-icon>edit</v-icon></v-btn>
         <organizations-create-update v-model="dialogs.organizationsCreateUpdate" v-if="organization.id" :organization="organization" @updated="o => organization = o"></organizations-create-update>
       </v-card-text>
 
       <v-layout row wrap class="general">
 
+        <!-- DETAILS -->
         <v-flex xs12 md6 class="pr-0-lg">
           <organizations-details :organization="organization"></organizations-details>
         </v-flex>
 
+        <!-- MAP -->
         <v-flex xs12 md6 class="pl-0-lg">
           <v-map v-if="organization.lat && organization.lon" :zoom="15" :center="[organization.lat, organization.lon]">
             <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
@@ -38,6 +40,7 @@
 
   <v-layout row wrap if="organization" class="middle">
 
+    <!-- COMMUNITIES -->
     <v-flex xs12 sm6 md4>
       <v-card>
         <v-card-title class="primary title">Communities</v-card-title>
@@ -52,11 +55,12 @@
       </v-card>
     </v-flex>
 
+    <!-- OPERATORS -->
     <v-flex xs12 sm6 md4>
       <v-card>
         <v-card-title class="primary" style="position: relative">
           <span class="title">Operators</span>
-          <v-dialog v-model="dialogs.addOperator" width="400px" scrollable persistent>
+          <v-dialog v-if="isAdministrator" v-model="dialogs.addOperator" width="400px" scrollable persistent>
             <v-btn fab absolute right bottom slot="activator"><v-icon>add</v-icon></v-btn>
             <v-card>
               <v-card-title class="primary title">Add Operator</v-card-title>
@@ -85,11 +89,12 @@
       </v-card>
     </v-flex>
 
+    <!-- LOGO -->
     <v-flex xs12 sm6 md4>
       <v-card img>
         <v-card-title class="primary" style="position: relative">
           <span class="title">Logo</span>
-          <v-dialog v-model="dialogs.uploadLogo" width="800px" scrollable persistent>
+          <v-dialog v-if="isAdministrator" v-model="dialogs.uploadLogo" width="800px" scrollable persistent>
             <v-btn fab absolute right bottom slot="activator"><v-icon>file_upload</v-icon></v-btn>
             <v-card>
               <v-card-title class="primary title">Upload Logo</v-card-title>
@@ -111,6 +116,7 @@
 
   </v-layout>
 
+  <!-- PROMOTIONS -->
   <v-layout row wrap v-if="organization && organization.communities">
     <v-flex xs12>
       <v-card>
@@ -138,7 +144,7 @@ let dialogs = {
 
 export default {
   props: ['id'],
-  data: () => ({organization: {}, token: sessionStorage.token, dialogs, addOperatorError: false, addOperatorMsg: '', operator: {email: ''}}),
+  data: () => ({organization: {}, token: sessionStorage.token, dialogs, addOperatorError: false, addOperatorMsg: '', operator: {email: ''}, isAdministrator: false}),
   computed: {
     account () {
       return this.$store.state.account;
@@ -148,23 +154,20 @@ export default {
     }
   },
   components: {promotionsList, organizationsDetails, organizationsCreateUpdate, Dropzone},
-  mounted () {
-    this.$store.dispatch('initialize');
-    this.$http.get(`/organizations/${this.id}`)
-      .then(response => response.json())
-      .then(organization => this.organization = {...this.organization, ...organization});
-    this.$http.get(`/organizations/${this.id}/communities`)
-      .then(response => response.json())
-      .then(communities => this.$set(this.organization, 'communities', communities));
-    this.initializeOperators();
-  },
-  methods: {isOwnerOrAdministrator, uploadLogoSuccess, addOperator, initializeOperators}
+  mounted: initialize,
+  methods: {uploadLogoSuccess, addOperator, initializeIsAdministrator, initializeOperators, initializeOrganization, initializeCommunities},
+  beforeRouteEnter (to, from, next) {
+    next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
+  }
 };
 
-function initializeOperators() {
-  this.$http.get(`/organizations/${this.id}/accounts`)
-    .then(response => response.json())
-    .then(accounts => this.$set(this.organization, 'accounts', accounts));
+function initialize() {
+  return Promise.all([
+    this.$store.dispatch('initialize').then(this.initializeIsAdministrator),
+    this.initializeOperators(),
+    this.initializeOrganization(),
+    this.initializeCommunities()
+  ]);
 }
 
 function addOperator() {
@@ -180,17 +183,31 @@ function uploadLogoSuccess(file, {logo, logoURL}) {
   this.dialogs.uploadLogo = false;
 }
 
-function isOwnerOrAdministrator() {
-  if (!this.account || !this.account.organizations) return false;
+function initializeOrganization() {
+  return this.$http.get(`/organizations/${this.id}`)
+    .then(({data: organization}) => this.organization = {...this.organization, ...organization});
+}
+
+function initializeCommunities() {
+  return this.$http.get(`/organizations/${this.id}/communities`)
+    .then(({data: communities}) => this.$set(this.organization, 'communities', communities));
+}
+
+function initializeOperators() {
+  this.$http.get(`/organizations/${this.id}/accounts`)
+    .then(({data: accounts}) => this.$set(this.organization, 'accounts', accounts));
+}
+
+function initializeIsAdministrator() {
+  if (!this.account.organizations) return this.isAdministrator = false;
+
   let isOwner = this.account.organizations.find(v => v.id == this.id);
   let isAdministrator = this.organization.communities ? this.account.organizations.find(v => {
     if (!v.communities) return false;
-    let community = v.communities.find(c => {
-      return this.organization.communities.find(u => u.id == c.id);
-    });
-    return community.isAdministrator;
+    return v.communities.find(c => this.organization.communities.find(u => u.id == c.id)).isAdministrator;
   }) : false;
-  return isOwner || isAdministrator;
+
+  return this.isAdministrator = isOwner || isAdministrator;
 }
 </script>
 

@@ -10,9 +10,7 @@
       <v-card>
         <v-card-title primary-title class="primary headline">{{ community.name }}</v-card-title>
         <communities-map :community="community"></communities-map>
-        <v-card-actions>
-          <v-btn flat :to="`/communities/${community.id}`">Manage</v-btn>
-        </v-card-actions>
+        <v-card-actions><v-btn flat :to="`/communities/${community.id}`">Manage</v-btn></v-card-actions>
       </v-card>
     </v-flex>
   </v-layout>
@@ -39,9 +37,6 @@ export default {
       }
       return l;
     }
-  },
-  mounted () {
-    return this.$store.dispatch('initialize');
   },
   beforeRouteEnter (to, from, next) {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});

@@ -31,14 +31,16 @@
 export default {
   data: () => ({email: '', password: '', success: false, error: false, msg: ''}),
   methods: {update},
+  mounted: initialize,
   beforeRouteEnter (to, from, next) {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
-  },
-  mounted () {
-    this.$store.dispatch('initialize')
-      .then(({account}) => this.email = account.email);
   }
 };
+
+function initialize() {
+  return this.$store.dispatch('initialize')
+    .then(({account}) => this.email = account.email);
+}
 
 function update() {
   return this.$store.dispatch('update', {email: this.email, password: this.password})

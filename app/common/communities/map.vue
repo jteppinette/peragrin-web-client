@@ -16,7 +16,7 @@ function options({style}) {
 export default {
   props: ['community', 'filter'],
   data: () => ({options, latlng: undefined}),
-  mounted,
+  mounted: initialize,
   computed: {
     filtered () {
       if (!this.community.organizations) return [];
@@ -25,25 +25,25 @@ export default {
       return this.community.organizations;
     }
   },
-  methods: {select}
+  methods: {select, initializeGeoJSONOverlays, initializeOrganizations}
 };
 
-function mounted() {
+function initialize() {
   this.latlng = [this.community.lat, this.community.lon];
-  initializeOrganizations.call(this, this.community.id),
-  initializeGeoJSONOverlays.call(this, this.community.id)
+  return Promise.all([
+    this.initializeOrganizations(),
+    this.initializeGeoJSONOverlays()
+  ]);
 }
 
-function initializeGeoJSONOverlays(communityID) {
-  return this.$http.get(`/communities/${communityID}/geo-json-overlays`)
-    .then(response => response.json())
-    .then(geoJSONOverlays => this.$set(this.community, 'geoJSONOverlays', geoJSONOverlays));
+function initializeGeoJSONOverlays() {
+  return this.$http.get(`/communities/${this.community.id}/geo-json-overlays`)
+    .then(({data: geoJSONOverlays}) => this.$set(this.community, 'geoJSONOverlays', geoJSONOverlays));
 }
 
-function initializeOrganizations(communityID) {
-  return this.$http.get(`/communities/${communityID}/organizations`)
-    .then(response => response.json())
-    .then(organizations => organizations.map(o => ({...o, icon: MARKERS[o.category]})))
+function initializeOrganizations() {
+  return this.$http.get(`/communities/${this.community.id}/organizations`)
+    .then(({data: organizations}) => organizations.map(o => ({...o, icon: MARKERS[o.category]})))
     .then(organizations => this.$set(this.community, 'organizations', organizations));
 }
 
