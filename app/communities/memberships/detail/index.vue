@@ -38,7 +38,12 @@
             <td class="text-xs-right">{{ props.item.email }}</td>
             <td v-if="isAdministrator" class="text-xs-right" style="white-space: nowrap">
               <v-btn @click.native="removeAccount(props.item.id)" primary class="ma-0"><v-icon left class="white--text">remove</v-icon>Remove</v-btn>
+              <v-btn @click.native="sendResetPasswordEmail(props.item.id)" primary class="ma-0"><v-icon left class="white--text">send</v-icon>Send Reset Password Email</v-btn>
             </td>
+
+            <v-snackbar v-model="snackbars.sendResetPasswordEmail[props.item.id]">A reset password email has been sent to {{ props.item.email}}.
+              <v-btn flat class="primary--text" @click.native="snackbars.sendResetPasswordEmail[props.item.id] = false">Close</v-btn>
+            </v-snackbar>
           </template>
         </v-data-table>
 
@@ -60,13 +65,17 @@ let dialogs = {
   membershipsAccountsAdd: false
 };
 
+let snackbars = {
+  sendResetPasswordEmail: {}
+};
+
 const headers = [
   {text: 'Email', value: 'email', sortable: true}
 ];
 
 export default {
   props: ['communityID', 'membershipID'],
-  data: () => ({membership: undefined, community: undefined, accounts: undefined, headers, search: '', dialogs, isAdministrator: false, initialized: false}),
+  data: () => ({membership: undefined, community: undefined, accounts: undefined, headers, search: '', dialogs, snackbars, isAdministrator: false, initialized: false}),
   mounted: initialize,
   computed: {
     account () {
@@ -74,7 +83,7 @@ export default {
     }
   },
   components: {membershipsCreateUpdate, membershipsAccountsAdd},
-  methods: {initializeCommunity, initializeMembership, initializeAccounts, initializeIsAdministrator, deleteMembership, removeAccount},
+  methods: {initializeCommunity, initializeMembership, initializeAccounts, initializeIsAdministrator, deleteMembership, removeAccount, sendResetPasswordEmail},
   beforeRouteEnter (to, from, next) {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
   }
@@ -107,7 +116,8 @@ function initializeMembership() {
 
 function initializeAccounts() {
   return this.$http.get(`/memberships/${this.membershipID}/accounts`)
-    .then(({data: accounts}) => this.accounts = accounts);
+    .then(({data: accounts}) => this.accounts = accounts)
+    .then(accounts => this.snackbars.sendResetPasswordEmail = accounts.reduce((obj, account) => ({...obj, [account.id]: false}), {}));
 }
 
 function deleteMembership() {
@@ -118,5 +128,10 @@ function deleteMembership() {
 function removeAccount(id) {
   return this.$http.delete(`/memberships/${this.membershipID}/accounts/${id}`)
     .then(this.initializeAccounts);
+}
+
+function sendResetPasswordEmail(id) {
+  return this.$http.post(`/accounts/${id}/forgot-password`)
+    .then(() => this.snackbars.sendResetPasswordEmail[id] = true);
 }
 </script>
