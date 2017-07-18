@@ -19,6 +19,7 @@
             <v-btn slot="activator" fab><v-icon>apps</v-icon><v-icon>close</v-icon></v-btn>
             <v-btn fab small @click.native.stop="dialogs.membershipsCreateUpdate = !dialogs.membershipsCreateUpdate"><v-icon>edit</v-icon></v-btn>
             <v-btn fab small @click.native.stop="dialogs.membershipsAccountsAdd = !dialogs.membershipsAccountsAdd"><v-icon>add</v-icon></v-btn>
+            <v-btn fab small @click.native.stop="del"><v-icon>delete</v-icon></v-btn>
           </v-speed-dial>
           <memberships-create-update v-model="dialogs.membershipsCreateUpdate" :membership="membership" @updated="m => membership = m"></memberships-create-update>
           <memberships-accounts-add v-model="dialogs.membershipsAccountsAdd" :membership="membership" @success="initializeAccounts"></memberships-accounts-add>
@@ -70,7 +71,7 @@ export default {
     }
   },
   components: {membershipsCreateUpdate, membershipsAccountsAdd},
-  methods: {initializeCommunity, initializeMembership, initializeAccounts, initializeIsAdministrator},
+  methods: {initializeCommunity, initializeMembership, initializeAccounts, initializeIsAdministrator, del},
   beforeRouteEnter (to, from, next) {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
   }
@@ -104,5 +105,10 @@ function initializeMembership() {
 function initializeAccounts() {
   return this.$http.get(`/memberships/${this.membershipID}/accounts`)
     .then(({data: accounts}) => this.accounts = accounts);
+}
+
+function del() {
+  return this.$http.delete(`/memberships/${this.membershipID}`)
+    .then(() => this.$router.push(`/communities/${this.communityID}`));
 }
 </script>
