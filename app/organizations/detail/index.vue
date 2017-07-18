@@ -121,7 +121,7 @@
     <v-flex xs12>
       <v-card>
         <v-card-title class="primary title">Promotions</v-card-title>
-        <promotions-list :organizationID="id" :communities="organization.communities"></promotions-list>
+        <promotions-list :organizationID="id"></promotions-list>
       </v-card>
     </v-flex>
   </v-layout>
