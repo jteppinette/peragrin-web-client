@@ -35,7 +35,7 @@
               <v-list-tile-title avatar>{{ membership.name }}</v-list-tile-title>
               <v-list-tile-sub-title>{{ membership.description }}</v-list-tile-sub-title>
             </v-list-tile-content>
-            <v-list-tile-action>
+            <v-list-tile-action v-if="isAdministrator">
               <v-btn icon @click.native.prevent="deleteMembership(membership.id)" class="primary"><v-icon class="white--text">delete</v-icon></v-btn>
             </v-list-tile-action>
           </v-list-tile>
