@@ -120,7 +120,7 @@ function updateBusinessLocation() {
   this.organization.lat = this.marker.lat;
   this.organization.lon = this.marker.lon;
 
-  return this.$http.post(`/organizations/${this.organization.id}`, this.organization)
+  return this.$http.put(`/organizations/${this.organization.id}`, this.organization)
     .then(({data: organization}) => this.organization = organization);
 }
 </script>

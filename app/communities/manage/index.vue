@@ -40,6 +40,9 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
+  },
+  mounted () {
+    return this.$store.dispatch('initialize');
   }
 };
 </script>

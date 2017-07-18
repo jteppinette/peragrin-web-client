@@ -94,7 +94,9 @@ function initializeIsAdministrator() {
   if (!this.account.organizations) return this.isAdministrator = false;
   let isOwner = this.account.organizations.find(v => v.id == this.organizationID);
   let isAdministrator = this.communities ? this.account.organizations.find(v => {
-    return v.communities ? v.communities.find(c => this.communities.find(u => u.id == c.id)).isAdministrator : false;
+    if (!v.communities) return false;
+    let community = v.communities.find(c => this.communities.find(u => u.id == c.id));
+    return community ? community.isAdministrator : false;
   }) : false;
   return this.isAdministrator = isOwner || isAdministrator;
 }

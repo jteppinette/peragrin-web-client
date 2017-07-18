@@ -204,7 +204,8 @@ function initializeIsAdministrator() {
   let isOwner = this.account.organizations.find(v => v.id == this.id);
   let isAdministrator = this.organization.communities ? this.account.organizations.find(v => {
     if (!v.communities) return false;
-    return v.communities.find(c => this.organization.communities.find(u => u.id == c.id)).isAdministrator;
+    let community = v.communities.find(c => this.organization.communities.find(u => u.id == c.id));
+    return community ? community.isAdministrator : false;
   }) : false;
 
   return this.isAdministrator = isOwner || isAdministrator;

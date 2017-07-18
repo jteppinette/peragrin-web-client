@@ -28,7 +28,7 @@
         <v-list-tile-action><v-icon>business</v-icon></v-list-tile-action>
         <v-list-tile-content><v-list-tile-title>Organizations</v-list-tile-title></v-list-tile-content>
       </v-list-tile>
-      <v-list-tile v-if="account && account.organizations && account.organizations.find(v => v.communities)" to="/communities">
+      <v-list-tile v-if="account && account.organizations && account.organizations.find(v => v.communities.length)" to="/communities">
         <v-list-tile-action><v-icon>account_balance</v-icon></v-list-tile-action>
         <v-list-tile-content><v-list-tile-title>Communities</v-list-tile-title></v-list-tile-content>
       </v-list-tile>

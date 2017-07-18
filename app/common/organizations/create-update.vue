@@ -49,7 +49,7 @@ export default {
 };
 
 function update() {
-  return this.$http.post(`/organizations/${this.organization.id}`, this.data)
+  return this.$http.put(`/organizations/${this.organization.id}`, this.data)
     .then(({data: organization}) => this.$emit('updated', {...this.organization, ...organization}))
     .then(() => this.$emit('input', false))
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));

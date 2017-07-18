@@ -94,7 +94,7 @@ function createCommunity() {
 
 function setupOrganization() {
   return this.$http.post('/auth/organizations', this.organization)
-    .then(({organization}) => this.organization = organization)
+    .then(({data: organization}) => this.organization = organization)
     .then(organization => {
       this.marker = {lat: organization.lat, lon: organization.lon};
       return organization;
