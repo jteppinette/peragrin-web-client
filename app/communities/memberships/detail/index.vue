@@ -19,7 +19,7 @@
             <v-btn slot="activator" fab><v-icon>apps</v-icon><v-icon>close</v-icon></v-btn>
             <v-btn fab small @click.native.stop="dialogs.membershipsCreateUpdate = !dialogs.membershipsCreateUpdate"><v-icon>edit</v-icon></v-btn>
             <v-btn fab small @click.native.stop="dialogs.membershipsAccountsAdd = !dialogs.membershipsAccountsAdd"><v-icon>add</v-icon></v-btn>
-            <v-btn fab small @click.native.stop="del"><v-icon>delete</v-icon></v-btn>
+            <v-btn fab small @click.native.stop="deleteMembership"><v-icon>delete</v-icon></v-btn>
           </v-speed-dial>
           <memberships-create-update v-model="dialogs.membershipsCreateUpdate" :membership="membership" @updated="m => membership = m"></memberships-create-update>
           <memberships-accounts-add v-model="dialogs.membershipsAccountsAdd" :membership="membership" @success="initializeAccounts"></memberships-accounts-add>
@@ -36,6 +36,9 @@
         <v-data-table v-if="isAdministrator" :headers="headers" :items="accounts" :search="search" class="no-limit-select">
           <template slot="items" scope="props">
             <td class="text-xs-right">{{ props.item.email }}</td>
+            <td v-if="isAdministrator" class="text-xs-right" style="white-space: nowrap">
+              <v-btn @click.native="removeAccount(props.item.id)" primary class="ma-0"><v-icon left class="white--text">remove</v-icon>Remove</v-btn>
+            </td>
           </template>
         </v-data-table>
 
@@ -71,7 +74,7 @@ export default {
     }
   },
   components: {membershipsCreateUpdate, membershipsAccountsAdd},
-  methods: {initializeCommunity, initializeMembership, initializeAccounts, initializeIsAdministrator, del},
+  methods: {initializeCommunity, initializeMembership, initializeAccounts, initializeIsAdministrator, deleteMembership, removeAccount},
   beforeRouteEnter (to, from, next) {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
   }
@@ -107,8 +110,13 @@ function initializeAccounts() {
     .then(({data: accounts}) => this.accounts = accounts);
 }
 
-function del() {
+function deleteMembership() {
   return this.$http.delete(`/memberships/${this.membershipID}`)
     .then(() => this.$router.push(`/communities/${this.communityID}`));
+}
+
+function removeAccount(id) {
+  return this.$http.delete(`/memberships/${this.membershipID}/accounts/${id}`)
+    .then(this.initializeAccounts);
 }
 </script>
