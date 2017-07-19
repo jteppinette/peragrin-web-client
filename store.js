@@ -32,8 +32,19 @@ export default {
                 })
                 .then(() => context.dispatch('initializeAccountOrganizations'));
         },
+        activate (context, {password, token}) {
+            return Vue.http.post('/auth/activate', {password}, {headers: {Authorization: `Bearer ${token}`}})
+                .then(({data: {token}}) => {
+                    var {id, email} = jwtDecode(token);
+                    sessionStorage.token = token;
+                    sessionStorage.userID = id;
+                    sessionStorage.email = email;
+                    context.commit('setAccount', {id, email});
+                })
+                .then(() => context.dispatch('initializeAccountOrganizations'));
+        },
         update (context, account) {
-            return Vue.http.put('/auth/account', {email: account.email, password: account.password})
+            return Vue.http.put(`/accounts/${context.state.account.id}`, {email: account.email})
                 .then(({data: {id, email}}) => {
                     sessionStorage.email = email;
                     context.commit('setAccount', {id, email, organizations: context.state.account.organizations});
@@ -41,7 +52,7 @@ export default {
                 });
         },
         initializeAccountOrganizations (context) {
-            return Vue.http.get('/auth/organizations')
+            return Vue.http.get(`/accounts/${context.state.account.id}/organizations`)
                 .then(({data: organizations}) => organizations.map(o => ({...o, icon: MARKERS[o.category]})))
                 .then(organizations => {
                     if (!organizations.length) return {account: context.state.account};
@@ -51,17 +62,6 @@ export default {
                     }))
                         .then(organizations => context.commit('setAccountOrganizations', organizations))
                         .then(() => ({account: context.state.account}));
-                });
-        },
-        register (context, account) {
-            return Vue.http.post('/auth/register', {email: account.email, password: account.password})
-                .then(({data: {token}}) => {
-                    var {id, email} = jwtDecode(token);
-                    sessionStorage.token = token;
-                    sessionStorage.userID = id;
-                    sessionStorage.email = email;
-                    context.commit('setAccount', {id, email});
-                    return context.state.acount;
                 });
         },
         initialize (context) {

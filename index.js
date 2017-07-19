@@ -29,6 +29,7 @@ import login from 'login';
 import register from 'register';
 import forgotPassword from 'forgot-password';
 import setPassword from 'set-password';
+import activate from 'activate';
 
 import profile from 'profile';
 
@@ -66,7 +67,8 @@ const routes = [
             {path: 'login', component: login},
             {path: 'register', component: register},
             {path: 'forgot-password', component: forgotPassword},
-            {path: 'set-password', component: setPassword}
+            {path: 'set-password', component: setPassword},
+            {path: 'activate', component: activate}
         ],
     }
 ];

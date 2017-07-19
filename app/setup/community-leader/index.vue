@@ -83,7 +83,12 @@ var organization = {
 export default {
   data: () => ({zoom: 13, step: 1, organization, marker: undefined, community, error: false, msg: ''}),
   methods: {setupOrganization, move, updateOrganizationLocation, createCommunity},
-  components: {organizationsForm, organizationsHours}
+  components: {organizationsForm, organizationsHours},
+  computed: {
+    account () {
+      return this.$store.state.account;
+    }
+  }
 };
 
 function createCommunity() {
@@ -93,7 +98,7 @@ function createCommunity() {
 }
 
 function setupOrganization() {
-  return this.$http.post('/auth/organizations', this.organization)
+  return this.$http.post(`/accounts/${this.account.id}/organizations`, this.organization)
     .then(({data: organization}) => this.organization = organization)
     .then(organization => {
       this.marker = {lat: organization.lat, lon: organization.lon};

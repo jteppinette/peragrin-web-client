@@ -89,7 +89,12 @@ export default {
   data: () => ({step: 1, organization, marker, communities: [], community: {}, error: false, msg: '', token: sessionStorage.token}),
   mounted: initialize,
   methods: {setupBusiness, move, updateBusinessLocation, join},
-  components: {organizationsForm, organizationsHours, Dropzone}
+  components: {organizationsForm, organizationsHours, Dropzone},
+  computed: {
+    account () {
+      return this.$store.state.account;
+    }
+  }
 };
 
 function initialize() {
@@ -103,7 +108,7 @@ function join() {
 }
 
 function setupBusiness() {
-  return this.$http.post('/auth/organizations', this.organization)
+  return this.$http.post(`/accounts/${this.account.id}/organizations`, this.organization)
     .then(({data: organization}) => this.organization = organization)
     .then(() => this.step = 2)
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));

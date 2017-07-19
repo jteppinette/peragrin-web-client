@@ -27,7 +27,7 @@ export default {
 };
 
 function set() {
-  return this.$http.put('/auth/account', {password: this.password}, {headers: {Authorization: `Bearer ${this.account.token}`}})
+  return this.$http.post('/auth/set-password', {password: this.password}, {headers: {Authorization: `Bearer ${this.account.token}`}})
     .then(root => this.$router.push('/auth/login'))
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }

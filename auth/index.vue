@@ -46,6 +46,7 @@
     padding: 48px;
     width: 100%;
     margin-bottom: 0px;
+    border-bottom: 5px solid $theme.accent;
     background-color: #4DB880;
     color: white;
     font-family: 'Fredoka One', cursive;
