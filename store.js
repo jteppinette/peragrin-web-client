@@ -28,8 +28,8 @@ export default {
                     sessionStorage.token = token;
                     sessionStorage.userID = id;
                     sessionStorage.email = email;
-                    sessionStorage.firstName = firstName ? firstName : '';
-                    sessionStorage.lastName = lastName ? lastName : '';
+                    sessionStorage.firstName = firstName;
+                    sessionStorage.lastName = lastName;
                     context.commit('setAccount', {id, email, firstName, lastName});
                 })
                 .then(() => context.dispatch('initializeAccountOrganizations'));
@@ -41,8 +41,8 @@ export default {
                     sessionStorage.token = token;
                     sessionStorage.userID = id;
                     sessionStorage.email = email;
-                    sessionStorage.firstName = firstName ? firstName : '';
-                    sessionStorage.lastName = lastName ? lastName : '';
+                    sessionStorage.firstName = firstName;
+                    sessionStorage.lastName = lastName;
                     context.commit('setAccount', {id, email, firstName, lastName});
                 })
                 .then(() => context.dispatch('initializeAccountOrganizations'));
@@ -51,8 +51,8 @@ export default {
             return Vue.http.put(`/accounts/${context.state.account.id}`, {email: account.email, firstName: account.firstName, lastName: account.lastName})
                 .then(({data: {id, email, firstName, lastName}}) => {
                     sessionStorage.email = email;
-                    sessionStorage.firstName = firstName ? firstName : '';
-                    sessionStorage.lastName = lastName ? lastName : '';
+                    sessionStorage.firstName = firstName;
+                    sessionStorage.lastName = lastName;
                     context.commit('setAccount', {id, email, firstName, lastName, organizations: context.state.account.organizations});
                     return context.state.account;
                 });
