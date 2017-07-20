@@ -19,10 +19,11 @@
             <v-btn slot="activator" v-model="dial" fab><v-icon>apps</v-icon><v-icon>close</v-icon></v-btn>
             <v-btn fab small primary @click.native.stop="dialogs.membershipsCreateUpdate = !dialogs.membershipsCreateUpdate"><v-icon class="white--text">edit</v-icon></v-btn>
             <v-btn fab small primary @click.native.stop="dialogs.membershipsAccountsAdd = !dialogs.membershipsAccountsAdd"><v-icon class="white--text">add</v-icon></v-btn>
-            <v-btn fab small primary @click.native.stop="deleteMembership"><v-icon class="white--text">delete</v-icon></v-btn>
+            <v-btn fab small primary @click.native.stop="dialogs.membershipsDelete = !dialogs.membershipsDelete"><v-icon class="white--text">delete</v-icon></v-btn>
           </v-speed-dial>
           <memberships-create-update v-model="dialogs.membershipsCreateUpdate" :membership="membership" @updated="m => membership = m"></memberships-create-update>
           <memberships-accounts-add v-model="dialogs.membershipsAccountsAdd" :membership="membership" @success="initializeAccounts"></memberships-accounts-add>
+          <confirm-dialog v-model="dialogs.membershipsDelete" @confirmed="deleteMembership">Are you sure you want to delete the membership: {{ membership.name }} ?</confirm-dialog>
           <span>{{ membership.description }}</span>
         </v-card-text>
 
@@ -59,10 +60,12 @@
 <script>
 import membershipsAccountsAdd from 'common/memberships/accounts/add';
 import membershipsCreateUpdate from 'common/memberships/create-update';
+import confirmDialog from 'common/confirm-dialog';
 
 let dialogs = {
   membershipsCreateUpdate: false,
-  membershipsAccountsAdd: false
+  membershipsAccountsAdd: false,
+  membershipsDelete: false
 };
 
 let snackbars = {
@@ -82,7 +85,7 @@ export default {
       return this.$store.state.account;
     }
   },
-  components: {membershipsCreateUpdate, membershipsAccountsAdd},
+  components: {membershipsCreateUpdate, membershipsAccountsAdd, confirmDialog},
   methods: {initializeCommunity, initializeMembership, initializeAccounts, initializeIsAdministrator, deleteMembership, removeAccount, resendResetPasswordEmail},
   beforeRouteEnter (to, from, next) {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
