@@ -67,6 +67,8 @@
               <form @submit.prevent="addOperator" novalidate>
                 <v-card-text>
                   <v-text-field v-model="operator.email" :error="addOperatorError" label="Email"></v-text-field>
+                  <v-text-field v-model="operator.firstName" :error="addOperatorError" label="First Name"></v-text-field>
+                  <v-text-field v-model="operator.lastName" :error="addOperatorError" label="Last Name"></v-text-field>
                 </v-card-text>
                 <v-card-actions class="secondary">
                   <v-spacer></v-spacer>
@@ -84,7 +86,7 @@
           <v-list-tile v-for="account in organization.accounts" :key="account.id" v-if="account">
             <v-list-tile-content>
               <v-list-tile-title>{{ account.email }}</v-list-tile-title>
-              <v-list-tile-sub-title><!-- TODO: ACCOUNT META DATA --></v-list-tile-sub-title>
+              <v-list-tile-sub-title>{{ account.firstName }} {{ account.lastName }}</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -144,9 +146,15 @@ let dialogs = {
   addOperator: false
 };
 
+let operator = {
+  email: '',
+  firstName: '',
+  lastName: ''
+};
+
 export default {
   props: ['id'],
-  data: () => ({organization: {}, token: sessionStorage.token, dialogs, addOperatorError: false, addOperatorSubmitting: false, addOperatorMsg: '', operator: {email: ''}, isAdministrator: false}),
+  data: () => ({organization: {}, token: sessionStorage.token, dialogs, addOperatorError: false, addOperatorSubmitting: false, addOperatorMsg: '', operator, isAdministrator: false}),
   computed: {
     account () {
       return this.$store.state.account;
