@@ -1,11 +1,17 @@
 <template>
 <div>
 
-  <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
   <form v-if="!success" @submit.prevent="register" class="pa-3" novalidate>
+
     <v-text-field v-model="email" :error="error" prepend-icon="mail" type="email" label="Email"></v-text-field>
-    <v-btn type="submit" class="white--text" block primary>Register</v-btn>
+    <v-btn type="submit" class="white--text" :error="error" block primary :loading="submitting">Register</v-btn>
+
     <p class="pt-2 text-xs-center"><router-link class="black--text" to="/auth/login">If you already have an account, then click here to login.</router-link></p>
+
+    <v-snackbar v-model="error" error>{{ msg }}
+      <v-btn flat @click.native="error = false" class="white--text">Close</v-btn>
+    </v-snackbar>
+
   </form>
 
   <v-card v-if="success">
@@ -20,14 +26,16 @@
 
 <script>
 export default {
-  data: () => ({email: '', success: false, error: false, msg: ''}),
+  data: () => ({submitting: false, email: '', success: false, error: false, msg: ''}),
   methods: {register}
 };
 
 function register() {
+  this.submitting = true;
   return this.$http.post('/auth/register', {email: this.email})
     .then(() => this.success = true)
-    .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
+    .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'))
+    .then(() => this.submitting = false);
 }
 </script>
 

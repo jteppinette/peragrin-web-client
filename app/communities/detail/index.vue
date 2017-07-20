@@ -28,7 +28,7 @@
           </memberships-create-update>
         </v-card-title>
         <v-card-text class="pb-5 pt-5">Click a membership below to view more detailed information and add accounts. If you do not have any memberships, click the plus button above to create your first membership.</v-card-text>
-        <v-divider></v-divider>
+        <v-divider v-if="memberships.length"></v-divider>
         <v-list two-line>
           <v-list-tile :to="isAdministrator ? `/communities/${community.id}/memberships/${membership.id}` : undefined" v-for="membership in memberships" :key="membership.id" v-if="membership">
             <v-list-tile-content>
@@ -36,7 +36,7 @@
               <v-list-tile-sub-title>{{ membership.description }}</v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action v-if="isAdministrator">
-              <v-btn icon @click.native.prevent="deleteMembership(membership.id)" class="primary"><v-icon class="white--text">delete</v-icon></v-btn>
+              <v-btn icon @click.native.prevent="deleteMembership(membership.id)" class="secondary"><v-icon class="white--text">delete</v-icon></v-btn>
             </v-list-tile-action>
           </v-list-tile>
         </v-list>

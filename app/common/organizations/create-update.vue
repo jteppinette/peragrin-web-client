@@ -2,17 +2,23 @@
 <v-dialog v-model="value" width="800px" scrollable persistent>
   <v-card>
     <v-card-title class="primary title">{{ action.name }} Organization</v-card-title>
-    <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
     <form @submit.prevent="action.method" novalidate>
+
       <v-card-text>
         <organizations-form v-model="data"></organizations-form>
         <organizations-hours v-model="data.hours"></organizations-hours>
       </v-card-text>
-      <v-card-actions class="primary">
+
+      <v-card-actions class="secondary">
         <v-spacer></v-spacer>
         <v-btn flat class="white--text" @click.native="$emit('input', false)">Close</v-btn>
-        <v-btn outline class="white--text" type="submit">{{ action.name }}</v-btn>
+        <v-btn outline class="white--text" :error="error" :loading="submitting" type="submit">{{ action.name }}</v-btn>
       </v-card-actions>
+
+      <v-snackbar v-if="value" v-model="error" error>{{ msg }}
+        <v-btn flat @click.native="error = false" class="white--text">Close</v-btn>
+      </v-snackbar>
+
     </form>
   </v-card>
 </v-dialog>
@@ -23,7 +29,7 @@ import organizationsHours from 'common/organizations/hours';
 
 export default {
   props: ['organization', 'communityID', 'value'],
-  data: () => ({msg: '', error: false}),
+  data: () => ({submitting: false, msg: '', error: false}),
   components: {organizationsForm, organizationsHours},
   computed: {
     action () {
@@ -49,16 +55,20 @@ export default {
 };
 
 function update() {
+  this.submitting = true;
   return this.$http.put(`/organizations/${this.organization.id}`, this.data)
     .then(({data: organization}) => this.$emit('updated', {...this.organization, ...organization}))
     .then(() => this.$emit('input', false))
-    .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
+    .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'))
+    .then(() => this.submitting = false);
 }
 
 function create() {
+  this.submitting = true;
   return this.$http.post(`/communities/${this.communityID}/organizations`, this.data)
     .then(({data: organization}) => this.$emit('created', organization))
     .then(() => this.$emit('input', false))
-    .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
+    .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'))
+    .then(() => this.submitting = false);
 }
 </script>

@@ -11,7 +11,7 @@
 
     <v-card>
       <v-card-title primary-title class="primary headline">{{ organization.name }}</v-card-title>
-      <v-card-text class="primary" style="position: relative">
+      <v-card-text class="secondary" style="position: relative">
         <v-chip v-if="organization.category" outline class="ma-0 white--text">{{ organization.category }}</v-chip>
         <v-btn v-if="isAdministrator" @click.native.stop="dialogs.organizationsCreateUpdate = !dialogs.organizationsCreateUpdate" fab right bottom absolute><v-icon>edit</v-icon></v-btn>
         <organizations-create-update v-model="dialogs.organizationsCreateUpdate" v-if="organization.id" :organization="organization" @updated="o => organization = o"></organizations-create-update>
@@ -64,16 +64,18 @@
             <v-btn fab absolute right bottom slot="activator"><v-icon>add</v-icon></v-btn>
             <v-card>
               <v-card-title class="primary title">Add Operator</v-card-title>
-              <v-alert error dismissible v-model="addOperatorError">{{ addOperatorMsg }}</v-alert>
               <form @submit.prevent="addOperator" novalidate>
                 <v-card-text>
                   <v-text-field v-model="operator.email" :error="addOperatorError" label="Email"></v-text-field>
                 </v-card-text>
-                <v-card-actions class="primary">
+                <v-card-actions class="secondary">
                   <v-spacer></v-spacer>
                   <v-btn flat class="white--text" @click.native="dialogs.addOperator = false">Close</v-btn>
-                  <v-btn outline class="white--text" type="submit">Add</v-btn>
+                  <v-btn outline class="white--text" :error="addOperatorError" :loading="addOperatorSubmitting" type="submit">Add</v-btn>
                 </v-card-actions>
+                <v-snackbar v-if="addOperatorDialog" v-model="addOperatorError" error>{{ addOperatorMsg }}
+                  <v-btn flat @click.native="addOperatorError = false" class="white--text">Close</v-btn>
+                </v-snackbar>
               </form>
             </v-card>
           </v-dialog>
@@ -102,7 +104,7 @@
                 <p>All images will be sized to a maxium size of 130px in width and 400px in height. The provided image's aspect ratio will be maintained.</p>
                 <dropzone id="myVueDropzone" param-name="logo" :url="`/organizations/${id}/logo`" :headers="{'Authorization': `Bearer ${token}`}" @vdropzone-success="uploadLogoSuccess" :resize-width="400" resize-method="crop" :resize-height="130" :thumbnail-width="400" :thumbnail-height="130" :max-number-of-files="1" :max-file-size-in-m-b="100"><input type="hidden"></dropzone>
               </v-card-text>
-              <v-card-actions class="primary">
+              <v-card-actions class="secondary">
                 <v-spacer></v-spacer>
                 <v-btn flat class="white--text" @click.native="dialogs.uploadLogo = false">Close</v-btn>
               </v-card-actions>
@@ -144,7 +146,7 @@ let dialogs = {
 
 export default {
   props: ['id'],
-  data: () => ({organization: {}, token: sessionStorage.token, dialogs, addOperatorError: false, addOperatorMsg: '', operator: {email: ''}, isAdministrator: false}),
+  data: () => ({organization: {}, token: sessionStorage.token, dialogs, addOperatorError: false, addOperatorSubmitting: false, addOperatorMsg: '', operator: {email: ''}, isAdministrator: false}),
   computed: {
     account () {
       return this.$store.state.account;
@@ -171,10 +173,12 @@ function initialize() {
 }
 
 function addOperator() {
+  this.addOperatorSubmitting = true;
   this.$http.post(`/organizations/${this.id}/accounts`, this.operator)
     .then(() => this.dialogs.addOperator = false)
     .catch(({data}) => this.addOperatorError = !!(this.addOperatorMsg = data && data.msg ? data.msg : 'unknown error'))
-    .then(initializeOperators);
+    .then(() => this.addOperatorSubmitting = false)
+    .then(initializeOperators)
 }
 
 function uploadLogoSuccess(file, {logo, logoURL}) {

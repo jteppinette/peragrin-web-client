@@ -125,7 +125,8 @@ function logout() {
 
 .card {
 
-  .card__title {
+  .card__title, .card__text {
+    padding: 20px 16px;
 
     &.title, &.headline, .title, .headline {
       font-family: 'Fredoka One', cursive;
@@ -133,6 +134,23 @@ function logout() {
 
     &.primary {
       color: white;
+      border-bottom: 5px solid $theme.accent !important;
+    }
+
+    &.secondary {
+      color: white;
+      border-bottom: 5px solid $theme.secondary-accent !important;
+    }
+  }
+
+  .card__actions {
+    &.primary {
+      color: white;
+      border-top: 5px solid $theme.accent !important;
+    }
+    &.secondary {
+      color: white;
+      border-top: 5px solid $theme.secondary-accent !important;
     }
   }
 
@@ -280,6 +298,7 @@ function logout() {
 
   &.primary {
     z-index: 4 !important;
+    border-bottom: 5px solid $theme.accent !important;
   }
 
   &__title {

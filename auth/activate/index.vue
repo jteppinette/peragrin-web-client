@@ -1,12 +1,17 @@
 <template>
 <div>
-  <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
   <form @submit.prevent="activate" class="pa-3" novalidate>
+
     <v-text-field v-model="account.email" :error="error" prepend-icon="mail" type="email" label="Email" disabled></v-text-field>
     <v-select v-if="!next" v-model="role" item-text="name" return-object :error="error" :items="roles" prepend-icon="account_box" label="Select your role" single-line auto />
     <v-text-field v-model="password" :error="error" prepend-icon="lock" type="password" label="Password"></v-text-field>
     <v-text-field v-model="confirm" :error="error" :rules="[() => (password && confirm) && (password !== confirm) ? 'Your passwords do not match.' : true]" prepend-icon="check" type="password" label="Confirm Password"></v-text-field>
-    <v-btn type="submit" class="white--text" block primary :disabled="!password || !confirm || password !== confirm">Activate Account</v-btn>
+    <v-btn type="submit" class="white--text" block primary :error="error" :loading="submitting" :disabled="!password || !confirm || password !== confirm">Activate</v-btn>
+
+    <v-snackbar v-model="error" error>{{ msg }}
+      <v-btn flat @click.native="error = false" class="white--text">Close</v-btn>
+    </v-snackbar>
+
   </form>
 </div>
 </template>
@@ -21,7 +26,7 @@ const PATRON = {key: 'p', next: '/map', name: 'Patron'},
 const ROLES = [PATRON, BUSINESS_LEADER, COMMUNITY_LEADER];
 
 export default {
-  data: () => ({password: '', next: '', role: PATRON, roles: ROLES, confirm: '', token: '', error: false, msg: ''}),
+  data: () => ({submitting: false, password: '', next: '', role: PATRON, roles: ROLES, confirm: '', token: '', error: false, msg: ''}),
   computed: {
     account () {
       if (this.$route.query.token) {
@@ -41,8 +46,10 @@ function initialize() {
 }
 
 function activate() {
+  this.submitting = true;
   return this.$store.dispatch('activate', {password: this.password, token: this.account.token})
     .then(() => this.$router.push(this.next || this.role.next))
-    .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
+    .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'))
+    .then(() => this.submitting = false);
 }
 </script>

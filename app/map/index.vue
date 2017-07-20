@@ -10,19 +10,18 @@
         </span>
       </v-card-title>
 
-      <v-card-text v-if="selected.category" class="primary">
+      <v-card-text v-if="selected.category" class="secondary">
         <v-chip outline class="ma-0 white--text">{{ selected.category }}</v-chip>
       </v-card-text>
 
       <v-card-media v-if="selected.logoURL" :src="selected.logoURL" height="130px"></v-card-media>
 
-      <v-tabs dark :scrollable="false" v-model="active" class="tabs-no-border">
+      <v-tabs grow dark :scrollable="false" v-model="active" class="tabs-no-border">
 
         <!-- BAR -->
-        <v-tabs-bar slot="activators">
+        <v-tabs-bar slot="activators" class="secondary">
           <v-tabs-item ripple href="#general">General</v-tabs-item>
           <v-tabs-item ripple href="#promotions" v-if="selected.promotions && selected.promotions.length">Promotions</v-tabs-item>
-          <v-tabs-slider class="white"></v-tabs-slider>
         </v-tabs-bar>
 
         <!-- GENERAL -->
@@ -68,9 +67,8 @@
                       </v-list-tile>
                     </v-list>
 
-                    <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
                     <v-card-actions>
-                      <v-btn primary block :disabled="promotion.redeemed || error" @click.native="redeem(promotion)">{{ promotion.redeemed ? 'Redeemed' : 'Redeem' }}</v-btn>
+                      <v-btn primary block :disabled="successful || error" :error="error" :loading="submitting" @click.native="redeem(promotion)">{{ successful ? 'Redeemed' : 'Redeem' }}</v-btn>
                     </v-card-actions>
 
                   </v-card>
@@ -85,12 +83,20 @@
     </v-card>
   </v-navigation-drawer>
   
-  <v-container fluid class="pl-2 pr-2 pt-0 pb-0 elevation-1 grey lighten-4 categories">
+  <v-container fluid class="pl-2 pr-2 pt-1 pb-0 elevation-1 grey lighten-4 categories">
     <v-btn :ripple="false" flat v-for="category in categories" class="hidden-sm-and-down" @click.native="filter.category = filter.category == category.name ? '' : category.name" :key="category.name"><v-icon left :class="{'primary--text': filter.category == category.name}">{{ category.icon }}</v-icon> {{ category.name }}</v-btn>
     <v-btn :ripple="false" flat v-for="category in categories" :icon="filter.category != category.name" class="hidden-md-and-up" @click.native="filter.category = filter.category == category.name ? '' : category.name" :key="category.name"><v-icon :left="filter.category == category.name" :class="{'primary--text': filter.category == category.name}">{{ category.icon }}</v-icon>{{ filter.category == category.name ? category.name : '' }}</v-btn>
   </v-container>
 
   <communities-map :filter="filter" :community="community" @select="select" v-if="community"></communities-map>
+
+  <v-snackbar v-model="error" error>{{ msg }}
+    <v-btn flat @click.native="error = false" class="white--text">Close</v-btn>
+  </v-snackbar>
+
+  <v-snackbar v-model="successful">successfully redeemed
+    <v-btn flat @click.native="successful = false" class="white--text">Close</v-btn>
+  </v-snackbar>
 
 </div>
 </template>
@@ -105,7 +111,7 @@ let filter = {
 };
 
 export default {
-  data: () => ({active: undefined, community: undefined, selected: {}, sidebar: false, msg: '', error: undefined, filter, categories: CATEGORIES}),
+  data: () => ({successful: false, submitting: false, active: undefined, community: undefined, selected: {}, sidebar: false, msg: '', error: undefined, filter, categories: CATEGORIES}),
   mounted: initialize,
   methods: {select, redeem},
   components: {organizationsDetails, communitiesMap}
@@ -127,8 +133,9 @@ function select(organization) {
 }
 
 function redeem(promotion) {
+  this.submitting = false;
   return this.$http.post(`/promotions/${promotion.id}/redeem`)
-    .then(() => this.$set(promotion, 'redeemed', true))
+    .then(() => this.successful = true)
     .catch(({data, status}) => {
       this.error = true;
       if (status == 401) {
@@ -138,7 +145,8 @@ function redeem(promotion) {
       } else {
         this.msg = 'unknown error';
       }
-    });
+    })
+    .then(() => this.submitting = false);
 }
 </script>
 

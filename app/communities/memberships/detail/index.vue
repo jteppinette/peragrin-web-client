@@ -14,12 +14,12 @@
         <v-card-title primary-title class="primary headline">{{ membership.name }}</v-card-title>
 
         <!-- SPEED DIAL -->
-        <v-card-text class="primary white--text" style="position: relative">
-          <v-speed-dial v-if="isAdministrator" absolute bottom right direction="bottom">
-            <v-btn slot="activator" fab><v-icon>apps</v-icon><v-icon>close</v-icon></v-btn>
-            <v-btn fab small @click.native.stop="dialogs.membershipsCreateUpdate = !dialogs.membershipsCreateUpdate"><v-icon>edit</v-icon></v-btn>
-            <v-btn fab small @click.native.stop="dialogs.membershipsAccountsAdd = !dialogs.membershipsAccountsAdd"><v-icon>add</v-icon></v-btn>
-            <v-btn fab small @click.native.stop="deleteMembership"><v-icon>delete</v-icon></v-btn>
+        <v-card-text class="secondary" style="position: relative">
+          <v-speed-dial v-if="isAdministrator" v-model="dial" absolute bottom right direction="bottom">
+            <v-btn slot="activator" v-model="dial" fab><v-icon>apps</v-icon><v-icon>close</v-icon></v-btn>
+            <v-btn fab small primary @click.native.stop="dialogs.membershipsCreateUpdate = !dialogs.membershipsCreateUpdate"><v-icon class="white--text">edit</v-icon></v-btn>
+            <v-btn fab small primary @click.native.stop="dialogs.membershipsAccountsAdd = !dialogs.membershipsAccountsAdd"><v-icon class="white--text">add</v-icon></v-btn>
+            <v-btn fab small primary @click.native.stop="deleteMembership"><v-icon class="white--text">delete</v-icon></v-btn>
           </v-speed-dial>
           <memberships-create-update v-model="dialogs.membershipsCreateUpdate" :membership="membership" @updated="m => membership = m"></memberships-create-update>
           <memberships-accounts-add v-model="dialogs.membershipsAccountsAdd" :membership="membership" @success="initializeAccounts"></memberships-accounts-add>
@@ -37,8 +37,8 @@
           <template slot="items" scope="props">
             <td class="text-xs-right">{{ props.item.email }}</td>
             <td v-if="isAdministrator" class="text-xs-right" style="white-space: nowrap">
-              <v-btn @click.native="removeAccount(props.item.id)" primary class="ma-0"><v-icon left class="white--text">remove</v-icon>Remove</v-btn>
-              <v-btn @click.native="resendResetPasswordEmail(props.item.id)" primary class="ma-0"><v-icon left class="white--text">send</v-icon>Resend Reset Password Email</v-btn>
+              <v-btn @click.native="removeAccount(props.item.id)" secondary class="ma-0"><v-icon left class="white--text">remove</v-icon>Remove</v-btn>
+              <v-btn @click.native="resendResetPasswordEmail(props.item.id)" secondary class="ma-0"><v-icon left class="white--text">send</v-icon>Resend Reset Password Email</v-btn>
             </td>
 
             <v-snackbar v-model="snackbars.resendResetPasswordEmail[props.item.id]">A reset password email has been sent to {{ props.item.email}}.
@@ -75,7 +75,7 @@ const headers = [
 
 export default {
   props: ['communityID', 'membershipID'],
-  data: () => ({membership: undefined, community: undefined, accounts: undefined, headers, search: '', dialogs, snackbars, isAdministrator: false, initialized: false}),
+  data: () => ({dial: false, membership: undefined, community: undefined, accounts: undefined, headers, search: '', dialogs, snackbars, isAdministrator: false, initialized: false}),
   mounted: initialize,
   computed: {
     account () {

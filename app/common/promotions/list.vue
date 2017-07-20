@@ -17,8 +17,8 @@
       </td>
       <td class="text-xs-right"><v-icon v-if="props.item.isSingleUse">check</v-icon></td>
       <td class="text-xs-right" style="white-space: nowrap">
-        <v-btn v-if="isAdministrator" @click.native="del(props.item)" primary class="ma-0"><v-icon left class="white--text">delete</v-icon>Delete</v-btn>
-        <v-btn v-if="isAdministrator" @click.native.stop="dialogs.promotionsUpdate[props.item.id] = !dialogs.promotionsUpdate[props.item.id]" primary class="ma-0"><v-icon left class="white--text">edit</v-icon>Update</v-btn>
+        <v-btn v-if="isAdministrator" @click.native="del(props.item)" secondary class="ma-0"><v-icon left class="white--text">delete</v-icon>Delete</v-btn>
+        <v-btn v-if="isAdministrator" @click.native.stop="dialogs.promotionsUpdate[props.item.id] = !dialogs.promotionsUpdate[props.item.id]" secondary class="ma-0"><v-icon left class="white--text">edit</v-icon>Update</v-btn>
         <promotions-create-update v-model="dialogs.promotionsUpdate[props.item.id]" :promotion="props.item" :organizationID="organizationID" @updated="initializePromotions"></promotions-create-update>
       </td>
     </template>
