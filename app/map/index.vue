@@ -83,7 +83,7 @@
     </v-card>
   </v-navigation-drawer>
   
-  <v-container fluid class="pl-2 pr-2 pt-1 pb-0 elevation-1 grey lighten-4 categories">
+  <v-container fluid class="pl-2 pr-2 pt-2 pb-1 elevation-1 grey lighten-4 categories">
     <v-btn :ripple="false" flat v-for="category in categories" class="hidden-sm-and-down" @click.native="filter.category = filter.category == category.name ? '' : category.name" :key="category.name"><v-icon left :class="{'primary--text': filter.category == category.name}">{{ category.icon }}</v-icon> {{ category.name }}</v-btn>
     <v-btn :ripple="false" flat v-for="category in categories" :icon="filter.category != category.name" class="hidden-md-and-up" @click.native="filter.category = filter.category == category.name ? '' : category.name" :key="category.name"><v-icon :left="filter.category == category.name" :class="{'primary--text': filter.category == category.name}">{{ category.icon }}</v-icon>{{ filter.category == category.name ? category.name : '' }}</v-btn>
   </v-container>
@@ -155,7 +155,7 @@ function redeem(promotion) {
   position: fixed;
   height: 100% !important;
   z-index: 1;
-  top: 96px;
+  top: 106px;
 }
 </style>
 

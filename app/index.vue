@@ -5,16 +5,16 @@
   <v-navigation-drawer v-model="navbar" :mini-variant.sync="mini" clipped persistent>
 
     <!-- PROFILE -->
-    <v-list v-if="account">
+    <v-list v-if="account" class="mt-1">
       <v-list-tile avatar tag="div">
         <v-list-tile-avatar><gravatar :email="account.email"></gravatar></v-list-tile-avatar>
         <v-list-tile-content><v-list-tile-title>{{ account.email }}</v-list-tile-title></v-list-tile-content>
-        <v-list-tile-action><v-btn icon @click.native.stop="mini = !mini"><v-icon>chevron_left</v-icon></v-btn></v-list-tile-action>
+        <v-list-tile-action v-if="!mini"><v-btn icon @click.native.stop="mini = !mini"><v-icon>chevron_left</v-icon></v-btn></v-list-tile-action>
       </v-list-tile>
     </v-list> 
 
     <!-- PAGES -->
-    <v-list>
+    <v-list class="large" :class="{'mt-1': !account}">
       <v-divider v-if="account"></v-divider>
       <v-list-tile v-if="!account" to="/auth/login">
         <v-list-tile-action><v-icon>lock_open</v-icon></v-list-tile-action>
@@ -296,7 +296,14 @@ function logout() {
 
 .list {
   padding: 0px 0px !important;
+
+  &.large {
+    .list__tile {
+      height: 56px !important;
+    }
+  }
 }
+
 
 
 /***********/
