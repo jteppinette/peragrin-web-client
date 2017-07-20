@@ -19,6 +19,7 @@
       <td class="text-xs-right" style="white-space: nowrap">
         <v-btn v-if="isAdministrator" @click.native.stop="dialogs.promotionsDelete[props.item.id] = !dialogs.promotionsDelete[props.item.id]" secondary class="ma-0"><v-icon left class="white--text">delete</v-icon>Delete</v-btn>
         <v-btn v-if="isAdministrator" @click.native.stop="dialogs.promotionsUpdate[props.item.id] = !dialogs.promotionsUpdate[props.item.id]" secondary class="ma-0"><v-icon left class="white--text">edit</v-icon>Update</v-btn>
+
         <promotions-create-update v-model="dialogs.promotionsUpdate[props.item.id]" :promotion="props.item" :organizationID="organizationID" @updated="initializePromotions"></promotions-create-update>
         <confirm-dialog v-model="dialogs.promotionsDelete[props.item.id]" @confirmed="del(props.item)">Are you sure you want to delete the promotion: {{ props.item.name }} ?</confirm-dialog>
       </td>

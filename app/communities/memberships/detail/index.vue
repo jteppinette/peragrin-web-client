@@ -38,8 +38,10 @@
           <template slot="items" scope="props">
             <td class="text-xs-right">{{ props.item.email }}</td>
             <td v-if="isAdministrator" class="text-xs-right" style="white-space: nowrap">
-              <v-btn @click.native="removeAccount(props.item.id)" secondary class="ma-0"><v-icon left class="white--text">remove</v-icon>Remove</v-btn>
-              <v-btn @click.native="resendResetPasswordEmail(props.item.id)" secondary class="ma-0"><v-icon left class="white--text">send</v-icon>Resend Reset Password Email</v-btn>
+              <v-btn @click.native="dialogs.accountsDelete[props.item.id] = !dialogs.accountsDelete[props.item.id]" secondary class="ma-0"><v-icon left class="white--text">remove</v-icon>Remove</v-btn>
+              <v-btn @click.native.stop="resendResetPasswordEmail(props.item.id)" secondary class="ma-0"><v-icon left class="white--text">send</v-icon>Resend Reset Password Email</v-btn>
+
+              <confirm-dialog v-model="dialogs.accountsDelete[props.item.id]" @confirmed="removeAccount(props.item.id)">Are you sure you want to remove this account, {{ props.item.email }}, from the {{ membership.name }} membership?</confirm-dialog>
             </td>
 
             <v-snackbar v-model="snackbars.resendResetPasswordEmail[props.item.id]">A reset password email has been sent to {{ props.item.email}}.
@@ -65,7 +67,8 @@ import confirmDialog from 'common/confirm-dialog';
 let dialogs = {
   membershipsCreateUpdate: false,
   membershipsAccountsAdd: false,
-  membershipsDelete: false
+  membershipsDelete: false,
+  accountsDelete: {}
 };
 
 let snackbars = {
@@ -120,7 +123,8 @@ function initializeMembership() {
 function initializeAccounts() {
   return this.$http.get(`/memberships/${this.membershipID}/accounts`)
     .then(({data: accounts}) => this.accounts = accounts)
-    .then(accounts => this.snackbars.resendResetPasswordEmail = accounts.reduce((obj, account) => ({...obj, [account.id]: false}), {}));
+    .then(() => this.snackbars.resendResetPasswordEmail = this.accounts.reduce((obj, a) => ({...obj, [a.id]: false}), {}))
+    .then(() => this.dialogs.accountsDelete = this.accounts.reduce((obj, a) => ({...obj, [a.id]: false}), {}));
 }
 
 function deleteMembership() {
