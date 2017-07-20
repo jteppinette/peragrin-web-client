@@ -73,7 +73,7 @@
                   <v-btn flat class="white--text" @click.native="dialogs.addOperator = false">Close</v-btn>
                   <v-btn outline class="white--text" :error="addOperatorError" :loading="addOperatorSubmitting" type="submit">Add</v-btn>
                 </v-card-actions>
-                <v-snackbar v-if="addOperatorDialog" v-model="addOperatorError" error>{{ addOperatorMsg }}
+                <v-snackbar v-if="dialogs.addOperator" v-model="addOperatorError" error>{{ addOperatorMsg }}
                   <v-btn flat @click.native="addOperatorError = false" class="white--text">Close</v-btn>
                 </v-snackbar>
               </form>
