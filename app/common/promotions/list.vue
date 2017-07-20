@@ -17,9 +17,10 @@
       </td>
       <td class="text-xs-right"><v-icon v-if="props.item.isSingleUse">check</v-icon></td>
       <td class="text-xs-right" style="white-space: nowrap">
-        <v-btn v-if="isAdministrator" @click.native="del(props.item)" secondary class="ma-0"><v-icon left class="white--text">delete</v-icon>Delete</v-btn>
+        <v-btn v-if="isAdministrator" @click.native.stop="dialogs.promotionsDelete[props.item.id] = !dialogs.promotionsDelete[props.item.id]" secondary class="ma-0"><v-icon left class="white--text">delete</v-icon>Delete</v-btn>
         <v-btn v-if="isAdministrator" @click.native.stop="dialogs.promotionsUpdate[props.item.id] = !dialogs.promotionsUpdate[props.item.id]" secondary class="ma-0"><v-icon left class="white--text">edit</v-icon>Update</v-btn>
         <promotions-create-update v-model="dialogs.promotionsUpdate[props.item.id]" :promotion="props.item" :organizationID="organizationID" @updated="initializePromotions"></promotions-create-update>
+        <confirm-dialog v-model="dialogs.promotionsDelete[props.item.id]" @confirmed="del(props.item)">Are you sure you want to delete the promotion: {{ props.item.name }} ?</confirm-dialog>
       </td>
     </template>
   </v-data-table>
@@ -29,6 +30,7 @@
 
 <script>
 import promotionsCreateUpdate from 'common/promotions/create-update';
+import confirmDialog from 'common/confirm-dialog';
 
 const headers = [
   {text: 'Name', value: 'name', sortable: true},
@@ -42,13 +44,14 @@ const headers = [
 
 let dialogs = {
   promotionsCreate: false,
-  promotionsUpdate: {}
+  promotionsUpdate: {},
+  promotionsDelete: {}
 };
 
 export default {
   props: ['organizationID'],
   data: () => ({communities: [], memberships: [], promotions: [], headers, dialogs, error: false, msg: '', initialized: false, isAdministrator: false}),
-  components: {promotionsCreateUpdate},
+  components: {promotionsCreateUpdate, confirmDialog},
   computed: {
     account () {
       return this.$store.state.account;
@@ -74,7 +77,8 @@ function initialize() {
 function initializePromotions() {
   return this.$http.get(`/organizations/${this.organizationID}/promotions`)
     .then(({data: promotions}) => this.promotions = promotions)
-    .then(promotions => promotions.map(p => this.$set(this.dialogs.promotionsUpdate, p.id, false)));
+    .then(() => this.dialogs.promotionsUpdate = this.promotions.reduce((obj, p) => ({...obj, [p.id]: false}), {}))
+    .then(() => this.dialogs.promotionsDelete = this.promotions.reduce((obj, p) => ({...obj, [p.id]: false}), {}))
 }
 
 function initializeCommunities() {
