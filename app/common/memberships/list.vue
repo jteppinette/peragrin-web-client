@@ -18,8 +18,9 @@
         <v-list-tile-sub-title>{{ membership.description }}</v-list-tile-sub-title>
       </v-list-tile-content>
       <v-list-tile-action v-if="isAdministrator">
-        <v-btn icon @click.native.prevent="del(membership.id)" class="secondary"><v-icon class="white--text">delete</v-icon></v-btn>
+        <v-btn icon class="secondary" @click.native.stop.prevent="dialogs.confirm[membership.id] = true"><v-icon class="white--text">delete</v-icon></v-btn>
       </v-list-tile-action>
+      <confirm-dialog v-model="dialogs.confirm[membership.id]" @confirmed="del(membership.id)">Are you sure you want to delete the membership: {{ membership.name }} ?</confirm-dialog>
     </v-list-tile>
   </v-list>
 
@@ -28,17 +29,19 @@
 
 <script>
 import membershipsCreateUpdate from 'common/memberships/create-update';
+import confirmDialog from 'common/confirm-dialog';
 
 let dialogs = {
-  createUpdate: false
+  createUpdate: false,
+  confirm: {}
 };
 
 export default {
-  props: ['communityID', 'isAdministrator', 'initialized'],
-  data: () => ({memberships: [], dialogs}),
+  props: ['communityID', 'isAdministrator'],
+  data: () => ({memberships: [], dialogs, initialized: false}),
   mounted: initialize,
   methods: {initializeMemberships, del},
-  components: {membershipsCreateUpdate}
+  components: {membershipsCreateUpdate, confirmDialog}
 }
 
 function initialize() {
@@ -49,6 +52,7 @@ function initialize() {
 function initializeMemberships() {
   return this.$http.get(`/communities/${this.communityID}/memberships`)
     .then(({data: memberships}) => this.memberships = memberships)
+    .then(memberships => this.dialogs.confirm = memberships.reduce((obj, m) => ({...obj, [m.id]: false}), {}));
 }
 
 function del(id) {
