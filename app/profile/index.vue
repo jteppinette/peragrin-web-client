@@ -12,7 +12,9 @@
         <v-card-title class="primary title">Update Account</v-card-title>
         <form @submit.prevent="updateAccount" novalidate>
           <v-card-text>
-            <v-text-field v-model="email" :error="errors.account" prepend-icon="mail" type="email" label="Email"></v-text-field>
+            <v-text-field v-model="email" :error="errors.account" type="email" label="Email"></v-text-field>
+            <v-text-field v-model="firstName" :error="errors.account" type="text" label="First Name"></v-text-field>
+            <v-text-field v-model="lastName" :error="errors.account" type="text" label="Last Name"></v-text-field>
           </v-card-text>
           <v-card-actions class="secondary">
             <v-spacer></v-spacer>
@@ -65,7 +67,7 @@ let submitting = {
 };
 
 export default {
-  data: () => ({email: '', password: '', submitting, errors, messages}),
+  data: () => ({firstName: '', lastName: '', email: '', password: '', submitting, errors, messages}),
   methods: {updateAccount, setPassword},
   mounted: initialize,
   beforeRouteEnter (to, from, next) {
@@ -75,12 +77,16 @@ export default {
 
 function initialize() {
   return this.$store.dispatch('initialize')
-    .then(() => this.email = this.$store.state.account.email);
+    .then(() => {
+      this.email = this.$store.state.account.email;
+      this.firstName = this.$store.state.account.firstName;
+      this.lastName = this.$store.state.account.lastName;
+    });
 }
 
 function updateAccount() {
   this.submitting.account = true;
-  return this.$store.dispatch('update', {email: this.email, password: this.password})
+  return this.$store.dispatch('update', {email: this.email, firstName: this.firstName, lastName: this.lastName})
     .catch(({data}) => this.errors.account = !!(this.messages.account = data && data.msg ? data.msg : 'unknown error'))
     .then(() => this.submitting.account = false);
 }
