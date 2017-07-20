@@ -1,5 +1,5 @@
 <template>
-<v-list two-line class="pt-0 pb-0">
+<v-list two-line>
 
   <!-- PHONE -->
   <v-list-tile v-if="organization.phone" :href="'tel:'+organization.phone">

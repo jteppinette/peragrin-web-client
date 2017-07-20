@@ -43,7 +43,7 @@
                       </div>
                     </v-card-title>
 
-                    <v-list two-line class="pt-0 pb-0">
+                    <v-list two-line>
                       <v-list-tile v-if="promotion.expiration">
                         <v-list-tile-action><v-icon>timer</v-icon></v-list-tile-action>
                         <v-list-tile-content>

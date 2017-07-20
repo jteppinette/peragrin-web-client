@@ -290,6 +290,15 @@ function logout() {
 }
 
 
+/*********/
+/* LISTS */
+/*********/
+
+.list {
+  padding: 0px 0px !important;
+}
+
+
 /***********/
 /* TOOLBAR */
 /***********/

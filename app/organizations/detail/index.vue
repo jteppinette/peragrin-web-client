@@ -220,7 +220,7 @@ function initializeIsAdministrator() {
 @import '../../../settings';
 
 .leaflet-container {
-  height: 380px;
+  height: 360px;
 
   @media screen and (max-width: $grid-breakpoints.md) {
     height: 100px;
