@@ -15,8 +15,8 @@
 
         <!-- SPEED DIAL -->
         <v-card-text class="secondary" style="position: relative">
-          <v-speed-dial v-if="isAdministrator" v-model="dial" absolute bottom right direction="bottom">
-            <v-btn slot="activator" v-model="dial" fab><v-icon>apps</v-icon><v-icon>close</v-icon></v-btn>
+          <v-speed-dial v-if="isAdministrator" absolute bottom right direction="bottom">
+            <v-btn slot="activator" fab><v-icon>apps</v-icon></v-btn>
             <v-btn fab small primary @click.native.stop="dialogs.membershipsCreateUpdate = !dialogs.membershipsCreateUpdate"><v-icon class="white--text">edit</v-icon></v-btn>
             <v-btn fab small primary @click.native.stop="dialogs.membershipsAccountsAdd = !dialogs.membershipsAccountsAdd"><v-icon class="white--text">add</v-icon></v-btn>
             <v-btn fab small primary @click.native.stop="dialogs.membershipsDelete = !dialogs.membershipsDelete"><v-icon class="white--text">delete</v-icon></v-btn>
@@ -85,7 +85,7 @@ const headers = [
 
 export default {
   props: ['communityID', 'membershipID'],
-  data: () => ({dial: false, membership: undefined, community: undefined, accounts: undefined, headers, search: '', dialogs, snackbars, isAdministrator: false, initialized: false}),
+  data: () => ({membership: undefined, community: undefined, accounts: undefined, headers, search: '', dialogs, snackbars, isAdministrator: false, initialized: false}),
   mounted: initialize,
   computed: {
     account () {
