@@ -60,27 +60,8 @@
       <v-card>
         <v-card-title class="primary" style="position: relative">
           <span class="title">Operators</span>
-          <v-dialog v-if="isAdministrator" v-model="dialogs.addOperator" width="400px" scrollable persistent>
-            <v-btn fab absolute right bottom slot="activator"><v-icon>add</v-icon></v-btn>
-            <v-card>
-              <v-card-title class="primary title">Add Operator</v-card-title>
-              <form @submit.prevent="addOperator" novalidate>
-                <v-card-text>
-                  <v-text-field v-model="operator.email" :error="addOperatorError" label="Email"></v-text-field>
-                  <v-text-field v-model="operator.firstName" :error="addOperatorError" label="First Name"></v-text-field>
-                  <v-text-field v-model="operator.lastName" :error="addOperatorError" label="Last Name"></v-text-field>
-                </v-card-text>
-                <v-card-actions class="secondary">
-                  <v-spacer></v-spacer>
-                  <v-btn flat class="white--text" @click.native="dialogs.addOperator = false">Close</v-btn>
-                  <v-btn outline class="white--text" :error="addOperatorError" :loading="addOperatorSubmitting" type="submit">Add</v-btn>
-                </v-card-actions>
-                <v-snackbar v-if="dialogs.addOperator" v-model="addOperatorError" error>{{ addOperatorMsg }}
-                  <v-btn flat @click.native="addOperatorError = false" class="white--text">Close</v-btn>
-                </v-snackbar>
-              </form>
-            </v-card>
-          </v-dialog>
+          <v-btn v-if="isAdministrator" fab absolute right bottom @click.native.stop="dialogs.operatorsAdd = !dialogs.operatorsAdd"><v-icon>add</v-icon></v-btn>
+          <organizations-operators-add v-model="dialogs.operatorsAdd" :organization="organization" @success="initializeOperators"></organizations-operators-add>
         </v-card-title>
         <v-list two-line class="card-body">
           <v-list-tile v-for="account in organization.accounts" :key="account.id" v-if="account">
@@ -137,24 +118,19 @@
 import promotionsList from 'common/promotions/list';
 import organizationsDetails from 'common/organizations/details';
 import organizationsCreateUpdate from 'common/organizations/create-update';
+import organizationsOperatorsAdd from 'common/organizations/operators/add';
 import {MARKERS} from 'common/categories';
 import Dropzone from 'vue2-dropzone';
 
 let dialogs = {
   organizationsCreateUpdate: false,
   uploadLogo: false,
-  addOperator: false
-};
-
-let operator = {
-  email: '',
-  firstName: '',
-  lastName: ''
+  operatorsAdd: false
 };
 
 export default {
   props: ['id'],
-  data: () => ({organization: {}, token: sessionStorage.token, dialogs, addOperatorError: false, addOperatorSubmitting: false, addOperatorMsg: '', operator, isAdministrator: false}),
+  data: () => ({organization: {}, token: sessionStorage.token, dialogs, isAdministrator: false}),
   computed: {
     account () {
       return this.$store.state.account;
@@ -163,9 +139,9 @@ export default {
       return this.organization.category ? MARKERS[this.organization.category] : undefined;
     }
   },
-  components: {promotionsList, organizationsDetails, organizationsCreateUpdate, Dropzone},
+  components: {promotionsList, organizationsDetails, organizationsCreateUpdate, organizationsOperatorsAdd, Dropzone},
   mounted: initialize,
-  methods: {uploadLogoSuccess, addOperator, initializeIsAdministrator, initializeOperators, initializeOrganization, initializeCommunities},
+  methods: {uploadLogoSuccess, initializeIsAdministrator, initializeOperators, initializeOrganization, initializeCommunities},
   beforeRouteEnter (to, from, next) {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
   }
@@ -178,15 +154,6 @@ function initialize() {
     this.initializeOrganization(),
     this.initializeCommunities()
   ]);
-}
-
-function addOperator() {
-  this.addOperatorSubmitting = true;
-  this.$http.post(`/organizations/${this.id}/accounts`, this.operator)
-    .then(() => this.dialogs.addOperator = false)
-    .catch(({data}) => this.addOperatorError = !!(this.addOperatorMsg = data && data.msg ? data.msg : 'unknown error'))
-    .then(() => this.addOperatorSubmitting = false)
-    .then(initializeOperators)
 }
 
 function uploadLogoSuccess(file, {logo, logoURL}) {
