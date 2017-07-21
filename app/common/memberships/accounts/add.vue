@@ -5,9 +5,12 @@
     <form @submit.prevent="add" novalidate>
 
       <v-card-text>
-        <v-text-field v-model="account.email" :error="error" label="Email"></v-text-field>
-        <v-text-field v-model="account.firstName" :error="error" label="First Name"></v-text-field>
-        <v-text-field v-model="account.lastName" :error="error" label="Last Name"></v-text-field>
+        <v-text-field v-model="account.email" @keyup.native="search" :error="error" label="Email"></v-text-field>
+        <v-text-field v-model="account.firstName" :disabled="exists" :error="error" label="First Name"></v-text-field>
+        <v-text-field v-model="account.lastName" :disabled="exists" :error="error" label="Last Name"></v-text-field>
+
+        <p v-if="exists" class="subheading">This pre-existing account will not receive an activation email after being added to this membership.</p>
+        <p v-else class="subheading">Upon creation, this account will receive an email to activate their account.</p>
       </v-card-text>
 
       <v-card-actions class="secondary">
@@ -25,6 +28,8 @@
 </v-dialog>
 </template>
 <script>
+import _ from 'lodash';
+
 let account = {
   email: '',
   firstName: '',
@@ -33,8 +38,8 @@ let account = {
 
 export default {
   props: ['membership', 'value'],
-  data: () => ({submitting: false, msg: '', error: false, account}),
-  methods: {add}
+  data: () => ({submitting: false, msg: '', error: false, account, exists: false}),
+  methods: {add, search: _.debounce(search, 500)}
 };
 
 function add() {
@@ -44,5 +49,22 @@ function add() {
     .then(() => this.$emit('input', false))
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'))
     .then(() => this.submitting = false);
+}
+
+function search() {
+  if (!this.account.email) clear.call(this);
+  return this.$http.get(`/accounts?email=${this.account.email}`)
+    .then(({data: {results: accounts}}) => {
+      if (!accounts.length) return clear.call(this);
+      this.account = accounts[0];
+      this.exists = true;
+    })
+    .catch(clear);
+
+  function clear() {
+    this.account.firstName = '';
+    this.account.lastName = '';
+    this.exists = false;
+  }
 }
 </script>
