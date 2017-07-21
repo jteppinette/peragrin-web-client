@@ -39,7 +39,7 @@ let account = {
 export default {
   props: ['organization', 'value'],
   data: () => ({submitting: false, msg: '', error: false, account, exists: false}),
-  methods: {add, search: _.debounce(search, 500)}
+  methods: {add, search: _.debounce(search, 250)}
 };
 
 function add() {
