@@ -9,6 +9,7 @@
   <v-data-table :items="promotions" :headers="headers" class="no-limit-select">
     <template slot="items" scope="props">
       <td class="text-xs-right">{{ props.item.name }}</td>
+      <td class="text-xs-right">{{ props.item.redemptions || '0' }}</td>
       <td class="text-xs-right">{{ props.item.description }}</td>
       <td class="text-xs-right">{{ props.item.exclusions }}</td>
       <td class="text-xs-right">{{ props.item.expiration | moment("from", true) }}</td>
@@ -35,6 +36,7 @@ import confirmDialog from 'common/confirm-dialog';
 
 const headers = [
   {text: 'Name', value: 'name', sortable: true},
+  {text: 'Redemptions', value: 'redemptions', sortable: true},
   {text: 'Description', value: 'description', sortable: false},
   {text: 'Exclusions', value: 'exclusions', sortable: false},
   {text: 'Expiration', value: 'expiration', sortable: false},
