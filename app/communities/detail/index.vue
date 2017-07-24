@@ -1,5 +1,5 @@
 <template>
-<v-container>
+<v-container class="communities-detail">
 
   <v-breadcrumbs>
     <v-breadcrumbs-item to="/communities">Communities</v-breadcrumbs-item>
@@ -77,8 +77,8 @@ function initializeCommunity() {
 }
 </script>
 
-<style scoped lang="stylus">
-.leaflet-container {
+<style lang="stylus">
+.communities-detail .leaflet-container {
   height: 300px;
 }
 </style>
