@@ -63,6 +63,6 @@ function initializeOrganizations() {
 }
 
 function initializeIsAdministrator() {
-  return this.isAdministrator =  !this.account.organizations ? false : this.account.organizations.find(v => v.communities ? v.communities.find(c => c.id == this.community.id && c.isAdministrator) : undefined);
+  return this.isAdministrator = this.account.isSuper || (!this.account.organizations ? false : this.account.organizations.find(v => v.communities ? v.communities.find(c => c.id == this.community.id && c.isAdministrator) : undefined));
 }
 </script>

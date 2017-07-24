@@ -68,7 +68,7 @@ function initialize() {
 }
 
 function initializeIsAdministrator() {
-    return this.isAdministrator = !!(this.account.organizations && this.account.organizations.find(v => v.communities ? v.communities.find(c => c.isAdministrator && c.id == this.id) : undefined)); 
+    return this.isAdministrator = this.account.isSuper || !!(this.account.organizations && this.account.organizations.find(v => v.communities ? v.communities.find(c => c.isAdministrator && c.id == this.id) : undefined));
 }
 
 function initializeCommunity() {

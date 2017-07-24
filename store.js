@@ -24,36 +24,39 @@ export default {
         login (context, account) {
             return Vue.http.post('/auth/login', {email: account.email, password: account.password})
                 .then(({data: {token}}) => {
-                    var {id, email, firstName, lastName} = jwtDecode(token);
+                    var {id, email, firstName, lastName, isSuper} = jwtDecode(token);
                     sessionStorage.token = token;
                     sessionStorage.userID = id;
                     sessionStorage.email = email;
                     sessionStorage.firstName = firstName;
                     sessionStorage.lastName = lastName;
-                    context.commit('setAccount', {id, email, firstName, lastName});
+                    sessionStorage.isSuper = isSuper;
+                    context.commit('setAccount', {id, email, firstName, lastName, isSuper});
                 })
                 .then(() => context.dispatch('initializeAccountOrganizations'));
         },
         activate (context, {password, token}) {
             return Vue.http.post('/auth/activate', {password}, {headers: {Authorization: `Bearer ${token}`}})
                 .then(({data: {token}}) => {
-                    var {id, email, firstName, lastName} = jwtDecode(token);
+                    var {id, email, firstName, lastName, isSuper} = jwtDecode(token);
                     sessionStorage.token = token;
                     sessionStorage.userID = id;
                     sessionStorage.email = email;
                     sessionStorage.firstName = firstName;
                     sessionStorage.lastName = lastName;
-                    context.commit('setAccount', {id, email, firstName, lastName});
+                    sessionStorage.isSuper = isSuper;
+                    context.commit('setAccount', {id, email, firstName, lastName, isSuper});
                 })
                 .then(() => context.dispatch('initializeAccountOrganizations'));
         },
         update (context, account) {
             return Vue.http.put(`/accounts/${context.state.account.id}`, {email: account.email, firstName: account.firstName, lastName: account.lastName})
-                .then(({data: {id, email, firstName, lastName}}) => {
+                .then(({data: {id, email, firstName, lastName, isSuper}}) => {
                     sessionStorage.email = email;
                     sessionStorage.firstName = firstName;
                     sessionStorage.lastName = lastName;
-                    context.commit('setAccount', {id, email, firstName, lastName, organizations: context.state.account.organizations});
+                    sessionStorage.isSuper = isSuper;
+                    context.commit('setAccount', {id, email, firstName, lastName, isSuper, organizations: context.state.account.organizations});
                     return context.state.account;
                 });
         },
@@ -78,7 +81,7 @@ export default {
                     resolve(undefined);
                     return initialization = undefined;
                 }
-                var account = {id: sessionStorage.userID, email: sessionStorage.email, firstName: sessionStorage.firstName, lastName: sessionStorage.lastName};
+                var account = {id: sessionStorage.userID, email: sessionStorage.email, firstName: sessionStorage.firstName, lastName: sessionStorage.lastName, isSuper: sessionStorage.isSuper === 'true'};
                 context.commit('setAccount', account);
                 return context.dispatch('initializeAccountOrganizations')
                     .then(resolve, reject)

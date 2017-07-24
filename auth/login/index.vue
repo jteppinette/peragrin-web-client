@@ -28,7 +28,9 @@ function login() {
   this.submitting = true;
   return this.$store.dispatch('login', {email: this.email, password: this.password})
     .then(({account}) => {
-      if (!account.organizations || !account.organizations.length) {
+      if (account.isSuper) {
+        return '/communities';
+      } else if (!account.organizations || !account.organizations.length) {
         return '/map';
       } else if (account.organizations.find(o => o.communities ? o.communities.find(c => c.isAdministrator) : undefined)) {
         return '/communities';

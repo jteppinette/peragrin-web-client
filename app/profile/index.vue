@@ -5,6 +5,12 @@
     <v-breadcrumbs-item disabled>Profile</v-breadcrumbs-item>
   </v-breadcrumbs>
 
+  <v-layout v-if="account && account.isSuper" row wrap>
+    <v-flex xs12>
+      <v-alert v-model="account.isSuper" info>You are currently authenticated as a super user.</v-alert>
+    </v-flex>
+  </v-layout>
+
   <v-layout row wrap>
 
     <v-flex xs12 md6 lg4>
@@ -70,6 +76,11 @@ export default {
   data: () => ({firstName: '', lastName: '', email: '', password: '', submitting, errors, messages}),
   methods: {updateAccount, setPassword},
   mounted: initialize,
+  computed: {
+    account () {
+      return this.$store.state.account;
+    }
+  },
   beforeRouteEnter (to, from, next) {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
   }

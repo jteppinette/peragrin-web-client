@@ -178,6 +178,7 @@ function initializeOperators() {
 }
 
 function initializeIsAdministrator() {
+  if (this.account.isSuper) return this.isAdministrator = true;
   if (!this.account.organizations) return this.isAdministrator = false;
 
   let isOwner = this.account.organizations.find(v => v.id == this.id);
