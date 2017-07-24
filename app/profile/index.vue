@@ -7,7 +7,9 @@
 
   <v-layout v-if="account && account.isSuper" row wrap>
     <v-flex xs12>
-      <v-alert v-model="account.isSuper" info>You are currently authenticated as a super user.</v-alert>
+      <v-card>
+        <v-card-title class="secondary title">You are currently authenticated as a super user.</v-card-title>
+      </v-card>
     </v-flex>
   </v-layout>
 
