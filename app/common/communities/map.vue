@@ -35,18 +35,13 @@
 <script>
 import {CATEGORIES, MARKERS} from 'common/categories';
 
-let filter = {
-  category: '',
-  name: ''
-};
-
 function options({style}) {
   return {style: f => style.values ? {...style.values[f.properties[style.property]], ...style.base} : style.base};
 };
 
 export default {
   props: {'community': {}, 'showFilter': {default: false}},
-  data: () => ({results: true, options, latlng: undefined, filter, categories: CATEGORIES, zoom: undefined}),
+  data: () => ({results: true, options, latlng: undefined, filter: {}, categories: CATEGORIES, zoom: undefined}),
   mounted: initialize,
   computed: {
     filtered () {
@@ -60,6 +55,7 @@ export default {
 };
 
 function initialize() {
+  this.filter = {name: '', category: ''};
   this.zoom = this.community.zoom;
   this.latlng = [this.community.lat, this.community.lon];
   return Promise.all([
