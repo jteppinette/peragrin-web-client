@@ -99,15 +99,16 @@ function focus(organization) {
   }
 
   .floater {
+    top: 56px;
+    z-index: 5;
+    position: fixed;
     background-color: rgba(0, 0, 0, 0);
     padding: 16px;
+    max-width: 100%;
+    width: 400px;
   }
 
   .card {
-    z-index: 5;
-    max-width: 100%;
-    width: 400px;
-
     .categories {
       position: relative;
       overflow-x: scroll;
