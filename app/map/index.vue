@@ -101,7 +101,7 @@ import organizationsDetails from 'common/organizations/details';
 import communitiesMap from 'common/communities/map';
 
 export default {
-  data: () => ({successful: false, submitting: false, active: undefined, community: undefined, selected: {}, sidebar: false, msg: '', error: undefined}),
+  data: () => ({successful: false, submitting: false, active: undefined, communities: [], community: undefined, selected: {}, sidebar: false, msg: '', error: undefined}),
   mounted: initialize,
   methods: {select, redeem},
   components: {organizationsDetails, communitiesMap}
@@ -109,7 +109,12 @@ export default {
 
 function initialize() {
   return this.$http.get('/communities')
-    .then(({data: communities}) => this.community = communities[0]);
+    .then(({data: communities}) => this.communities = communities)
+    .then(communities => {
+      let query = (this.$route.query.community || '').toLowerCase().replace(/\s+/g, '');
+      if (query) return this.community = communities.find(c => c.name.toLowerCase().replace(/\s+/g, '') === query) || communities[0];
+      return this.community = communities[0];
+    });
 }
 
 function select(organization) {
