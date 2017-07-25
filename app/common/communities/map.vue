@@ -20,11 +20,11 @@
       <v-toolbar floating dense class="elevation-0">
         <v-text-field v-model="filter.name" solo class="elevation-0" prepend-icon="search"></v-text-field>
         <div class="hidden-xs-only">
-          <v-btn icon v-if="filter.name" @click.native="filter.name = ''; results = true" v-tooltip:bottom="{html: 'clear search'}"><v-icon>close</v-icon></v-btn>
+          <v-btn icon v-if="filter.name" @click.native="filter.name = ''" v-tooltip:bottom="{html: 'clear search'}"><v-icon>close</v-icon></v-btn>
           <v-btn @click.native="results = !results" flat icon :disabled="!filtered.length && !results" v-tooltip:bottom="{html: results ? 'collapse results' : 'expand results'}"><v-icon v-badge="{value: filtered.length, right: true}">{{ results ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon></v-btn>
         </div>
         <div class="hidden-sm-and-up">
-          <v-btn v-if="filter.name" icon @click.native="filter.name = ''; results = true"><v-icon>close</v-icon></v-btn>
+          <v-btn v-if="filter.name" icon @click.native="filter.name = ''"><v-icon>close</v-icon></v-btn>
           <v-btn @click.native="results = !results" flat icon :disabled="!filtered.length && !results"><v-icon v-badge="{value: filtered.length, right: true}">{{ results ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon></v-btn>
         </div>
       </v-toolbar>
