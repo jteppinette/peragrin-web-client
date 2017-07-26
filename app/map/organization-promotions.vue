@@ -17,7 +17,7 @@
 
         <v-card-text class="secondary subheading">{{ promotion.description }}</v-card-text>
 
-        <v-snackbar v-model="error" error>{{ msg }}
+        <v-snackbar v-if="dialogs.redeem[promotion.id]" v-model="error" error>{{ msg }}
           <v-btn flat @click.native="error = false" class="white--text">close</v-btn>
         </v-snackbar>
 
@@ -83,6 +83,7 @@ function initialize() {
 function redeem(promotion) {
   this.submitting = false;
   return this.$http.post(`/promotions/${promotion.id}/redeem`)
+    .then(() => this.$set(promotion, 'redeemed', true))
     .then(() => this.dialogs.redeem[promotion.id] = false)
     .catch(({data, status}) => {
       this.error = true;
@@ -94,7 +95,6 @@ function redeem(promotion) {
         this.msg = 'unknown error';
       }
     })
-    .then(() => this.submitting = false)
-    .then(() => this.$set(promotion, 'redeemed', true));
+    .then(() => this.submitting = false);
 }
 </script>
