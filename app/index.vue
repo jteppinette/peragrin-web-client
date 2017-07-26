@@ -136,10 +136,17 @@ function logout() {
       color: white;
       border-bottom: 5px solid $theme.accent !important;
     }
-
     &.secondary {
       color: white;
       border-bottom: 5px solid $theme.secondary-accent !important;
+    }
+    &.warning {
+      color: white;
+      border-bottom: 5px solid $theme.warning-accent !important;
+    }
+    &.error {
+      color: white;
+      border-bottom: 5px solid $theme.error-accent !important;
     }
   }
 
@@ -151,6 +158,14 @@ function logout() {
     &.secondary {
       color: white;
       border-top: 5px solid $theme.secondary-accent !important;
+    }
+    &.warning {
+      color: white;
+      border-top: 5px solid $theme.warning-accent !important;
+    }
+    &.error {
+      color: white;
+      border-top: 5px solid $theme.error-accent !important;
     }
   }
 
@@ -223,6 +238,12 @@ function logout() {
 
 .dialog {
   font-family: Roboto,sans-serif;
+  margin: 12px 20px !important;
+
+  &:not(.dialog--fullscreen) {
+    max-width: 95% !important;
+    max-height: 95% !important;
+  }
 
   .card__text {
     max-height: 60vh !important;
