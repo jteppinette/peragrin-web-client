@@ -234,8 +234,12 @@ function logout() {
 /* TABS */
 /********/
 
-.tabs__item {
-  padding: 16px;
+.tabs {
+  border-top: 5px solid $theme.secondary-accent;
+
+  &.no-border .tabs__items {
+    border-style: none !important;
+  }
 }
 
 
