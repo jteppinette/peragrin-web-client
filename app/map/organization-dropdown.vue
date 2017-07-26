@@ -13,7 +13,7 @@
 
     <!-- GENERAL -->
     <v-tabs-content id="general">
-      <organizations-details :organization="organization"></organizations-details>
+      <organizations-details :dense="true" :organization="organization"></organizations-details>
     </v-tabs-content>
 
     <!-- PROMOTIONS -->

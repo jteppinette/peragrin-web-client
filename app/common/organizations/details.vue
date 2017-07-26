@@ -1,5 +1,5 @@
 <template>
-<v-list two-line dense>
+<v-list two-line :dense="dense">
 
   <!-- PHONE -->
   <v-list-tile v-if="organization.phone" :href="'tel:'+organization.phone">
@@ -56,6 +56,7 @@ export default {
   data: () => ({weekdays: WEEKDAYS, today: new Date().getDay()}),
   props: {
     organization: {type: Object},
+    dense: {type: Boolean, default: false}
   },
   filters: {
     to12hr: value => to12hr(value)
