@@ -1,5 +1,5 @@
 <template>
-<v-container class="communities-detail">
+<v-container>
 
   <v-breadcrumbs>
     <v-breadcrumbs-item to="/communities">Communities</v-breadcrumbs-item>
@@ -11,7 +11,7 @@
     <v-flex xs12>
       <v-card>
         <v-card-title primary-title class="primary headline">{{ community.name }}</v-card-title>
-        <communities-organizations-list :community="community" :search="selected.name"></communities-organizations-list>
+        <communities-organizations-list :community="community"></communities-organizations-list>
       </v-card>
     </v-flex>
   </v-layout>
@@ -30,7 +30,7 @@
     <v-flex xs12 sm6>
       <v-card>
         <v-card-title class="primary title">Map</v-card-title>
-        <communities-map :community="community" @select="organization => selected = organization"></communities-map>
+        <communities-map :community="community"></communities-map>
       </v-card>
     </v-flex>
 
@@ -46,7 +46,7 @@ import membershipsList from 'common/memberships/list';
 
 export default {
   props: ['id'],
-  data: () => ({community: undefined, selected: {}, isAdministrator: false}),
+  data: () => ({community: undefined, isAdministrator: false}),
   components: {communitiesOrganizationsList, communitiesMap, membershipsList},
   computed: {
     account () {
@@ -76,9 +76,3 @@ function initializeCommunity() {
     .then(({data: community}) => this.community = community);
 }
 </script>
-
-<style lang="stylus">
-.communities-detail .leaflet-container {
-  height: 300px;
-}
-</style>

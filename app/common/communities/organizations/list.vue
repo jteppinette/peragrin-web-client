@@ -38,8 +38,8 @@ let dialogs = {
 };
 
 export default {
-  props: ['community', 'search'],
-  data: () => ({organizations: [], headers, dialogs, isAdministrator: false}),
+  props: ['community'],
+  data: () => ({organizations: [], search: '', headers, dialogs, isAdministrator: false}),
   mounted: initialize,
   computed: {
     account () {

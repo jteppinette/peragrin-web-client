@@ -1,5 +1,5 @@
 <template>
-<v-container class="communities-manage">
+<v-container>
 
   <v-breadcrumbs>
     <v-breadcrumbs-item disabled>Communities</v-breadcrumbs-item>
@@ -75,9 +75,3 @@ function initializeCommunities() {
     .then(({data: communities}) => this.communities = communities);
 }
 </script>
-
-<style lang="stylus">
-.communities-manage .leaflet-container {
-  height: 300px;
-}
-</style>
