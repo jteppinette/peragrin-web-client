@@ -63,14 +63,22 @@
           <v-btn v-if="isAdministrator" fab absolute right bottom @click.native.stop="dialogs.operatorsAdd = !dialogs.operatorsAdd"><v-icon>add</v-icon></v-btn>
           <organizations-operators-add v-model="dialogs.operatorsAdd" :organization="organization" @success="initializeOperators"></organizations-operators-add>
         </v-card-title>
-        <v-list two-line class="card-body">
-          <v-list-tile v-for="account in organization.accounts" :key="account.id" v-if="account">
-            <v-list-tile-content>
-              <v-list-tile-title>{{ account.email }}</v-list-tile-title>
-              <v-list-tile-sub-title>{{ account.firstName }} {{ account.lastName }}</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
+        <div class="card-body">
+          <v-card-text class="secondary" v-if="isAdministrator && organization.accounts && !organization.accounts.length">Click the plus button above to add a new operator to this organization.</v-card-text>
+          <v-card-text class="secondary" v-if="organization.accounts && organization.accounts.length">Click the minus sign below to remove an operator.</v-card-text>
+          <v-list two-line>
+            <v-list-tile v-for="account in organization.accounts" :key="account.id" v-if="account">
+              <v-list-tile-content>
+                <v-list-tile-title>{{ account.email }}</v-list-tile-title>
+                <v-list-tile-sub-title>{{ account.firstName }} {{ account.lastName }}</v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action v-if="isAdministrator">
+                <v-btn icon class="secondary" @click.native.stop.prevent="dialogs.operatorsRemove[account.id] = true"><v-icon class="white--text">remove</v-icon></v-btn>
+              </v-list-tile-action>
+              <confirm-dialog v-model="dialogs.operatorsRemove[account.id]" @confirmed="removeOperator(account.id)">Are you sure you want to remove this account, {{ account.email }}, from the {{ organization.name }} organization?</confirm-dialog>
+            </v-list-tile>
+          </v-list>
+        </div>
       </v-card>
     </v-flex>
 
@@ -121,11 +129,13 @@ import organizationsCreateUpdate from 'common/organizations/create-update';
 import organizationsOperatorsAdd from 'common/organizations/operators/add';
 import {MARKERS} from 'common/categories';
 import Dropzone from 'vue2-dropzone';
+import confirmDialog from 'common/confirm-dialog';
 
 let dialogs = {
   organizationsCreateUpdate: false,
   uploadLogo: false,
-  operatorsAdd: false
+  operatorsAdd: false,
+  operatorsRemove: {}
 };
 
 export default {
@@ -139,9 +149,9 @@ export default {
       return this.organization.category ? MARKERS[this.organization.category] : undefined;
     }
   },
-  components: {promotionsList, organizationsDetails, organizationsCreateUpdate, organizationsOperatorsAdd, Dropzone},
+  components: {confirmDialog, promotionsList, organizationsDetails, organizationsCreateUpdate, organizationsOperatorsAdd, Dropzone},
   mounted: initialize,
-  methods: {uploadLogoSuccess, initializeIsAdministrator, initializeOperators, initializeOrganization, initializeCommunities},
+  methods: {removeOperator, uploadLogoSuccess, initializeIsAdministrator, initializeOperators, initializeOrganization, initializeCommunities},
   beforeRouteEnter (to, from, next) {
     next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
   }
@@ -154,6 +164,11 @@ function initialize() {
     this.initializeOrganization(),
     this.initializeCommunities()
   ]);
+}
+
+function removeOperator(id) {
+  return this.$http.delete(`/organizations/${this.id}/accounts/${id}`)
+    .then(this.initializeOperators);
 }
 
 function uploadLogoSuccess(file, {logo, logoURL}) {
@@ -174,7 +189,11 @@ function initializeCommunities() {
 
 function initializeOperators() {
   this.$http.get(`/organizations/${this.id}/accounts`)
-    .then(({data: accounts}) => this.$set(this.organization, 'accounts', accounts));
+    .then(({data: accounts}) => this.$set(this.organization, 'accounts', accounts))
+    .then(() => this.dialogs.operatorsRemove = this.organization.accounts.reduce((obj, operator) => {
+      obj = {...obj, [operator.id]: false};
+      return obj;
+    }, {}));
 }
 
 function initializeIsAdministrator() {

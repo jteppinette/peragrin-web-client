@@ -1,13 +1,11 @@
 <template>
-<div>
+<div style="position: relative">
 
-  <v-card-text v-if="isAdministrator" style="position: relative">
-    <v-btn v-if="isAdministrator" @click.native.stop="dialogs.createUpdate = !dialogs.createUpdate" fab absolute top right><v-icon>add</v-icon></v-btn>
-    <memberships-create-update v-model="dialogs.createUpdate" :communityID="communityID" @created="() => initializeMemberships()"></memberships-create-update>
-  </v-card-text>
+  <v-btn v-if="isAdministrator" @click.native.stop="dialogs.createUpdate = !dialogs.createUpdate" fab absolute top right><v-icon>add</v-icon></v-btn>
+  <memberships-create-update v-if="isAdministrator" v-model="dialogs.createUpdate" :communityID="communityID" @created="() => initializeMemberships()"></memberships-create-update>
 
-  <v-card-text v-if="isAdministrator">Click a membership below to view more detailed information and add accounts. If you do not have any memberships, click the plus button above to create your first membership.</v-card-text>
-  <v-card-text v-if="!isAdministrator && !memberships.length && initialized">This community does not have any available memberships.</v-card-text>
+  <v-card-text class="secondary" v-if="isAdministrator">Click a membership below to view more detailed information and add accounts. If you do not have any memberships, click the plus button above to create your first membership.</v-card-text>
+  <v-card-text class="secondary" v-if="!isAdministrator && !memberships.length && initialized">This community does not have any available memberships.</v-card-text>
 
   <v-divider v-if="isAdministrator && memberships.length"></v-divider>
 
