@@ -85,7 +85,7 @@ const STATES = [
 ];
 
 const COUNTRIES = [
-  'United States'
+  'US'
 ];
 
 export default {
