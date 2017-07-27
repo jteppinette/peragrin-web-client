@@ -17,12 +17,12 @@
   <v-text-field v-model="value.street" type="text" label="Street"></v-text-field>
   <v-layout row wrap>
     <v-flex xs6><v-text-field v-model="value.city" type="text" label="City"></v-text-field></v-flex>
-    <v-flex xs6><v-text-field v-model="value.state" type="text" label="State"></v-text-field></v-flex>
+    <v-flex xs6><v-select :items="states" v-model="value.state" auto label="State"></v-select></v-flex>
   </v-layout>
 
   <v-layout row wrap>
     <v-flex xs6><v-text-field v-model="value.zip" type="text" label="Zip"></v-text-field></v-flex>
-    <v-flex xs6><v-text-field v-model="value.country" type="text" label="Country"></v-text-field></v-flex>
+    <v-flex xs6><v-select :items="countries" v-model="value.country" auto label="Country"></v-select></v-flex>
   </v-layout>
 
 </div>
@@ -31,13 +31,74 @@
 <script>
 import {CATEGORIES} from 'common/categories';
 
+const STATES = [
+  'AL',
+  'AK',
+  'AZ',
+  'AR',
+  'CA',
+  'CO',
+  'CT',
+  'DE',
+  'FL',
+  'GA',
+  'HI',
+  'ID',
+  'IL',
+  'IN',
+  'IA',
+  'KS',
+  'KY',
+  'LA',
+  'ME',
+  'MD',
+  'MA',
+  'MI',
+  'MN',
+  'MS',
+  'MO',
+  'MT',
+  'NE',
+  'NV',
+  'NH',
+  'NJ',
+  'NM',
+  'NY',
+  'NC',
+  'ND',
+  'OH',
+  'OK',
+  'OR',
+  'PA',
+  'RI',
+  'SC',
+  'SD',
+  'TN',
+  'TX',
+  'UT',
+  'VT',
+  'VA',
+  'WA',
+  'WV',
+  'WI',
+  'WY'
+];
+
+const COUNTRIES = [
+  'United States'
+];
+
 export default {
-  data: () => ({categories: CATEGORIES}),
+  data: () => ({categories: CATEGORIES, states: STATES, countries: COUNTRIES}),
   props: ['value'],
   watch: {
     value: function(v) {
       this.$emit('input', v);
     }
+  },
+  mounted () {
+    if (!this.value.country) this.value.country = 'United States';
+    if (!this.value.state) this.value.state = 'GA'
   }
 }
 </script>
