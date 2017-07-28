@@ -5,7 +5,7 @@
   <v-navigation-drawer v-model="navbar" :mini-variant.sync="mini" clipped persistent>
 
     <!-- PROFILE -->
-    <v-list v-if="account" class="mt-1">
+    <v-list v-if="account" style="margin-top: 9px">
       <v-list-tile avatar tag="div">
         <v-list-tile-avatar><gravatar :email="account.email"></gravatar></v-list-tile-avatar>
         <v-list-tile-content><v-list-tile-title>{{ account.email }}</v-list-tile-title></v-list-tile-content>
@@ -14,7 +14,7 @@
     </v-list> 
 
     <!-- PAGES -->
-    <v-list class="large" :class="{'mt-1': !account}">
+    <v-list class="large" :style="{'margin-top: 9px': !account}">
       <v-divider v-if="account"></v-divider>
       <v-list-tile v-if="!account" to="/auth/login">
         <v-list-tile-action><v-icon>lock_open</v-icon></v-list-tile-action>
@@ -324,7 +324,7 @@ function logout() {
 
   &.large {
     .list__tile {
-      height: 56px !important;
+      height: 66px !important;
     }
   }
 }
