@@ -10,9 +10,7 @@
     <v-stepper-header>
       <v-stepper-step step="1" v-bind:complete="step > 1">Organization</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step step="2" v-bind:complete="step > 2">Map</v-stepper-step>
-      <v-divider></v-divider>
-      <v-stepper-step step="3" v-bind:complete="step > 3">Community</v-stepper-step>
+      <v-stepper-step step="2" v-bind:complete="step > 2">Community</v-stepper-step>
     </v-stepper-header>
 
     <v-stepper-content step="1">
@@ -20,35 +18,27 @@
       <v-layout row wrap>
         <v-flex xs12 md6>
           <organizations-form v-model="organization"></organizations-form>
+          <p v-if="organization.lon && organization.lat">If necessary, move the marker to adjust the organization's icon location on the map.</p>
+          <v-map v-if="step == 1 && organization.lon && organization.lat" :zoom="15" :center="[organization.lat, organization.lon]">
+            <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+            <v-marker v-on:l-move="moveOrganization" :icon="icon" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}" :draggable="true"></v-marker>
+          </v-map>
         </v-flex>
         <v-flex xs12 md6>
           <organizations-hours v-model="organization.hours"></organizations-hours>
         </v-flex>
       </v-layout>
-      <v-btn primary @click.native="setupOrganization" class="white--text">Setup Organization</v-btn>
+      <v-btn primary @click.native="createOrganization" class="white--text">Setup Organization</v-btn>
     </v-stepper-content>
 
     <v-stepper-content step="2">
-      <v-map v-if="step == 2 && organization.lon && organization.lat" :zoom="zoom" :center="[organization.lat, organization.lon]" v-on:l-zoomend="({target: {_zoom: v}}) => zoom = v">
-        <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
-        <v-marker v-on:l-move="move" :lat-lng="[marker.lat, marker.lon]" :draggable="true">
-           <v-popup :content="organization.name"></v-popup>
-        </v-marker>
-      </v-map>
-      <v-btn primary @click.native="updateOrganizationLocation" class="white--text">Update Organization Location</v-btn>
-      <v-btn flat @click.native="step = 3">Continue</v-btn>
-    </v-stepper-content>
-
-    <v-stepper-content step="3">
       <v-container>
         <v-text-field v-model="community.name" type="text" label="Name"></v-text-field>
 
         <v-subheader>Set the zoom level and map center for your community</v-subheader>
-        <v-map v-if="step == 3" :zoom="zoom" :center="[organization.lat, organization.lon]" v-on:l-zoomend="({target: {_zoom: v}}) => zoom = v">
+        <v-map v-if="step == 2" :zoom="community.zoom" :center="[community.lat, community.lon]" v-on:l-zoomend="({target: {_zoom: v}}) => community.zoom = v">
           <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
-          <v-marker v-on:l-move="move" :lat-lng="[marker.lat, marker.lon]" :draggable="true">
-             <v-popup :content="community.name"></v-popup>
-          </v-marker>
+          <v-marker :icon="icon" v-on:l-move="moveCommunity" :lat-lng="[community.lat, community.lon]" :draggable="true"></v-marker>
         </v-map>
 
         <v-btn primary @click.native="createCommunity" class="white--text">Create Community</v-btn>
@@ -62,14 +52,18 @@
 <script>
 import organizationsForm from 'common/organizations/form';
 import organizationsHours from 'common/organizations/hours';
+import {MARKERS} from 'common/categories';
+import _ from 'lodash';
 
 var organization = {
     name: '',
     street: '',
     city: '',
-    state: '',
-    country: '',
+    state: 'GA',
+    country: 'US',
     zip: '',
+    lon: 0,
+    lat: 0,
     email: '',
     phone: '',
     website: '',
@@ -77,47 +71,53 @@ var organization = {
     category: 'Community Leader'
   },
   community = {
-    name: ''
+    name: '',
+    zoom: 13,
+    lon: 0,
+    lat: 0
   };
 
 export default {
-  data: () => ({zoom: 13, step: 1, organization, marker: undefined, community, error: false, msg: ''}),
-  methods: {setupOrganization, move, updateOrganizationLocation, createCommunity},
+  data: () => ({step: undefined, organization, community, error: false, msg: ''}),
+  methods: {createOrganization, moveOrganization: _.debounce(moveOrganization, 500), moveCommunity: _.debounce(moveCommunity, 500), createCommunity},
   components: {organizationsForm, organizationsHours},
   computed: {
     account () {
       return this.$store.state.account;
-    }
+    },
+    icon () {
+      return this.organization.category ? MARKERS[this.organization.category] : undefined;
+    },
   }
 };
 
 function createCommunity() {
-  return this.$http.post(`/organizations/${this.organization.id}/communities`, {...this.community, zoom: this.zoom, lon: this.marker.lon, lat: this.marker.lat})
+  return this.$http.post(`/organizations/${this.organization.id}/communities`, this.community)
     .then(({data: community}) => this.community = community)
     .then(community => this.$router.push('/communities'));
 }
 
-function setupOrganization() {
+function createOrganization() {
   return this.$http.post(`/accounts/${this.account.id}/organizations`, this.organization)
     .then(({data: organization}) => this.organization = organization)
-    .then(organization => {
-      this.marker = {lat: organization.lat, lon: organization.lon};
-      return organization;
-    })
+    .then(({lon, lat}) => this.community = {...this.community, lon, lat})
     .then(() => this.step = 2)
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }
 
-function move({latlng}) {
-  this.marker.lat = latlng.lat;
-  this.marker.lon = latlng.lng;
+function moveOrganization({latlng}) {
+  this.organization.lat = latlng.lat;
+  this.organization.lon = latlng.lng;
 }
 
-function updateOrganizationLocation() {
-  if (!this.marker.lat || !this.marker.lon) return;
-  this.organization.lat = this.marker.lat;
-  this.organization.lon = this.marker.lon;
-  return this.$http.post(`/organizations/${this.organization.id}`, this.organization)
-    .then(({data: organization}) => this.organization = organization);
+function moveCommunity({latlng}) {
+  this.community.lat = latlng.lat;
+  this.community.lon = latlng.lng;
 }
 </script>
+
+<style scoped lang="stylus">
+.vue2leaflet-map {
+  height: 150px;
+}
+</style>

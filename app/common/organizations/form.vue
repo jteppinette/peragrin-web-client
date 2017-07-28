@@ -14,7 +14,10 @@
   </v-select>
 
   <v-subheader>Address</v-subheader>
+  <p class="pb-3">Update the address information below to set this organization's icon location on the map. The icon location has been set when you see a map below.</p>
+
   <v-text-field v-model="value.street" type="text" label="Street"></v-text-field>
+
   <v-layout row wrap>
     <v-flex xs6><v-text-field v-model="value.city" type="text" label="City"></v-text-field></v-flex>
     <v-flex xs6><v-select :items="states" v-model="value.state" auto label="State"></v-select></v-flex>
@@ -29,7 +32,8 @@
 </template>
 
 <script>
-import {CATEGORIES} from 'common/categories';
+import {CATEGORIES, MARKERS} from 'common/categories';
+import _ from 'lodash';
 
 const STATES = [
   'AL',
@@ -91,15 +95,35 @@ const COUNTRIES = [
 export default {
   data: () => ({categories: CATEGORIES, states: STATES, countries: COUNTRIES}),
   props: ['value'],
-  watch: {
-    value: function(v) {
-      this.$emit('input', v);
+  computed: {
+    address () {
+      return {street: this.value.street, city: this.value.city, zip: this.value.zip, state: this.value.state, country: this.value.country};
     }
   },
-  mounted () {
-    if (!this.value.country) this.value.country = 'United States';
-    if (!this.value.state) this.value.state = 'GA'
+  watch: {
+    address (n, o) {
+      if ((n.street && !o.street) && (n.city && !o.city) && (n.zip && !o.zip) && (n.state && !o.state) && (n.country && !o.country)) return;
+      return this.geocode();
+    }
+  },
+  methods: {geocode: _.debounce(geocode, 1000)}
+}
+
+function geocode() {
+  if (!this.value.street || !this.value.city || !this.value.zip || !this.value.state || !this.value.country) {
+    this.$set(this.value, 'lon', undefined);
+    this.$set(this.value, 'lat', undefined);
+    return
   }
+  return this.$http.post('/geo', this.address)
+    .then(({data: {lon, lat}}) => {
+      this.$set(this.value, 'lon', lon);
+      this.$set(this.value, 'lat', lat);
+    })
+    .catch(() => {
+      this.$set(this.value, 'lon', undefined);
+      this.$set(this.value, 'lat', undefined);
+    });
 }
 </script>
 
