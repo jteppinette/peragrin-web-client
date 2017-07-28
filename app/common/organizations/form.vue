@@ -28,6 +28,8 @@
     <v-flex xs6><v-select :items="countries" v-model="value.country" auto label="Country"></v-select></v-flex>
   </v-layout>
 
+  <p v-if="!value.lon || !value.lat" class="secondary--text subheading">A correct address is required to create an organization. Please update the address above.</p>
+
 </div>
 </template>
 

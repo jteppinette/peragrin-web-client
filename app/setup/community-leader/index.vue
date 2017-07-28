@@ -28,7 +28,7 @@
           <organizations-hours v-model="organization.hours"></organizations-hours>
         </v-flex>
       </v-layout>
-      <v-btn primary @click.native="createOrganization" class="white--text">Setup Organization</v-btn>
+      <v-btn primary @click.native="createOrganization" :disabled="!organization.lon || !organization.lat" class="white--text">Setup Business</v-btn>
     </v-stepper-content>
 
     <v-stepper-content step="2">

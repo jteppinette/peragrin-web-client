@@ -19,7 +19,7 @@
       <v-card-actions class="secondary">
         <v-spacer></v-spacer>
         <v-btn flat class="white--text" @click.native="$emit('input', false)">Close</v-btn>
-        <v-btn outline class="white--text" :error="error" :loading="submitting" type="submit">{{ action.name }}</v-btn>
+        <v-btn outline class="white--text" :error="error" :disabled="!data.lon || !data.lat" :loading="submitting" type="submit">{{ action.name }}</v-btn>
       </v-card-actions>
 
       <v-snackbar v-if="value" v-model="error" error>{{ msg }}
