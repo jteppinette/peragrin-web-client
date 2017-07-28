@@ -41,21 +41,11 @@ const headers = [
 ];
 
 export default {
-  data: () => ({headers, communities: []}),
+  data: () => ({headers, communities: [], operating: []}),
   components: {communitiesMap},
   computed: {
     account () {
       return this.$store.state.account;
-    },
-    operating () {
-      if (!this.account || !this.account.organizations || !this.account.organizations.length) return undefined;
-      var l = [];
-      for (let i in this.account.organizations) {
-        let organization = this.account.organizations[i];
-        if (!organization.communities) continue;
-        l = l.concat(organization.communities.filter(c => !l.find(v => v.id == c.id)));
-      }
-      return l;
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -63,12 +53,23 @@ export default {
   },
   mounted () {
     return Promise.all([
-      this.$store.dispatch('initialize'),
+      this.$store.dispatch('initialize').then(this.initializeOperating),
       this.initializeCommunities()
     ]);
   },
-  methods: {initializeCommunities}
+  methods: {initializeCommunities, initializeOperating}
 };
+
+function initializeOperating() {
+  if (!this.account.organizations || !this.account.organizations.length) return;
+  var l = [];
+  for (let i in this.account.organizations) {
+    let organization = this.account.organizations[i];
+    if (!organization.communities) continue;
+    l = l.concat(organization.communities.filter(c => !l.find(v => v.id == c.id)));
+  }
+  this.operating = l;
+}
 
 function initializeCommunities() {
   return this.$http.get('/communities')
