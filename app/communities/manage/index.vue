@@ -10,7 +10,10 @@
       <v-card>
         <v-card-title primary-title class="primary headline">{{ community.name }}</v-card-title>
         <communities-map :community="community"></communities-map>
-        <v-card-actions><v-btn flat :to="`/communities/${community.id}`">Manage</v-btn></v-card-actions>
+        <v-card-actions>
+          <v-btn flat :to="`/communities/${community.id}`">Manage</v-btn>
+          <v-btn flat :to="`/map?community=${community.name}`">View Map</v-btn>
+        </v-card-actions>
       </v-card>
     </v-flex>
   </v-layout>
