@@ -17,9 +17,9 @@
       <v-alert error dismissible v-model="error">{{ msg }}</v-alert>
       <v-layout row wrap>
         <v-flex xs12 md6>
-          <organizations-form v-model="organization"></organizations-form>
-          <p v-if="organization.lon && organization.lat">If necessary, move the marker to adjust the organization's icon location on the map.</p>
-          <v-map v-if="step == 1 && organization.lon && organization.lat" :zoom="15" :center="[organization.lat, organization.lon]">
+          <organizations-form v-model="organization" @geo-hit="() => zoom = 15" @geo-miss="() => zoom = 6"></organizations-form>
+          <p>If necessary, move the marker to adjust the organization's icon location on the map.</p>
+          <v-map v-if="step == 1 && organization.lon && organization.lat" :zoom="zoom" :center="[organization.lat, organization.lon]" @l-zoomend="({target: {_zoom: v}}) => zoom = v">
             <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
             <v-marker v-on:l-move="moveOrganization" :icon="icon" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}" :draggable="true"></v-marker>
           </v-map>
@@ -28,7 +28,7 @@
           <organizations-hours v-model="organization.hours"></organizations-hours>
         </v-flex>
       </v-layout>
-      <v-btn primary @click.native="createOrganization" :disabled="!organization.lon || !organization.lat" class="white--text">Setup Business</v-btn>
+      <v-btn primary @click.native="createOrganization" class="white--text">Setup Business</v-btn>
     </v-stepper-content>
 
     <v-stepper-content step="2">
@@ -53,17 +53,20 @@
 import organizationsForm from 'common/organizations/form';
 import organizationsHours from 'common/organizations/hours';
 import {MARKERS} from 'common/categories';
+import {STATES} from 'common/geo';
 import _ from 'lodash';
+
+let georgia = STATES.find(s => s.code == 'GA');
 
 var organization = {
     name: '',
     street: '',
     city: '',
-    state: 'GA',
+    state: georgia.code,
     country: 'US',
     zip: '',
-    lon: 0,
-    lat: 0,
+    lon: georgia.lon,
+    lat: georgia.lat,
     email: '',
     phone: '',
     website: '',
@@ -78,7 +81,7 @@ var organization = {
   };
 
 export default {
-  data: () => ({step: undefined, organization, community, error: false, msg: ''}),
+  data: () => ({zoom: 6, step: undefined, organization, community, error: false, msg: ''}),
   methods: {createOrganization, moveOrganization: _.debounce(moveOrganization, 500), moveCommunity: _.debounce(moveCommunity, 500), createCommunity},
   components: {organizationsForm, organizationsHours},
   computed: {

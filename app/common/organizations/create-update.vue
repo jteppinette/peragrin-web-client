@@ -5,10 +5,10 @@
     <form @submit.prevent="action.method" novalidate>
 
       <v-card-text>
-        <organizations-form v-model="data"></organizations-form>
+        <organizations-form v-model="data" @geo-hit="() => zoom = 15" @geo-miss="() => zoom = 6"></organizations-form>
 
-        <p v-if="data.lon && data.lat">If necessary, move the marker to adjust the organization's icon location on the map.</p>
-        <v-map v-if="value && data.lon && data.lat" :zoom="15" :center="[data.lat, data.lon]">
+        <p>If necessary, move the marker to adjust the organization's icon location on the map.</p>
+        <v-map v-if="value && data.lon && data.lat" :zoom="zoom" :center="[data.lat, data.lon]" @l-zoomend="({target: {_zoom: v}}) => zoom = v">
           <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
           <v-marker v-on:l-move="move" :icon="icon" :lat-lng="{'lat': data.lat, 'lng': data.lon}" draggable></v-marker>
         </v-map>
@@ -19,7 +19,7 @@
       <v-card-actions class="secondary">
         <v-spacer></v-spacer>
         <v-btn flat class="white--text" @click.native="$emit('input', false)">Close</v-btn>
-        <v-btn outline class="white--text" :error="error" :disabled="!data.lon || !data.lat" :loading="submitting" type="submit">{{ action.name }}</v-btn>
+        <v-btn outline class="white--text" :error="error" :loading="submitting" type="submit">{{ action.name }}</v-btn>
       </v-card-actions>
 
       <v-snackbar v-if="value" v-model="error" error>{{ msg }}
@@ -34,11 +34,12 @@
 import organizationsForm from 'common/organizations/form';
 import organizationsHours from 'common/organizations/hours';
 import {MARKERS} from 'common/categories';
+import {STATES} from 'common/geo';
 import _ from 'lodash';
 
 export default {
   props: ['organization', 'communityID', 'value'],
-  data: () => ({submitting: false, msg: '', error: false, action: {}, data: {}}),
+  data: () => ({zoom: 6, submitting: false, msg: '', error: false, action: {}, data: {}}),
   components: {organizationsForm, organizationsHours},
   computed: {
     icon () {
@@ -50,22 +51,24 @@ export default {
 };
 
 function initialize() {
+  let georgia = STATES.find(s => s.code == 'GA');
   this.action = this.organization ? {name: 'Update', method: this.update, icon: 'edit'} : {name: 'Create', method: this.create, icon: 'add'};
   this.data = this.organization ? JSON.parse(JSON.stringify(this.organization)) : {
     name: '',
     street: '',
     city: '',
-    state: 'GA',
+    state: georgia.code,
     country: 'US',
     zip: '',
-    lon: 0,
-    lat: 0,
+    lon: georgia.lon,
+    lat: georgia.lat,
     email: '',
     phone: '',
     website: '',
     hours: [{weekday: 1}, {weekday: 2}, {weekday: 3}, {weekday: 4}, {weekday: 5}],
     category: ''
   };
+  this.zoom = this.organization ? 15 : 6;
 }
 
 function move({latlng}) {
