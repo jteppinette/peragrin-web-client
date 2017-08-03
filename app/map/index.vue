@@ -2,8 +2,8 @@
 <div class="map" :class="{'with-organization': organization}">
 
   <v-container fluid class="pl-2 pr-2 pt-2 pb-1 elevation-1 grey lighten-4 categories top">
-    <v-btn :ripple="false" flat v-for="category in categories" class="hidden-sm-and-down" @click.native="filter.category = filter.category == category.name ? '' : category.name; clear()" :key="category.name"><v-icon left :class="{'primary--text': filter.category == category.name}">{{ category.icon }}</v-icon> {{ category.name }}</v-btn>
-    <v-btn :ripple="false" flat v-for="category in categories" :icon="filter.category != category.name" class="hidden-md-and-up" @click.native="filter.category = filter.category == category.name ? '' : category.name; clear()" :key="category.name"><v-icon :left="filter.category == category.name" :class="{'primary--text': filter.category == category.name}">{{ category.icon }}</v-icon>{{ filter.category == category.name ? category.name : '' }}</v-btn>
+    <v-btn :ripple="false" flat v-for="category in categories" class="hidden-sm-and-down" :class="{'btn--active': filter.category == category.name}" @click.native="filter.category = filter.category == category.name ? '' : category.name; clear()" :key="category.name"><v-icon left class="secondary--after" :class="{'white--text': filter.category == category.name}" v-badge="{value: 'close', icon: true, left: true, visible: filter.category == category.name}">{{ category.icon }}</v-icon> {{ category.name }}</v-btn>
+    <v-btn flat v-for="category in categories" :icon="filter.category != category.name" class="hidden-md-and-up" :class="{'btn--active': filter.category == category.name}" @click.native="filter.category = filter.category == category.name ? '' : category.name; clear()" :key="category.name"><v-icon class="secondary--after" :left="filter.category == category.name" v-badge="{value: 'close', icon: true, left: true, visible: filter.category == category.name}" :class="{'white--text': filter.category == category.name}">{{ category.icon }}</v-icon>{{ filter.category == category.name ? category.name : '' }}</v-btn>
   </v-container>
 
   <div class="floater zoom hidden-xs-only">
@@ -211,6 +211,11 @@ function select(o, fly=false) {
       -webkit-transition: none;
       -o-transition: color 0 ease-in;
       transition: none;
+    }
+
+    .btn.btn--active .btn__content:before, .btn:hover .btn__content:before {
+      background-color: currentColor !important;
+      opacity: .2 !important;
     }
   }
 
