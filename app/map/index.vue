@@ -1,57 +1,69 @@
 <template>
-<div class="map" :class="{'with-organization': organization}">
+<div>
 
-  <v-container fluid class="pl-2 pr-2 pt-2 pb-1 elevation-1 grey lighten-4 categories top">
-    <v-btn :ripple="false" flat v-for="category in categories" class="hidden-sm-and-down" :class="{'btn--active': filter.category == category.name}" @click.native="filter.category = filter.category == category.name ? '' : category.name; clear()" :key="category.name"><v-icon left class="secondary--after" :class="{'white--text': filter.category == category.name}" v-badge="{value: 'close', icon: true, left: true, visible: filter.category == category.name}">{{ category.icon }}</v-icon> {{ category.name }}</v-btn>
-    <v-btn flat v-for="category in categories" :icon="filter.category != category.name" class="hidden-md-and-up" :class="{'btn--active': filter.category == category.name}" @click.native="filter.category = filter.category == category.name ? '' : category.name; clear()" :key="category.name"><v-icon class="secondary--after" :left="filter.category == category.name" v-badge="{value: 'close', icon: true, left: true, visible: filter.category == category.name}" :class="{'white--text': filter.category == category.name}">{{ category.icon }}</v-icon>{{ filter.category == category.name ? category.name : '' }}</v-btn>
-  </v-container>
+  <v-map class="communities" v-if="initialized && !community && communities.length" :zoom="11" :center="[communities[0].lat, communities[0].lon]">
+    <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+    <v-marker v-for="community in communities" :icon="icon" @l-click="dialogs.choose[community.id] = true" :key="community.id" v-if="community" :lat-lng="[community.lat, community.lon]">
+      <v-tooltip :content="community.name"></v-tooltip>
+    </v-marker>
+  </v-map>
+  <confirm-dialog v-if="initialized" v-for="community in communities" :key="community.id" v-model="dialogs.choose[community.id]" @confirmed="() => $router.push(`/map?community=${community.name}`)">Are you sure you want to enter the community, {{ community.name }}?</confirm-dialog>
 
-  <div class="floater zoom hidden-xs-only">
-    <div class="grey elevation-1 lighten-4">
-      <v-btn icon @click.native="community.zoom++" class="hidden-xs-only" v-tooltip:bottom="{html: 'zoom in'}"><v-icon>add</v-icon></v-btn>
-      <v-btn icon @click.native="community.zoom--" class="hidden-xs-only" v-tooltip:bottom="{html: 'zoom out'}"><v-icon>remove</v-icon></v-btn>
+  <div v-if="initialized && community" class="community" :class="{'with-organization': organization}">
+
+    <v-container fluid class="pl-2 pr-2 pt-2 pb-1 elevation-1 grey lighten-4 categories top">
+      <v-btn :ripple="false" flat v-for="category in categories" class="hidden-sm-and-down" :class="{'btn--active': filter.category == category.name}" @click.native="filter.category = filter.category == category.name ? '' : category.name; clear()" :key="category.name"><v-icon left class="secondary--after" :class="{'white--text': filter.category == category.name}" v-badge="{value: 'close', icon: true, left: true, visible: filter.category == category.name}">{{ category.icon }}</v-icon> {{ category.name }}</v-btn>
+      <v-btn flat v-for="category in categories" :icon="filter.category != category.name" class="hidden-md-and-up" :class="{'btn--active': filter.category == category.name}" @click.native="filter.category = filter.category == category.name ? '' : category.name; clear()" :key="category.name"><v-icon class="secondary--after" :left="filter.category == category.name" v-badge="{value: 'close', icon: true, left: true, visible: filter.category == category.name}" :class="{'white--text': filter.category == category.name}">{{ category.icon }}</v-icon>{{ filter.category == category.name ? category.name : '' }}</v-btn>
+    </v-container>
+
+    <div class="floater zoom hidden-xs-only">
+      <div class="grey elevation-1 lighten-4">
+        <v-btn icon @click.native="community.zoom++" class="hidden-xs-only" v-tooltip:bottom="{html: 'zoom in'}"><v-icon>add</v-icon></v-btn>
+        <v-btn icon @click.native="community.zoom--" class="hidden-xs-only" v-tooltip:bottom="{html: 'zoom out'}"><v-icon>remove</v-icon></v-btn>
+      </div>
     </div>
-  </div>
 
-  <div class="filter" :class="{top: organization, floater: !organization}">
-    <v-card class="elevation-1">
-      <v-divider></v-divider>
+    <div class="filter" :class="{top: organization, floater: !organization}">
+      <v-card class="elevation-1">
+        <v-divider></v-divider>
 
-      <v-toolbar floating dense class="elevation-0">
-        <v-text-field :disabled="!!organization" v-model="filter.name" solo class="elevation-0" prepend-icon="search"></v-text-field>
-        <div class="hidden-xs-only">
-          <v-btn icon v-if="organization || filter.name" @click.native="clear" v-tooltip:bottom="{html: 'clear search'}"><v-icon>close</v-icon></v-btn>
-          <v-btn v-if="!organization" @click.native="results = !results" flat icon :disabled="!filtered.length && !results" v-tooltip:bottom="{html: results ? 'collapse results' : 'expand results'}"><v-icon v-badge="{value: filtered.length, right: true}">{{ results ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon></v-btn>
-        </div>
-        <div class="hidden-sm-and-up">
-          <v-btn v-if="organization || filter.name" icon @click.native="clear"><v-icon>close</v-icon></v-btn>
-          <v-btn v-if="!organization" @click.native="results = !results" flat icon :disabled="!filtered.length && !results"><v-icon v-badge="{value: filtered.length, right: true}">{{ results ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon></v-btn>
-        </div>
-      </v-toolbar>
+        <v-toolbar floating dense class="elevation-0">
+          <v-text-field :disabled="!!organization" v-model="filter.name" solo class="elevation-0" prepend-icon="search"></v-text-field>
+          <div class="hidden-xs-only">
+            <v-btn icon v-if="organization || filter.name" @click.native="clear" v-tooltip:bottom="{html: 'clear search'}"><v-icon>close</v-icon></v-btn>
+            <v-btn v-if="!organization" @click.native="results = !results" flat icon :disabled="!filtered.length && !results" v-tooltip:bottom="{html: results ? 'collapse results' : 'expand results'}"><v-icon v-badge="{value: filtered.length, right: true}">{{ results ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon></v-btn>
+          </div>
+          <div class="hidden-sm-and-up">
+            <v-btn v-if="organization || filter.name" icon @click.native="clear"><v-icon>close</v-icon></v-btn>
+            <v-btn v-if="!organization" @click.native="results = !results" flat icon :disabled="!filtered.length && !results"><v-icon v-badge="{value: filtered.length, right: true}">{{ results ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon></v-btn>
+          </div>
+        </v-toolbar>
 
-      <v-list v-if="results" class="elevation-0">
-        <v-list-tile v-if="filter.category && results" @click.native="() => select(organization, true)" v-for="organization in filtered" :key="organization.id">
-          <v-list-tile-content>{{ organization.name }}</v-list-tile-content>
-        </v-list-tile>
-        <template v-if="!filter.category && results" v-for="(organizations, category) in categorized">
-          <v-subheader>{{ category }}</v-subheader>
-          <v-list-tile @click.native="() => select(organization, true)" v-for="organization in organizations" :key="organization.id">
+        <v-list v-if="results" class="elevation-0">
+          <v-list-tile v-if="filter.category && results" @click.native="() => select(organization, true)" v-for="organization in filtered" :key="organization.id">
             <v-list-tile-content>{{ organization.name }}</v-list-tile-content>
           </v-list-tile>
-        </template>
-      </v-list>
+          <template v-if="!filter.category && results" v-for="(organizations, category) in categorized">
+            <v-subheader>{{ category }}</v-subheader>
+            <v-list-tile @click.native="() => select(organization, true)" v-for="organization in organizations" :key="organization.id">
+              <v-list-tile-content>{{ organization.name }}</v-list-tile-content>
+            </v-list-tile>
+          </template>
+        </v-list>
 
-      <organization-dropdown class="dropdown hidden-xs-only" v-if="organization" :organization="organization"></organization-dropdown>
-    </v-card>
+        <organization-dropdown class="dropdown hidden-xs-only" v-if="organization" :organization="organization"></organization-dropdown>
+      </v-card>
+    </div>
+
+    <v-map ref="map" v-if="community && community.geoJSONOverlays" :zoom="community.zoom" :center="latlng" v-on:l-zoomend="({target: {_zoom: v}}) => community.zoom = v" class="custom-controls">
+      <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+      <v-marker v-for="organization in filtered" @l-click="select(organization)" :key="organization.id" :icon="organization.icon" v-if="organization" :lat-lng="[organization.lat, organization.lon]"></v-marker>
+      <v-geojson-layer v-for="overlay in community.geoJSONOverlays" :key="overlay.name" :options="options(overlay)" :geojson="overlay.data"></v-geojson-layer>
+    </v-map>
+
+    <organization-dropdown class="bottom dropdown hidden-sm-and-up" v-if="organization" :organization="organization"></organization-dropdown>
+
   </div>
-
-  <v-map ref="map" v-if="community && community.geoJSONOverlays" :zoom="community.zoom" :center="latlng" v-on:l-zoomend="({target: {_zoom: v}}) => community.zoom = v" class="custom-controls">
-    <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
-    <v-marker v-for="organization in filtered" @l-click="select(organization)" :key="organization.id" :icon="organization.icon" v-if="organization" :lat-lng="[organization.lat, organization.lon]"></v-marker>
-    <v-geojson-layer v-for="overlay in community.geoJSONOverlays" :key="overlay.name" :options="options(overlay)" :geojson="overlay.data"></v-geojson-layer>
-  </v-map>
-
-  <organization-dropdown class="bottom dropdown hidden-sm-and-up" v-if="organization" :organization="organization"></organization-dropdown>
 
 </div>
 </template>
@@ -59,12 +71,17 @@
 <script>
 import organizationDropdown from './organization-dropdown';
 import {CATEGORIES, MARKERS} from 'common/categories';
+import confirmDialog from 'common/confirm-dialog';
+
+let dialogs = {
+  choose: {}
+};
 
 export default {
-  data: () => ({map: undefined, results: false, filter: {}, latlng: undefined, categories: CATEGORIES, zoom: undefined, communities: [], community: undefined, organization: undefined}),
+  data: () => ({dialogs, initialized: false, icon: MARKERS['Community Leader'], map: undefined, results: false, filter: {}, latlng: undefined, categories: CATEGORIES, zoom: undefined, communities: [], community: undefined, organization: undefined}),
   mounted: initialize,
   methods: {options, select, clear, initializeCommunity, initializeGeoJSONOverlays, initializeOrganizations},
-  components: {organizationDropdown},
+  components: {organizationDropdown, confirmDialog},
   computed: {
     filtered () {
       let organizations = this.community && this.community.organizations ? this.community.organizations : [];
@@ -108,18 +125,19 @@ function initialize() {
   this.filter = {name: '', category: ''};
   return this.$http.get('/communities')
     .then(({data: communities}) => this.communities = communities)
-    .then(() => this.initializeCommunity(this.$route.query.community));
+    .then(() => this.dialogs.choose = this.communities.reduce((obj, c) => ({...obj, [c.id]: false}), {}))
+    .then(() => this.initializeCommunity(this.$route.query.community))
+    .then(() => this.initialized = true);
 }
 
 function initializeCommunity(name='') {
-  if (!name) return this.$router.push(`/map?community=${this.communities[0].name}`);
-  let community = this.communities.find(c => c.name == name);
-  if (!community) return this.$router.push(`/map?community=${this.communities[0].name}`);
-
-  this.community = community;
-  this.zoom = this.community.zoom;
-  this.latlng = [this.community.lat, this.community.lon];
-  return Promise.all([this.initializeOrganizations(), this.initializeGeoJSONOverlays()]);
+  return set.call(this, this.communities.find(c => c.name == name));
+  function set(community) {
+    this.community = community;
+    this.zoom = this.community ? this.community.zoom : undefined;
+    this.latlng = this.community ? [this.community.lat, this.community.lon] : [];
+    return this.community ? Promise.all([this.initializeOrganizations(), this.initializeGeoJSONOverlays()]) : undefined;
+  }
 }
 
 function initializeGeoJSONOverlays() {
@@ -157,7 +175,7 @@ function select(o, fly=false) {
 <style lang="stylus">
 @import '../../settings';
 
-.map {
+.community {
 
   .bottom {
     z-index: 2;
@@ -279,23 +297,31 @@ function select(o, fly=false) {
 <style scoped lang="stylus">
 @import '../../settings';
 
-.map.with-organization .vue2leaflet-map {
-  @media screen and (max-width: 599px) {
-    top: 117px;
-    height: 100px !important;
+.community {
+  &.with-organization .vue2leaflet-map {
+    @media screen and (max-width: 599px) {
+      top: 117px;
+      height: 100px !important;
+    }
+  }
+
+  .vue2leaflet-map {
+    position: fixed;
+    height: 100% !important;
+    z-index: 1;
+    top: 113px;
+
+    @media screen and (max-width: 599px) {
+      top: 177px;
+    }
   }
 }
 
-.vue2leaflet-map {
+.communities.vue2leaflet-map {
   position: fixed;
   height: 100% !important;
   z-index: 1;
-  top: 113px;
-
-  @media screen and (max-width: 599px) {
-    top: 177px;
-  }
-
+  top: 53px;
 }
 </style>
 

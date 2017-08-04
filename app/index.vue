@@ -41,14 +41,17 @@
     <v-toolbar-side-icon class="hidden-lg-and-up" @click.native.stop="navbar = !navbar"></v-toolbar-side-icon>
     <v-toolbar-title>{{ community || 'peragrin' }}</v-toolbar-title>
     <v-spacer></v-spacer>
-    <router-link class="hidden-xs-only white--text" v-if="!account" to="/auth/login">Login</router-link>
-    <v-menu v-if="account" bottom left origin="bottom left" transition="v-scale-transition">
+    <v-btn icon v-if="community" @click.native="deselect"><v-icon class="white--text">apps</v-icon></v-btn>
+    <v-menu bottom left origin="bottom left" transition="v-scale-transition">
       <v-btn icon slot="activator"><v-icon class="white--text">account_circle</v-icon></v-btn>
       <v-list>
-        <v-list-tile to="/profile">
+        <v-list-tile v-if="!account && community" to="/auth/login">
+          <v-list-tile-content><v-list-tile-title>Login / Register</v-list-tile-title></v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile v-if="account" to="/profile">
           <v-list-tile-content><v-list-tile-title>Profile</v-list-tile-title></v-list-tile-content>
         </v-list-tile>
-        <v-list-tile @click.native="logout">
+        <v-list-tile v-if="account" @click.native="logout">
           <v-list-tile-content><v-list-tile-title>Log Out</v-list-tile-title></v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -68,7 +71,7 @@ import Gravatar from 'vue-gravatar';
 
 export default {
   data: () => ({community: '', navbar: true, mini: true}),
-  methods: {logout},
+  methods: {logout, deselect},
   computed: {
     account () {
       return this.$store.state.account;
@@ -84,6 +87,11 @@ export default {
   },
   components: {Gravatar}
 };
+
+function deselect()  {
+  this.community = undefined;
+  this.$router.push('/map');
+}
 
 function logout() {
   this.$router.push('/auth/login');
@@ -352,6 +360,14 @@ function logout() {
 
   &__title {
     font-family: 'Fredoka One', Roboto, sans-serif;
+
+    .btn {
+      text-transform: none;
+      .btn__content {
+        font-size: 20px
+        font-weight: 500;
+      }
+    }
   }
 }
 </style>
