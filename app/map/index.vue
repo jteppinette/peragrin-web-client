@@ -98,6 +98,8 @@ export default {
   },
   watch: {
     '$route.query.community' (v) {
+      this.organization = undefined;
+      this.filter = {name: '', category: ''};
       return this.initializeCommunity(v);
     }
   }
