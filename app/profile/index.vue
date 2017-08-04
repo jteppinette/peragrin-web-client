@@ -82,19 +82,13 @@ export default {
     account () {
       return this.$store.state.account;
     }
-  },
-  beforeRouteEnter (to, from, next) {
-    next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
   }
 };
 
 function initialize() {
-  return this.$store.dispatch('initialize')
-    .then(() => {
-      this.email = this.$store.state.account.email;
-      this.firstName = this.$store.state.account.firstName;
-      this.lastName = this.$store.state.account.lastName;
-    });
+  this.email = this.$store.state.account.email;
+  this.firstName = this.$store.state.account.firstName;
+  this.lastName = this.$store.state.account.lastName;
 }
 
 function updateAccount() {

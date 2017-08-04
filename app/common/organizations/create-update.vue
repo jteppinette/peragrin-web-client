@@ -90,6 +90,7 @@ function create() {
   return this.$http.post(`/communities/${this.communityID}/organizations`, this.data)
     .then(({data: organization}) => this.$emit('created', organization))
     .then(() => this.$emit('input', false))
+    .then(() => this.$store.dispatch('initializeAccountOrganizations'))
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'))
     .then(() => this.submitting = false);
 }

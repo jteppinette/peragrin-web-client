@@ -70,10 +70,7 @@ export default {
 function initialize() {
   return Promise.all([
     this.initializePromotions(),
-    Promise.all([
-      this.$store.dispatch('initialize'),
-      this.initializeCommunities().then(this.initializeMemberships)
-    ]).then(this.initializeIsAdministrator)
+    this.initializeCommunities().then(this.initializeMemberships).then(this.initializeIsAdministrator)
   ]).then(() => this.initialized = true);
 }
 

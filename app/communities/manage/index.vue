@@ -51,17 +51,14 @@ export default {
       return this.$store.state.account;
     }
   },
-  beforeRouteEnter (to, from, next) {
-    next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
-  },
-  mounted () {
-    return Promise.all([
-      this.$store.dispatch('initialize').then(this.initializeOperating),
-      this.initializeCommunities()
-    ]);
-  },
+  mounted: initialize,
   methods: {initializeCommunities, initializeOperating}
 };
+
+function initialize() {
+  return this.$store.dispatch('initializeAccountOrganizations')
+    .then(() => Promise.all([this.initializeOperating(), this.initializeCommunities()]));
+}
 
 function initializeOperating() {
   if (!this.account.organizations || !this.account.organizations.length) return;

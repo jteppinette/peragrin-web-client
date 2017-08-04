@@ -94,8 +94,8 @@ function deselect()  {
 }
 
 function logout() {
+  this.$store.dispatch('logout')
   this.$router.push('/auth/login');
-  this.$store.dispatch('logout');
 }
 </script>
 

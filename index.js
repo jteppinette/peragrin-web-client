@@ -49,8 +49,8 @@ require('./assets/images/favicon-64.png');
 
 const routes = [
     {path: '/', redirect: '/map'},
-    {path: '/', component: app, children: [
-        {path: 'map', component: map},
+    {path: '/', component: app, meta: {auth: true}, children: [
+        {path: 'map', meta: {auth: false}, component: map},
         {path: 'organizations', component: organizationsManage},
         {path: 'organizations/:id', component: organizationsDetail, props: true},
         {path: 'communities', component: communitiesManage},
@@ -74,17 +74,33 @@ const routes = [
     }
 ];
 
+import s from './store';
+import index from './index.vue';
+
+let store = new Vuex.Store(s);
+let router  = new VueRouter({routes});
+
+router.beforeEach((to, from, next) => {
+    let required = false;
+    for (let i = to.matched.length - 1; i >= 0; i--) {
+        if (to.matched[i].meta.hasOwnProperty('auth')) {
+            required = to.matched[i].meta.auth;
+            break;
+        }
+    }
+    return store.dispatch('initialize').then(() => {
+        return next((required && !store.state.account) ? {path: '/auth/login', query: {redirect: to.fullPath}} : undefined);
+    });
+});
+
 Vue.http.interceptors.push((request, next) => {
-    if (sessionStorage.token) request.headers.set('Authorization',`Bearer ${sessionStorage.token}`);
+    if (store.state.account) request.headers.set('Authorization',`Bearer ${store.state.account.token}`);
     next();
 })
 
-import store from './store';
-import index from './index.vue';
-
 new Vue({
     el: '#peragrin',
-    store: new Vuex.Store(store),
-    router: new VueRouter({routes}),
+    store,
+    router,
     render: h => h(index)
 });

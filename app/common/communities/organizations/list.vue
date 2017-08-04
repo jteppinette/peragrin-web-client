@@ -51,10 +51,7 @@ export default {
 };
 
 function initialize() {
-  return Promise.all([
-    this.$store.dispatch('initialize').then(this.initializeIsAdministrator),
-    this.initializeOrganizations()
-  ]);
+  return Promise.all([this.initializeIsAdministrator(), this.initializeOrganizations()]);
 }
 
 function initializeOrganizations() {

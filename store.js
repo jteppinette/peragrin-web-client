@@ -4,6 +4,32 @@ import {MARKERS} from 'common/categories';
 
 var initialization = undefined;
 
+function set(context, token) {
+    let merged = {...jwtDecode(token), token};
+    try {
+        for (let k in merged) {
+            if (merged.hasOwnProperty(k)) sessionStorage.setItem(k, merged[k]);
+        }
+    } catch (e) {
+        console.log('session storage not supported: ', e);
+    }
+    context.commit('setAccount', merged);
+    return merged;
+}
+
+function update(context, account) {
+    let merged = {...context.state.account, account};
+    try {
+        for (let k in merged) {
+            if (merged.hasOwnProperty(k) && k !== 'organizations') sessionStorage.setItem(k, merged[k]);
+        }
+    } catch (e) {
+        console.log('session storage not supported: ', e);
+    }
+    context.commit('setAccount', merged);
+    return merged;
+}
+
 export default {
     state: {
         account: undefined,
@@ -16,49 +42,28 @@ export default {
             Vue.set(state.account, 'organizations', organizations);
         },
         clearAccount (state) {
-            sessionStorage.clear();
+            try {
+                sessionStorage.clear();
+            } catch (e) {
+                console.log('session storage not supported: ', e);
+            }
             state.account = undefined;
         }
     },
     actions: {
         login (context, account) {
             return Vue.http.post('/auth/login', {email: account.email, password: account.password})
-                .then(({data: {token}}) => {
-                    var {id, email, firstName, lastName, isSuper} = jwtDecode(token);
-                    sessionStorage.token = token;
-                    sessionStorage.userID = id;
-                    sessionStorage.email = email;
-                    sessionStorage.firstName = firstName;
-                    sessionStorage.lastName = lastName;
-                    sessionStorage.isSuper = isSuper;
-                    context.commit('setAccount', {id, email, firstName, lastName, isSuper});
-                })
+                .then(({data: {token}}) => set(context, token))
                 .then(() => context.dispatch('initializeAccountOrganizations'));
         },
         activate (context, {password, token}) {
             return Vue.http.post('/auth/activate', {password}, {headers: {Authorization: `Bearer ${token}`}})
-                .then(({data: {token}}) => {
-                    var {id, email, firstName, lastName, isSuper} = jwtDecode(token);
-                    sessionStorage.token = token;
-                    sessionStorage.userID = id;
-                    sessionStorage.email = email;
-                    sessionStorage.firstName = firstName;
-                    sessionStorage.lastName = lastName;
-                    sessionStorage.isSuper = isSuper;
-                    context.commit('setAccount', {id, email, firstName, lastName, isSuper});
-                })
+                .then(({data: {token}}) => set(context, token))
                 .then(() => context.dispatch('initializeAccountOrganizations'));
         },
         update (context, account) {
             return Vue.http.put(`/accounts/${context.state.account.id}`, {email: account.email, firstName: account.firstName, lastName: account.lastName})
-                .then(({data: {id, email, firstName, lastName, isSuper}}) => {
-                    sessionStorage.email = email;
-                    sessionStorage.firstName = firstName;
-                    sessionStorage.lastName = lastName;
-                    sessionStorage.isSuper = isSuper;
-                    context.commit('setAccount', {id, email, firstName, lastName, isSuper, organizations: context.state.account.organizations});
-                    return context.state.account;
-                });
+                .then(({data: account}) => update(context, account));
         },
         initializeAccountOrganizations (context) {
             return Vue.http.get(`/accounts/${context.state.account.id}/organizations`)
@@ -76,12 +81,27 @@ export default {
         initialize (context) {
             if (initialization) return initialization;
             return initialization = new Promise((resolve, reject) => {
-                if (!sessionStorage.userID) {
-                    context.commit('clearAccount');
-                    resolve(undefined);
-                    return initialization = undefined;
+                try {
+                    if (!sessionStorage.id) {
+                        context.commit('clearAccount');
+                        resolve(undefined);
+                        return initialization = undefined;
+                    }
+                } catch (e) {
+                    console.log('session storage not supported: ', e);
+                    if (!context.state.id) {
+                        context.commit('clearAccount');
+                        resolve(undefined);
+                        return initialization = undefined;
+                    }
                 }
-                var account = {id: sessionStorage.userID, email: sessionStorage.email, firstName: sessionStorage.firstName, lastName: sessionStorage.lastName, isSuper: sessionStorage.isSuper === 'true'};
+                var account = undefined;
+                try {
+                    account = {...sessionStorage, isSuper: sessionStorage.isSuper == 'true'};
+                } catch (e) {
+                    console.log('session storage not supported: ', e);
+                    account = context.state.account;
+                }
                 context.commit('setAccount', account);
                 return context.dispatch('initializeAccountOrganizations')
                     .then(resolve, reject)

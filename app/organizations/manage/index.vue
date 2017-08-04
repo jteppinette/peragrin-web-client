@@ -35,13 +35,12 @@ export default {
       return this.$store.state.account;
     }
   },
-  mounted () {
-    return this.$store.dispatch('initialize');
-  },
-  beforeRouteEnter (to, from, next) {
-    next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
-  }
+  mounted: initialize
 };
+
+function initialize() {
+  return this.$store.dispatch('initializeAccountOrganizations');
+}
 </script>
 
 <style scoped lang="stylus">

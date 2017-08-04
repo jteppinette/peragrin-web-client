@@ -37,7 +37,7 @@
     <v-stepper-content step="2">
       <v-container fluid v-if="organization.id">
         <p>All images will be sized to a maxium size of 130px in width and 400px in height. The provided image's aspect ratio will be maintained.</p>
-        <dropzone id="myVueDropzone" param-name="logo" :url="`/organizations/${organization.id}/logo`" :headers="{'Authorization': `Bearer ${token}`}" @vdropzone-success="(file, {logo}) => organization.logo = logo" :resize-width="400" resize-method="crop" :resize-height="130" :thumbnail-width="400" :thumbnail-height="130" :max-number-of-files="1" :max-file-size-in-m-b="100"><input type="hidden"></dropzone>
+        <dropzone id="myVueDropzone" param-name="logo" :url="`/organizations/${organization.id}/logo`" :headers="{'Authorization': `Bearer ${account.token}`}" @vdropzone-success="(file, {logo}) => organization.logo = logo" :resize-width="400" resize-method="crop" :resize-height="130" :thumbnail-width="400" :thumbnail-height="130" :max-number-of-files="1" :max-file-size-in-m-b="100"><input type="hidden"></dropzone>
         <v-btn flat @click.native="step = 3">Continue</v-btn>
       </v-container>
     </v-stepper-content>
@@ -81,7 +81,7 @@ var organization = {
 };
 
 export default {
-  data: () => ({zoom: 6, step: undefined, organization, communities: [], community: {}, error: false, msg: '', token: sessionStorage.token}),
+  data: () => ({zoom: 6, step: undefined, organization, communities: [], community: {}, error: false, msg: ''}),
   mounted: initialize,
   methods: {create, move: _.debounce(move, 500), join},
   components: {organizationsForm, organizationsHours, Dropzone},

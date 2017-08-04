@@ -2,14 +2,6 @@
 <router-view></router-view>
 </template>
 
-<script>
-export default {
-  mounted () {
-    return this.$store.dispatch('initialize');
-  }
-}
-</script>
-
 <style lang="stylus">
 @import './settings';
 

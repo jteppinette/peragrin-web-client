@@ -93,7 +93,7 @@
               <v-card-title class="primary title">Upload Logo</v-card-title>
               <v-card-text>
                 <p>All images will be sized to a maxium size of 130px in width and 400px in height. The provided image's aspect ratio will be maintained.</p>
-                <dropzone id="myVueDropzone" param-name="logo" :url="`/organizations/${id}/logo`" :headers="{'Authorization': `Bearer ${token}`}" @vdropzone-success="uploadLogoSuccess" :resize-width="400" resize-method="crop" :resize-height="130" :thumbnail-width="400" :thumbnail-height="130" :max-number-of-files="1" :max-file-size-in-m-b="100"><input type="hidden"></dropzone>
+                <dropzone id="myVueDropzone" param-name="logo" :url="`/organizations/${id}/logo`" :headers="{'Authorization': `Bearer ${account.token}`}" @vdropzone-success="uploadLogoSuccess" :resize-width="400" resize-method="crop" :resize-height="130" :thumbnail-width="400" :thumbnail-height="130" :max-number-of-files="1" :max-file-size-in-m-b="100"><input type="hidden"></dropzone>
               </v-card-text>
               <v-card-actions class="secondary">
                 <v-spacer></v-spacer>
@@ -140,7 +140,7 @@ let dialogs = {
 
 export default {
   props: ['id'],
-  data: () => ({organization: {}, token: sessionStorage.token, dialogs, isAdministrator: false}),
+  data: () => ({organization: {}, dialogs, isAdministrator: false}),
   computed: {
     account () {
       return this.$store.state.account;
@@ -151,17 +151,13 @@ export default {
   },
   components: {confirmDialog, promotionsList, organizationsDetails, organizationsCreateUpdate, organizationsOperatorsAdd, Dropzone},
   mounted: initialize,
-  methods: {removeOperator, uploadLogoSuccess, initializeIsAdministrator, initializeOperators, initializeOrganization, initializeCommunities},
-  beforeRouteEnter (to, from, next) {
-    next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
-  }
+  methods: {removeOperator, uploadLogoSuccess, initializeIsAdministrator, initializeOperators, initializeOrganization, initializeCommunities}
 };
 
 function initialize() {
   return Promise.all([
-    this.$store.dispatch('initialize').then(this.initializeIsAdministrator),
     this.initializeOperators(),
-    this.initializeOrganization(),
+    this.initializeOrganization().then(this.initializeIsAdministrator),
     this.initializeCommunities()
   ]);
 }
@@ -206,7 +202,6 @@ function initializeIsAdministrator() {
     let community = v.communities.find(c => this.organization.communities.find(u => u.id == c.id));
     return community ? community.isAdministrator : false;
   }) : false;
-
   return this.isAdministrator = isOwner || isAdministrator;
 }
 </script>

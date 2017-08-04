@@ -54,15 +54,12 @@ export default {
     }
   },
   mounted: initialize,
-  beforeRouteEnter (to, from, next) {
-    next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
-  },
   methods: {initializeCommunity, initializeIsAdministrator}
 };
 
 function initialize() {
   return Promise.all([
-    this.$store.dispatch('initialize').then(this.initializeIsAdministrator),
+    this.initializeIsAdministrator(),
     this.initializeCommunity()
   ]);
 }

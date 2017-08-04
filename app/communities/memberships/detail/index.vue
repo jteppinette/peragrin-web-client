@@ -93,20 +93,15 @@ export default {
     }
   },
   components: {membershipsCreateUpdate, membershipsAccountsAdd, confirmDialog},
-  methods: {initializeCommunity, initializeMembership, initializeAccounts, initializeIsAdministrator, deleteMembership, removeAccount, resendResetPasswordEmail},
-  beforeRouteEnter (to, from, next) {
-    next(sessionStorage.userID ? undefined : {path: '/auth/login', query: {redirect: to.fullPath}});
-  }
+  methods: {initializeCommunity, initializeMembership, initializeAccounts, initializeIsAdministrator, deleteMembership, removeAccount, resendResetPasswordEmail}
 };
 
 function initialize() {
-  return this.$store.dispatch('initialize').then(this.initializeIsAdministrator)
-    .then(isAdministrator => {
-      if (!isAdministrator) return Promise.all([this.initializeCommunity(), this.initializeMembership()]);
-      return Promise.all([this.initializeCommunity(), this.initializeMembership(), this.initializeAccounts()]);
-    })
-    .catch()
-    .then(() => this.initialized = true);
+  this.initializeIsAdministrator()
+  let promise = !this.isAdministrator ?
+    Promise.all([this.initializeCommunity(), this.initializeMembership()]) :
+    Promise.all([this.initializeCommunity(), this.initializeMembership(), this.initializeAccounts()]);
+  return promise.catch().then(() => this.initialized = true);
 }
 
 function initializeIsAdministrator() {
