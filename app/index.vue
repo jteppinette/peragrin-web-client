@@ -39,7 +39,7 @@
   <!-- TOOLBAR -->
   <v-toolbar class="primary elevation-0" dark fixed>
     <v-toolbar-side-icon class="hidden-lg-and-up" @click.native.stop="navbar = !navbar"></v-toolbar-side-icon>
-    <v-toolbar-title>peragrin</v-toolbar-title>
+    <v-toolbar-title>{{ community || 'peragrin' }}</v-toolbar-title>
     <v-spacer></v-spacer>
     <router-link class="hidden-xs-only white--text" v-if="!account" to="/auth/login">Login</router-link>
     <v-menu v-if="account" bottom left origin="bottom left" transition="v-scale-transition">
@@ -67,12 +67,20 @@
 import Gravatar from 'vue-gravatar';
 
 export default {
-  data: () => ({navbar: true, mini: true}),
+  data: () => ({community: '', navbar: true, mini: true}),
   methods: {logout},
   computed: {
     account () {
       return this.$store.state.account;
     }
+  },
+  watch: {
+    '$route.query.community' (v) {
+      return this.community = v;
+    }
+  },
+  mounted () {
+    this.community = this.$route.query.community;
   },
   components: {Gravatar}
 };

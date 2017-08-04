@@ -63,7 +63,7 @@ import {CATEGORIES, MARKERS} from 'common/categories';
 export default {
   data: () => ({map: undefined, results: false, filter: {}, latlng: undefined, categories: CATEGORIES, zoom: undefined, communities: [], community: undefined, organization: undefined}),
   mounted: initialize,
-  methods: {options, select, clear, initializeGeoJSONOverlays, initializeOrganizations},
+  methods: {options, select, clear, initializeCommunity, initializeGeoJSONOverlays, initializeOrganizations},
   components: {organizationDropdown},
   computed: {
     filtered () {
@@ -77,6 +77,11 @@ export default {
         (obj[elem.category] = obj[elem.category] || []).push(elem);
         return obj;
       }, {});
+    }
+  },
+  watch: {
+    '$route.query.community' (v) {
+      return this.initializeCommunity(v);
     }
   }
 };
@@ -103,16 +108,18 @@ function initialize() {
   this.filter = {name: '', category: ''};
   return this.$http.get('/communities')
     .then(({data: communities}) => this.communities = communities)
-    .then(communities => {
-      let query = (this.$route.query.community || '').toLowerCase().replace(/\s+/g, '');
-      if (query) return this.community = communities.find(c => c.name.toLowerCase().replace(/\s+/g, '') === query) || communities[0];
-      return this.community = communities[0];
-    })
-    .then(community => {
-      this.zoom = this.community.zoom;
-      this.latlng = [this.community.lat, this.community.lon];
-    })
-    .then(() => Promise.all([this.initializeOrganizations(), this.initializeGeoJSONOverlays()]));
+    .then(() => this.initializeCommunity(this.$route.query.community));
+}
+
+function initializeCommunity(name='') {
+  if (!name) return this.$router.push(`/map?community=${this.communities[0].name}`);
+  let community = this.communities.find(c => c.name == name);
+  if (!community) return this.$router.push(`/map?community=${this.communities[0].name}`);
+
+  this.community = community;
+  this.zoom = this.community.zoom;
+  this.latlng = [this.community.lat, this.community.lon];
+  return Promise.all([this.initializeOrganizations(), this.initializeGeoJSONOverlays()]);
 }
 
 function initializeGeoJSONOverlays() {
