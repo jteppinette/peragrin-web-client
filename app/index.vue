@@ -45,7 +45,7 @@
     <v-menu bottom left origin="bottom left" transition="v-scale-transition">
       <v-btn icon slot="activator"><v-icon class="white--text">account_circle</v-icon></v-btn>
       <v-list>
-        <v-list-tile v-if="!account && community" to="/auth/login">
+        <v-list-tile v-if="!account" to="/auth/login">
           <v-list-tile-content><v-list-tile-title>Login / Register</v-list-tile-title></v-list-tile-content>
         </v-list-tile>
         <v-list-tile v-if="account" to="/profile">
