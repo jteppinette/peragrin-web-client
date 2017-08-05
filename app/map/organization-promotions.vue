@@ -20,8 +20,8 @@
 
         <v-card-text class="pa-0">
 
-          <v-card-text class="secondary">{{ promotion.description }}</v-card-text>
-          <v-card-text class="warning" v-if="promotion.redemptions && promotion.redemptions.length">This promotion has been redeemed <strong>{{ promotion.redemptions.length }} times</strong>. The last redemption was <strong>{{ promotion.redemptions[0].consumedAt | moment("from", true) }} ago</strong>.</v-card-text>
+          <v-card-text class="secondary" v-if="promotion.description">{{ promotion.description }}</v-card-text>
+          <v-card-text class="warning" v-if="dialogs.redeem[promotion.id] && promotion.redemptions && promotion.redemptions.length">This promotion has been redeemed <strong>{{ promotion.redemptions.length }} times</strong>. The last redemption was <strong>{{ promotion.redemptions[0].consumedAt | moment("from", true) }} ago</strong>.</v-card-text>
 
           <v-snackbar v-if="dialogs.redeem[promotion.id]" v-model="error" error>{{ msg }}
             <v-btn flat @click.native="error = false" class="white--text">close</v-btn>

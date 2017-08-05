@@ -9,8 +9,8 @@
         <v-text-field v-model="data.description" :error="error" label="Description" rows="1" multi-line></v-text-field>
         <v-text-field v-model="data.exclusions" :error="error" label="Exclusions" rows="1" multi-line></v-text-field>
 
-        <v-subheader class="pa-0 pt-2" style="height: 0px">Required Community Membership</v-subheader>
-        <v-select :items="memberships" v-model="data.membershipID" itemText="name" itemValue="id" label="Membership" single-line auto></v-select>
+        <v-subheader v-if="memberships.length" class="pa-0 pt-2" style="height: 0px">Required Community Membership</v-subheader>
+        <v-select v-if="memberships.length" :items="memberships" v-model="data.membershipID" itemText="name" itemValue="id" label="Membership" single-line auto></v-select>
       </v-card-text>
 
       <v-card-actions class="secondary">
@@ -59,7 +59,7 @@ function initializeMemberships() {
 
   function fn(community) {
     return that.$http.get(`/communities/${community.id}/memberships`)
-      .then(({data: memberships}) => that.memberships.push({header: community.name}, ...memberships));
+      .then(({data: memberships}) => memberships.length ? that.memberships.push({header: community.name}, ...memberships) : undefined);
   }
 }
 

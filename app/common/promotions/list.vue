@@ -14,7 +14,7 @@
       <td class="text-xs-right">{{ props.item.exclusions }}</td>
       <td class="text-xs-right">{{ props.item.expiration | moment("from", true) }}</td>
       <td class="text-xs-right">
-        <span v-if="initialized">{{ membershipsByID[props.item.membershipID].community.name }} ({{ membershipsByID[props.item.membershipID].name }})</span>
+        <span v-if="initialized && props.item.membershipID">{{ membershipsByID[props.item.membershipID].community.name }} ({{ membershipsByID[props.item.membershipID].name }})</span>
       </td>
       <td class="text-xs-right"><v-icon v-if="props.item.isSingleUse">check</v-icon></td>
       <td class="text-xs-right" style="white-space: nowrap">
