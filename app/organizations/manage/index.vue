@@ -5,8 +5,8 @@
     <v-breadcrumbs-item disabled>Organizations</v-breadcrumbs-item>
   </v-breadcrumbs>
 
-  <v-layout row wrap v-if="account && account.organizations">
-    <v-flex xs12 md6 lg4 v-for="organization in account.organizations" v-if="organization" :key="organization.id">
+  <v-layout row wrap v-if="account && organizations">
+    <v-flex xs12 md6 lg4 v-for="organization in organizations" v-if="organization" :key="organization.id">
 
       <v-card>
         <v-card-title primary-title class="primary headline">{{ organization.name }}</v-card-title>
@@ -27,19 +27,28 @@
 
 <script>
 import organizationsDetails from 'common/organizations/details';
+import {MARKERS} from 'common/categories';
 
 export default {
+  data: () => ({organizations: []}),
   components: {organizationsDetails},
   computed: {
     account () {
       return this.$store.state.account;
     }
   },
-  mounted: initialize
+  mounted: initialize,
+  methods: {initializeOrganizations}
 };
 
 function initialize() {
-  return this.$store.dispatch('initializeAccountOrganizations');
+  return this.initializeOrganizations();
+}
+
+function initializeOrganizations() {
+  return this.$http.get(`/accounts/${this.account.id}/organizations`)
+    .then(({data: organizations}) => organizations.map(o => ({...o, icon: MARKERS[o.category]})))
+    .then(organizations => this.organizations = organizations);
 }
 </script>
 

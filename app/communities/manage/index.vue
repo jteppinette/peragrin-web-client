@@ -11,8 +11,8 @@
         <v-card-title primary-title class="primary headline">{{ community.name }}</v-card-title>
         <communities-map :community="community"></communities-map>
         <v-card-actions>
-          <v-btn flat :to="`/communities/${community.id}`">Manage</v-btn>
-          <v-btn flat :to="`/map?community=${community.name}`">View Map</v-btn>
+          <v-btn flat :to="`/communities/${community.id}`">{{ community.isAdministrator ? 'Manage' : 'View' }}</v-btn>
+          <v-btn flat :to="`/map?community=${community.name}`">Map</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
@@ -21,7 +21,6 @@
   <v-layout v-if="account && account.isSuper" row wrap>
     <v-flex xs12>
       <v-card>
-
         <v-card-title class="primary title">Super Administrator</v-card-title>
         <v-card-text class="secondary">You are currently authenticated as a super administrator. This gives you access to manage all communities and organization in Peragrin.</v-card-text>
         <v-data-table :items="communities" :headers="headers" class="no-limit-select">
@@ -56,19 +55,12 @@ export default {
 };
 
 function initialize() {
-  return this.$store.dispatch('initializeAccountOrganizations')
-    .then(() => Promise.all([this.initializeOperating(), this.initializeCommunities()]));
+    return Promise.all([this.initializeOperating(), this.initializeCommunities()]);
 }
 
 function initializeOperating() {
-  if (!this.account.organizations || !this.account.organizations.length) return;
-  var l = [];
-  for (let i in this.account.organizations) {
-    let organization = this.account.organizations[i];
-    if (!organization.communities) continue;
-    l = l.concat(organization.communities.filter(c => !l.find(v => v.id == c.id)));
-  }
-  this.operating = l;
+  return this.$http.get(`/accounts/${this.account.id}/communities`)
+    .then(({data: operating}) => this.operating = operating);
 }
 
 function initializeCommunities() {

@@ -46,26 +46,19 @@ import membershipsList from 'common/memberships/list';
 
 export default {
   props: ['id'],
-  data: () => ({community: undefined, isAdministrator: false}),
+  data: () => ({community: undefined}),
   components: {communitiesOrganizationsList, communitiesMap, membershipsList},
   computed: {
-    account () {
-      return this.$store.state.account;
+    isAdministrator () {
+      return this.$store.state.account.isSuper || (this.$store.state.communities.indexOf(Number(this.id)) >= 0);
     }
   },
   mounted: initialize,
-  methods: {initializeCommunity, initializeIsAdministrator}
+  methods: {initializeCommunity}
 };
 
 function initialize() {
-  return Promise.all([
-    this.initializeIsAdministrator(),
-    this.initializeCommunity()
-  ]);
-}
-
-function initializeIsAdministrator() {
-    return this.isAdministrator = this.account.isSuper || !!(this.account.organizations && this.account.organizations.find(v => v.communities ? v.communities.find(c => c.isAdministrator && c.id == this.id) : undefined));
+  return this.initializeCommunity();
 }
 
 function initializeCommunity() {

@@ -53,24 +53,27 @@ let dialogs = {
 
 export default {
   props: ['organizationID'],
-  data: () => ({communities: [], memberships: [], promotions: [], headers, dialogs, error: false, msg: '', initialized: false, isAdministrator: false}),
+  data: () => ({communities: [], memberships: [], promotions: [], headers, dialogs, error: false, msg: '', initialized: false}),
   components: {promotionsCreateUpdate, confirmDialog},
   computed: {
-    account () {
-      return this.$store.state.account;
+    isAdministrator () {
+      let isSuper = this.$store.state.account.isSuper;
+      let isOwner = this.$store.state.organizations.indexOf(Number(this.organizationID)) >= 0;
+      let isAdministrator = this.communities.some(c => this.$store.state.communities.indexOf(c.id) >= 0);
+      return isSuper || isOwner || isAdministrator;
     },
     membershipsByID () {
       return this.memberships.reduce((obj, membership) => ({...obj, [membership.id]: membership}), {});
     }
   },
-  methods: {del, initializeIsAdministrator, initializePromotions, initializeCommunities, initializeMemberships},
+  methods: {del, initializePromotions, initializeCommunities, initializeMemberships},
   mounted: initialize
 };
 
 function initialize() {
   return Promise.all([
     this.initializePromotions(),
-    this.initializeCommunities().then(this.initializeMemberships).then(this.initializeIsAdministrator)
+    this.initializeCommunities().then(this.initializeMemberships)
   ]).then(() => this.initialized = true);
 }
 
@@ -92,18 +95,6 @@ function initializeMemberships() {
       .then(({data: memberships}) => memberships.map(m => ({...m, community})))
       .then(memberships => this.memberships.push(...memberships));
   }));
-}
-
-function initializeIsAdministrator() {
-  if (this.account.isSuper) return this.isAdministrator = true;
-  if (!this.account.organizations) return this.isAdministrator = false;
-  let isOwner = this.account.organizations.find(v => v.id == this.organizationID);
-  let isAdministrator = this.communities ? this.account.organizations.find(v => {
-    if (!v.communities) return false;
-    let community = v.communities.find(c => this.communities.find(u => u.id == c.id));
-    return community ? community.isAdministrator : false;
-  }) : false;
-  return this.isAdministrator = isOwner || isAdministrator;
 }
 
 function del(promotion) {

@@ -88,9 +88,25 @@ router.beforeEach((to, from, next) => {
             break;
         }
     }
-    return store.dispatch('initialize').then(() => {
-        return next((required && !store.state.account) ? {path: '/auth/login', query: {redirect: to.fullPath}} : undefined);
-    });
+    return store.dispatch('initialize')
+        .then(account => {
+            if (account && (!store.state.organizations || !store.state.communities)) {
+                return Promise.all([
+                  Vue.http.get(`/accounts/${account.id}/organizations`).then(({data: organizations}) => organizations.map(o => o.id)),
+                  Vue.http.get(`/accounts/${account.id}/communities?isAdministrator=true`).then(({data: communities}) => communities.map(c => c.id))
+                ])
+                .then(([organizations, communities]) => {
+                    store.commit('setOrganizations', organizations);
+                    store.commit('setCommunities', communities);
+                })
+                .then(cb);
+            } else {
+                return cb();
+            }
+            function cb() {
+                return next((required && !account) ? {path: '/auth/login', query: {redirect: to.fullPath}} : undefined);
+            }
+        });
 });
 
 Vue.http.interceptors.push((request, next) => {

@@ -85,28 +85,22 @@ const headers = [
 
 export default {
   props: ['communityID', 'membershipID'],
-  data: () => ({membership: undefined, community: undefined, accounts: undefined, headers, search: '', dialogs, snackbars, isAdministrator: false, initialized: false}),
+  data: () => ({membership: undefined, community: undefined, accounts: undefined, headers, search: '', dialogs, snackbars, initialized: false}),
   mounted: initialize,
   computed: {
-    account () {
-      return this.$store.state.account;
+    isAdministrator () {
+      return this.$store.state.account || (this.$store.state.communities.indexOf(this.communityID) >= 0);
     }
   },
   components: {membershipsCreateUpdate, membershipsAccountsAdd, confirmDialog},
-  methods: {initializeCommunity, initializeMembership, initializeAccounts, initializeIsAdministrator, deleteMembership, removeAccount, resendResetPasswordEmail}
+  methods: {initializeCommunity, initializeMembership, initializeAccounts, deleteMembership, removeAccount, resendResetPasswordEmail}
 };
 
 function initialize() {
-  this.initializeIsAdministrator()
   let promise = !this.isAdministrator ?
     Promise.all([this.initializeCommunity(), this.initializeMembership()]) :
     Promise.all([this.initializeCommunity(), this.initializeMembership(), this.initializeAccounts()]);
   return promise.catch().then(() => this.initialized = true);
-}
-
-function initializeIsAdministrator() {
-  this.isAdministrator = this.account.isSuper || !!(this.account.organizations && this.account.organizations.find(v => v.communities ? v.communities.find(c => c.isAdministrator && c.id == this.communityID) : undefined));
-  return this.isAdministrator;
 }
 
 function initializeCommunity() {

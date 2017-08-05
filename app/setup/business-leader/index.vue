@@ -108,6 +108,7 @@ function join() {
 function create() {
   return this.$http.post(`/accounts/${this.account.id}/organizations`, this.organization)
     .then(({data: organization}) => this.organization = organization)
+    .then(organization => this.$store.commit('addOrganization', organization.id))
     .then(() => this.step = 2)
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));
 }

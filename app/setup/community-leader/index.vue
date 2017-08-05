@@ -97,12 +97,16 @@ export default {
 function createCommunity() {
   return this.$http.post(`/organizations/${this.organization.id}/communities`, this.community)
     .then(({data: community}) => this.community = community)
+    .then(community => this.$store.commit('addCommunity', community.id))
     .then(community => this.$router.push('/communities'));
 }
 
 function createOrganization() {
   return this.$http.post(`/accounts/${this.account.id}/organizations`, this.organization)
-    .then(({data: organization}) => this.organization = organization)
+    .then(({data: organization}) => {
+      this.$store.commit('addOrganization', organization.id);
+      return this.organization = organization;
+    })
     .then(({lon, lat}) => this.community = {...this.community, lon, lat})
     .then(() => this.step = 2)
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'));

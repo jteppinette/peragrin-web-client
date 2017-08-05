@@ -24,11 +24,11 @@
         <v-list-tile-action><v-icon>map</v-icon></v-list-tile-action>
         <v-list-tile-content><v-list-tile-title>Map</v-list-tile-title></v-list-tile-content>
       </v-list-tile>
-      <v-list-tile v-if="account && account.organizations" to="/organizations">
+      <v-list-tile v-if="account && organizations" to="/organizations">
         <v-list-tile-action><v-icon>business</v-icon></v-list-tile-action>
         <v-list-tile-content><v-list-tile-title>Organizations</v-list-tile-title></v-list-tile-content>
       </v-list-tile>
-      <v-list-tile v-if="account && (account.isSuper || (account.organizations && account.organizations.find(v => v.communities.length)))" to="/communities">
+      <v-list-tile v-if="account && (account.isSuper || communities)" to="/communities">
         <v-list-tile-action><v-icon>account_balance</v-icon></v-list-tile-action>
         <v-list-tile-content><v-list-tile-title>Communities</v-list-tile-title></v-list-tile-content>
       </v-list-tile>
@@ -75,6 +75,12 @@ export default {
   computed: {
     account () {
       return this.$store.state.account;
+    },
+    organizations () {
+      return this.$store.state.organizations;
+    },
+    communities () {
+      return this.$store.state.communities;
     }
   },
   watch: {

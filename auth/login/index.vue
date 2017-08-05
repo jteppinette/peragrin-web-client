@@ -27,15 +27,20 @@ export default {
 function login() {
   this.submitting = true;
   return this.$store.dispatch('login', {email: this.email, password: this.password})
-    .then(({account}) => {
-      if (account.isSuper) {
+    .then(account => Promise.all([
+      new Promise(r => r(account)),
+      this.$http.get(`/accounts/${account.id}/organizations`).then(({data: organizations}) => organizations.map(o => o.id)),
+      this.$http.get(`/accounts/${account.id}/communities?isAdministrator=true`).then(({data: communities}) => communities.map(c => c.id))
+    ]))
+    .then(([account, organizations, communities]) => {
+      this.$store.commit('setOrganizations', organizations);
+      this.$store.commit('setCommunities', communities);
+      if (account.isSuper || communities.length) {
         return '/communities';
-      } else if (!account.organizations || !account.organizations.length) {
-        return '/map';
-      } else if (account.organizations.find(o => o.communities ? o.communities.find(c => c.isAdministrator) : undefined)) {
-        return '/communities';
-      } else {
+      } else if (organizations.length) {
         return '/organizations';
+      } else {
+        return '/map';
       }
     })
     .then(root => this.$router.push(this.$route.query.next || root))

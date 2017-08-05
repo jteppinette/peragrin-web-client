@@ -39,27 +39,23 @@ let dialogs = {
 
 export default {
   props: ['community'],
-  data: () => ({organizations: [], search: '', headers, dialogs, isAdministrator: false}),
+  data: () => ({organizations: [], search: '', headers, dialogs}),
   mounted: initialize,
   computed: {
-    account () {
-      return this.$store.state.account;
+    isAdministrator () {
+      return this.$store.state.account.isSuper || (this.$store.state.communities.indexOf(this.community.id) >= 0);
     }
   },
   components: {organizationsCreateUpdate},
-  methods: {initializeOrganizations, initializeIsAdministrator}
+  methods: {initializeOrganizations}
 };
 
 function initialize() {
-  return Promise.all([this.initializeIsAdministrator(), this.initializeOrganizations()]);
+  return this.initializeOrganizations();
 }
 
 function initializeOrganizations() {
   return this.$http.get(`/communities/${this.community.id}/organizations`)
     .then(({data: organizations}) => this.organizations = organizations);
-}
-
-function initializeIsAdministrator() {
-  return this.isAdministrator = this.account.isSuper || (!this.account.organizations ? false : this.account.organizations.find(v => v.communities ? v.communities.find(c => c.id == this.community.id && c.isAdministrator) : undefined));
 }
 </script>

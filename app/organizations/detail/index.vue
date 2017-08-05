@@ -45,7 +45,7 @@
       <v-card>
         <v-card-title class="primary title">Communities</v-card-title>
         <v-list two-line class="card-body">
-          <v-list-tile :to="`/communities/${community.id}`" v-for="community in organization.communities" :key="community.id" v-if="community">
+          <v-list-tile :to="`/communities/${community.id}`" v-for="community in communities" :key="community.id" v-if="community">
             <v-list-tile-content>
               <v-list-tile-title>{{ community.name }}</a></v-list-tile-title>
               <v-list-tile-sub-title v-if="community.isAdministrator">Administrator</v-list-tile-sub-title>
@@ -110,7 +110,7 @@
   </v-layout>
 
   <!-- PROMOTIONS -->
-  <v-layout row wrap v-if="organization && organization.communities">
+  <v-layout row wrap v-if="organization && communities">
     <v-flex xs12>
       <v-card>
         <v-card-title class="primary title">Promotions</v-card-title>
@@ -140,8 +140,14 @@ let dialogs = {
 
 export default {
   props: ['id'],
-  data: () => ({organization: {}, dialogs, isAdministrator: false}),
+  data: () => ({organization: {}, communities: [], dialogs}),
   computed: {
+    isAdministrator () {
+      let isSuper = this.$store.state.account.isSuper;
+      let isOwner = this.$store.state.organizations.indexOf(Number(this.id)) >= 0;
+      let isAdministrator = this.communities.some(c => this.$store.state.communities.indexOf(c.id) >= 0);
+      return isSuper || isOwner || isAdministrator;
+    },
     account () {
       return this.$store.state.account;
     },
@@ -151,7 +157,7 @@ export default {
   },
   components: {confirmDialog, promotionsList, organizationsDetails, organizationsCreateUpdate, organizationsOperatorsAdd, Dropzone},
   mounted: initialize,
-  methods: {removeOperator, uploadLogoSuccess, initializeIsAdministrator, initializeOperators, initializeOrganization, initializeCommunities}
+  methods: {removeOperator, uploadLogoSuccess, initializeOperators, initializeOrganization, initializeCommunities}
 };
 
 function initialize() {
@@ -180,7 +186,7 @@ function initializeOrganization() {
 
 function initializeCommunities() {
   return this.$http.get(`/organizations/${this.id}/communities`)
-    .then(({data: communities}) => this.$set(this.organization, 'communities', communities));
+    .then(({data: communities}) => this.communities = communities);
 }
 
 function initializeOperators() {
@@ -190,19 +196,6 @@ function initializeOperators() {
       obj = {...obj, [operator.id]: false};
       return obj;
     }, {}));
-}
-
-function initializeIsAdministrator() {
-  if (this.account.isSuper) return this.isAdministrator = true;
-  if (!this.account.organizations) return this.isAdministrator = false;
-
-  let isOwner = this.account.organizations.find(v => v.id == this.id);
-  let isAdministrator = this.organization.communities ? this.account.organizations.find(v => {
-    if (!v.communities) return false;
-    let community = v.communities.find(c => this.organization.communities.find(u => u.id == c.id));
-    return community ? community.isAdministrator : false;
-  }) : false;
-  return this.isAdministrator = isOwner || isAdministrator;
 }
 </script>
 

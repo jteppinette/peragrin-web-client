@@ -88,9 +88,11 @@ function update() {
 function create() {
   this.submitting = true;
   return this.$http.post(`/communities/${this.communityID}/organizations`, this.data)
-    .then(({data: organization}) => this.$emit('created', organization))
-    .then(() => this.$emit('input', false))
-    .then(() => this.$store.dispatch('initializeAccountOrganizations'))
+    .then(({data: organization}) => {
+      this.$emit('created', organization);
+      this.$emit('input', false);
+      this.$store.commit('addOrganization', organization.id);
+    })
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'))
     .then(() => this.submitting = false);
 }
