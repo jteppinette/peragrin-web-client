@@ -17,6 +17,7 @@ export const MARKER_BASE = {
 };
 
 export const CATEGORIES = [
+    {name: 'Accommodation', icon: 'hotel'},
     {name: 'Restaurant', icon: 'restaurant_menu'},
     {name: 'Entertainment', icon: 'local_activity'},
     {name: 'Retail', icon: 'shopping_basket'},
