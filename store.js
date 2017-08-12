@@ -89,7 +89,7 @@ export default {
             }
             var account = undefined;
             try {
-                account = {...sessionStorage, isSuper: sessionStorage.isSuper == 'true'};
+                account = {email: sessionStorage.email, token: sessionStorage.token, firstName: sessionStorage.firstName, lastName: sessionStorage.lastName, id: sessionStorage.id, isSuper: sessionStorage.isSuper == 'true'};
             } catch (e) {
                 console.log('session storage not supported: ', e);
                 account = context.state.account;
