@@ -76,19 +76,21 @@ export default {
         },
         initialize (context) {
             try {
+                sessionStorage.setItem('test', 1);
                 if (!sessionStorage.id) {
                     context.commit('clear');
                     return undefined;
                 }
             } catch (e) {
                 console.log('session storage not supported: ', e);
-                if (!context.state.account.id) {
+                if (context.state.account && !context.state.account.id) {
                     context.commit('clear');
                     return undefined;
                 }
             }
             var account = undefined;
             try {
+                sessionStorage.setItem('test', 1);
                 account = {email: sessionStorage.email, token: sessionStorage.token, firstName: sessionStorage.firstName, lastName: sessionStorage.lastName, id: sessionStorage.id, isSuper: sessionStorage.isSuper == 'true'};
             } catch (e) {
                 console.log('session storage not supported: ', e);
