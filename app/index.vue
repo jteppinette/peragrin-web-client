@@ -121,6 +121,21 @@ function logout() {
 
 .leaflet-container {
   z-index: 2;
+
+  .leaflet-control-container {
+
+    .leaflet-bar {
+      border: none !important;
+    }
+
+    .leaflet-control {
+      box-shadow: 0 1px 3px rgba(0,0,0,.2),0 1px 1px rgba(0,0,0,.14),0 2px 1px -1px rgba(0,0,0,.12) !important;
+    }
+
+    .leaflet-control-attribution {
+      display: none;
+    }
+  }
 }
 
 
