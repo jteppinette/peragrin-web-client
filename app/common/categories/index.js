@@ -27,6 +27,14 @@ export const CATEGORIES = [
     {name: 'Health', icon: 'favorite'}
 ];
 
+export const SELF = L.icon({
+    iconUrl: require('../../../assets/markers/self.png'),
+    iconSize:    [30, 30],
+    iconAnchor:  [15, 15],
+    tooltipAnchor: [0, 0],
+    shadowSize:  [0, 0]
+});
+
 export const MARKERS = CATEGORIES.concat({name: 'Community Leader'}).reduce((result, category) => {
   result[category.name] = L.icon({...MARKER_BASE, iconUrl: require(`../../../assets/markers/${category.name.toLowerCase().replace(' ', '-')}.png`)});
   return result;

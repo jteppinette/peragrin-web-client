@@ -13,10 +13,12 @@
       <v-toolbar floating dense class="elevation-0">
         <v-text-field :disabled="!!organization" v-model="filter.name" solo class="elevation-0" prepend-icon="search"></v-text-field>
         <div class="hidden-xs-only">
+          <v-btn icon v-if="self" @click.native="() => latlng = self" v-tooltip:bottom="{html: 'center on my location'}"><v-icon>my_location</v-icon></v-btn>
           <v-btn icon v-if="organization || filter.name" @click.native="clear" v-tooltip:bottom="{html: 'clear search'}"><v-icon>close</v-icon></v-btn>
           <v-btn v-if="!organization" @click.native="results = !results" flat icon :disabled="!filtered.length && !results" v-tooltip:bottom="{html: results ? 'collapse results' : 'expand results'}"><v-icon v-badge="{value: filtered.length, right: true}">{{ results ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon></v-btn>
         </div>
         <div class="hidden-sm-and-up">
+          <v-btn icon v-if="self" @click.native="() => latlng = self"><v-icon>my_location</v-icon></v-btn>
           <v-btn v-if="organization || filter.name" icon @click.native="clear"><v-icon>close</v-icon></v-btn>
           <v-btn v-if="!organization" @click.native="results = !results" flat icon :disabled="!filtered.length && !results"><v-icon v-badge="{value: filtered.length, right: true}">{{ results ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon></v-btn>
         </div>
@@ -41,6 +43,9 @@
   <v-map ref="map" v-if="community && community.geoJSONOverlays" :zoom="zoom" :center="latlng" v-on:l-zoomend="({target: {_zoom: v}}) => zoom = v" class="control-right">
     <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
     <v-marker v-for="organization in filtered" @l-click="select(organization)" :key="organization.id" :icon="organization.icon" v-if="organization" :lat-lng="[organization.lat, organization.lon]"></v-marker>
+    <v-marker v-if="self" :icon="icons.self" :lat-lng="self">
+      <v-tooltip content="you"></v-tooltip>
+    </v-marker>
     <v-geojson-layer v-for="overlay in community.geoJSONOverlays" :key="overlay.name" :options="options(overlay)" :geojson="overlay.data"></v-geojson-layer>
   </v-map>
 
@@ -51,11 +56,16 @@
 
 <script>
 import organizationDropdown from './organization-dropdown';
-import {CATEGORIES, MARKERS} from 'common/categories';
+import {CATEGORIES, MARKERS, SELF} from 'common/categories';
+
+let icons = {
+  cl: MARKERS['Community Leader'],
+  self: SELF
+};
 
 export default {
-  props: ['community'],
-  data: () => ({initialized: false, icon: MARKERS['Community Leader'], results: false, filter: {}, latlng: undefined, categories: CATEGORIES, zoom: undefined, organization: undefined}),
+  props: ['community', 'distance', 'self'],
+  data: () => ({initialized: false, icons, results: false, filter: {}, latlng: undefined, categories: CATEGORIES, zoom: undefined, organization: undefined}),
   mounted: initialize,
   methods: {options, select, clear, initializeCommunity, initializeGeoJSONOverlays, initializeOrganizations},
   components: {organizationDropdown},
@@ -74,7 +84,8 @@ export default {
     }
   },
   watch: {
-    community (v) {
+    community (v, o) {
+      if (v && o && v.id == o.id) return;
       this.organization = undefined;
       this.filter = {name: '', category: ''};
       return this.initializeCommunity(v);
