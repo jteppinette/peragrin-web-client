@@ -19,7 +19,7 @@
 
   <v-map ref="map" :zoom="zoom" :center="latlng" v-on:l-zoomend="({target: {_zoom: v}}) => zoom = v" class="control-right">
     <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
-    <v-marker v-for="c in communities" :icon="icons.cl" @l-click="() => community = c" :key="c.id" v-if="c" :lat-lng="[c.lat, c.lon]">
+    <v-marker v-for="c in communities" :icon="c.id == community.id ? icons.active : icons.cl" @l-click="() => community = c" :key="c.id" v-if="c" :lat-lng="[c.lat, c.lon]">
       <v-tooltip :content="c.name"></v-tooltip>
     </v-marker>
     <v-marker v-if="self" :icon="icons.self" :lat-lng="self">
@@ -31,10 +31,11 @@
 </template>
 
 <script>
-import {MARKERS, SELF} from 'common/categories';
+import {MARKERS, ACTIVE_COMMUNITY, SELF} from 'common/categories';
 
 let icons = {
   cl: MARKERS['Community Leader'],
+  active: ACTIVE_COMMUNITY,
   self: SELF
 };
 

@@ -35,6 +35,8 @@ export const SELF = L.icon({
     shadowSize:  [0, 0]
 });
 
+export const ACTIVE_COMMUNITY = L.icon({...MARKER_BASE, iconUrl: require('../../../assets/markers/community-leader-active.png')});
+
 export const MARKERS = CATEGORIES.concat({name: 'Community Leader'}).reduce((result, category) => {
   result[category.name] = L.icon({...MARKER_BASE, iconUrl: require(`../../../assets/markers/${category.name.toLowerCase().replace(' ', '-')}.png`)});
   return result;
