@@ -3,11 +3,11 @@
 
   <v-container v-if="!$route.query.community && !initializedLocation && !community" style="text-align: center; padding-top: 15vh">
     <h1>Finding a Community Near You</h1>
-    <p>approve the location service notification to allow access to your location</p>
+    <p>approve the location permission notification and enable your location services to allow access to your location</p>
     <a href="mailto:support@peragrin.com">support@peragrin.com</a><br>
-
     <v-progress-circular :indeterminate="true" class="mt-3"></v-progress-circular>
   </v-container>
+  <v-snackbar right multi-line :timeout="6000" v-model="gpsFailure">We were unable to find your location. Verify your location services and app permissions, then try again.</v-snackbar>
 
   <communities-map v-if="initializedLocation && !community" :communities="communities" :self="self"></communities-map>
 
@@ -21,7 +21,7 @@ import communityMap from './community-map';
 import communitiesMap from './communities-map';
 
 export default {
-  data: () => ({initializedCommunity: false, initializedLocation: false, self: undefined, communities: [], community: undefined}),
+  data: () => ({gpsFailure: false, initializedCommunity: false, initializedLocation: false, self: undefined, communities: [], community: undefined}),
   mounted: initialize,
   components: {communityMap, communitiesMap},
   methods: {initializeLocation, initializeCommunity, getDistance},
@@ -58,10 +58,12 @@ function initializeCommunity(name='') {
 
 function initializeLocation() {
   return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) return reject();
+    if (!navigator.geolocation) return reject(this.gpsFailure = true);
     navigator.geolocation.getCurrentPosition(({coords: {latitude, longitude}}) => {
       return resolve(this.self = [latitude, longitude]);
-    }, reject);
+    }, () => {
+      return reject(this.gpsFailure = true);
+    }, {maximumAge: 60000, timeout: 10000});
   });
 }
 
