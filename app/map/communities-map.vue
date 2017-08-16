@@ -5,7 +5,7 @@
     <v-card v-for="c in communities" v-if="c" :key="c.id" :class="{'elevation-10': c.id == community.id, 'elevation-2': c.id != community.id}">
       <v-card-title @click="() => community = c" class="subheading" :class="{'secondary': c.id != community.id, 'primary': c.id == community.id}">{{ c.name }}</v-card-title>
       <v-list v-if="c.distance" :dense="true">
-        <v-list-tile>
+        <v-list-tile :href="generateLink(c.lon, c.lat)">
           <v-list-tile-action><v-icon>directions</v-icon></v-list-tile-action>
           <v-list-tile-content><v-list-tile-title>~{{ c.distance }} mi away</v-list-tile-title></v-list-tile-content>
         </v-list-tile>
@@ -32,6 +32,7 @@
 
 <script>
 import {MARKERS, ACTIVE_COMMUNITY, SELF} from 'common/categories';
+import {generateLink} from 'common/directions';
 
 let icons = {
   cl: MARKERS['Community Leader'],
@@ -43,6 +44,7 @@ export default {
   props: ['communities', 'self'],
   data: () => ({initialized: false, community: undefined, latlng: [], zoom: 11, icons}),
   mounted: initialize,
+  methods: {generateLink},
   watch: {
     community (v) {
      this.latlng = [this.community.lat, this.community.lon];

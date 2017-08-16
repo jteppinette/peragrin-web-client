@@ -27,11 +27,11 @@
   </v-list-tile>
 
   <!-- ADDRESS -->
-  <v-list-tile v-if="organization.street" :href="'geo:'+organization.lat+','+organization.lon">
+  <v-list-tile v-if="organization.street" :href="generateLink(organization.lon, organization.lat)">
     <v-list-tile-action><v-icon class="primary--text">location_on</v-icon></v-list-tile-action>
     <v-list-tile-content>
       <v-list-tile-title>{{ organization.street }}</v-list-tile-title>
-      <v-list-tile-sub-title>{{ organization.city}} , {{ organization.state }} {{ organization.zip }}</v-list-tile-sub-title>
+      <v-list-tile-sub-title>{{ organization.city }} , {{ organization.state }} {{ organization.zip }}</v-list-tile-sub-title>
     </v-list-tile-content>
   </v-list-tile>
 
@@ -51,6 +51,7 @@
 
 <script>
 import {WEEKDAYS, to12hr} from 'common/time';
+import {generateLink} from 'common/directions';
 
 export default {
   data: () => ({weekdays: WEEKDAYS, today: new Date().getDay()}),
@@ -61,6 +62,7 @@ export default {
   filters: {
     to12hr: value => to12hr(value)
   },
+  methods: {generateLink},
   computed: {
     hours () {
       if (!this.organization.hours || !this.organization.hours.length) return undefined;
