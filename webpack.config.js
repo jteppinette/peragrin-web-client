@@ -32,7 +32,12 @@ module.exports = {
             {
                 test: /\.png/,
                 loader: 'file-loader?name=assets/images/[name].[ext]?[hash]'
+            },
+            {
+                test: /\.csv/,
+                loader: 'file-loader?name=assets/templates/[name].[ext]'
             }
+
         ]
     },
     resolve: {
