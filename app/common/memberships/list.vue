@@ -23,8 +23,8 @@
   <div v-if="!memberships.length && initialized">
 
     <div v-if="isAdministrator">
+      <v-card-title class="secondary title">Why create a membership?</v-card-title>
       <v-card-text class="expose">
-        <p class="title">Why create a membership?</p>
         <p>Memberships allow your community to support a <strong>donor map perks program</strong>.<p>
         <p>After creating an initial membership level, patrons will have the ability to acquire a membership with your community and <strong>redeem promotions at participating businesses</strong>.</p>
         <p>This allows your community to take in membership revenue and provide your partner businesses with an aditional advertising channel.</p>

@@ -14,8 +14,8 @@
   </template>
 
   <div v-if="!communities.length && isAdministrator">
+    <v-card-title class="secondary title">Why join a community?</v-card-title>
     <v-card-text class="expose">
-      <p class="title">Why join a community?</p>
       <p>Joining a community allows you to access a <strong>shared map, donor perks program, promotions, and many other Peragrin features</strong>.</p>
       <p>Contact us by clicking the button below to join a community near you.</p>
     </v-card-text>

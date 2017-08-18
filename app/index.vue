@@ -163,11 +163,14 @@ function logout() {
 .card {
 
   .card__text {
-    &.expose p {
-      text-indent: 40px;
-      max-width: 400px;
-      margin: 10px auto;
-      font-size: 1.3em; 
+    &.expose {
+      padding: 30px 36px !important;
+      p {
+        text-indent: 40px;
+        max-width: 400px;
+        margin: 10px auto;
+        font-size: 1.3em;
+      }
     }
 
     &.secondary a {
