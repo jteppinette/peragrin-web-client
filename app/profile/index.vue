@@ -68,9 +68,27 @@
             </v-list-tile>
           </template>
         </v-list>
-        <v-card-text v-if="!communities" class="secondary expose">
+        <v-card-text v-if="communities && !communities.length" class="secondary expose">
           <p>Your account does not have any memberships.</p>
           <p>Reach out to us at <a href="mailto:support@peragrin.com?subject=Memberships">support@peragrin.com</a> or contact a community leader near you to start a membership.</p>
+        </v-card-text>
+      </v-card>
+    </v-flex>
+
+    <v-flex xs12 md6 lg4>
+      <v-card>
+        <v-card-title class="primary title">Redemptions</v-card-title>
+        <v-list v-if="redemptions && redemptions.length" two-line>
+          <v-list-tile v-for="redemption in redemptions" :key="redemption.consumedAt">
+            <v-list-tile-content>
+              <v-list-tile-title>{{ redemption.promotionID }}</v-list-tile-title>
+              <v-list-tile-sub-title>{{ redemption.consumedAt }}</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+        <v-card-text v-if="redemptions && !redemptions.length" class="secondary expose">
+          <p>Your account does not have any redemptions.</p>
+          <p>You can redeem promotions by visiting a community map <a to="/map">here</a>.</p>
         </v-card-text>
       </v-card>
     </v-flex>
@@ -96,8 +114,8 @@ let submitting = {
 };
 
 export default {
-  data: () => ({communities: undefined, firstName: '', lastName: '', email: '', password: '', submitting, errors, messages}),
-  methods: {initializeMemberships, updateAccount, setPassword},
+  data: () => ({redemptions: undefined, communities: undefined, firstName: '', lastName: '', email: '', password: '', submitting, errors, messages}),
+  methods: {initializeMemberships, initializeRedemptions, updateAccount, setPassword},
   mounted: initialize,
   computed: {
     account () {
@@ -110,12 +128,17 @@ function initialize() {
   this.email = this.$store.state.account.email;
   this.firstName = this.$store.state.account.firstName;
   this.lastName = this.$store.state.account.lastName;
-  return this.initializeMemberships();
+  return Promise.all([this.initializeMemberships(), this.initializeRedemptions()]);
 }
 
 function initializeMemberships() {
   return this.$http.get(`/accounts/${this.account.id}/memberships`)
     .then(({data: communities}) => this.communities = communities);
+}
+
+function initializeRedemptions() {
+  return this.$http.get(`/accounts/${this.account.id}/promotions`)
+    .then(({data: redemptions}) => this.redemptions = redemptions);
 }
 
 function updateAccount() {
