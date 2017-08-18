@@ -149,10 +149,6 @@ function logout() {
       margin-bottom: 8px;
     }
   }
-
-  .subheader {
-    padding: 0px;
-  }
 }
 
 

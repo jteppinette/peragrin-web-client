@@ -54,6 +54,27 @@
       </v-card>
     </v-flex>
 
+    <v-flex xs12 md6 lg4>
+      <v-card>
+        <v-card-title class="primary title">Memberships</v-card-title>
+        <v-list v-if="communities && communities.length" two-line>
+          <template v-for="community in communities">
+            <v-subheader>{{ community.name }}</v-subheader>
+            <v-list-tile v-for="membership in community.memberships" :key="membership.id">
+              <v-list-tile-content>
+                <v-list-tile-title>{{ membership.name }}</v-list-tile-title>
+                <v-list-tile-sub-title>{{ membership.description }}</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </template>
+        </v-list>
+        <v-card-text v-if="!communities" class="secondary expose">
+          <p>Your account does not have any memberships.</p>
+          <p>Reach out to us at <a href="mailto:support@peragrin.com?subject=Memberships">support@peragrin.com</a> or contact a community leader near you to start a membership.</p>
+        </v-card-text>
+      </v-card>
+    </v-flex>
+
   </v-layout>
 </v-container>
 </template>
@@ -75,8 +96,8 @@ let submitting = {
 };
 
 export default {
-  data: () => ({firstName: '', lastName: '', email: '', password: '', submitting, errors, messages}),
-  methods: {updateAccount, setPassword},
+  data: () => ({communities: undefined, firstName: '', lastName: '', email: '', password: '', submitting, errors, messages}),
+  methods: {initializeMemberships, updateAccount, setPassword},
   mounted: initialize,
   computed: {
     account () {
@@ -89,6 +110,12 @@ function initialize() {
   this.email = this.$store.state.account.email;
   this.firstName = this.$store.state.account.firstName;
   this.lastName = this.$store.state.account.lastName;
+  return this.initializeMemberships();
+}
+
+function initializeMemberships() {
+  return this.$http.get(`/accounts/${this.account.id}/memberships`)
+    .then(({data: communities}) => this.communities = communities);
 }
 
 function updateAccount() {
@@ -104,5 +131,4 @@ function setPassword() {
     .catch(({data}) => this.errors.password = !!(this.messages.password = data && data.msg ? data.msg : 'unknown error'))
     .then(() => this.submitting.password = false);
 }
-
 </script>
