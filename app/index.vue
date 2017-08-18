@@ -162,8 +162,17 @@ function logout() {
 
 .card {
 
-  .card__text p {
-    max-width: 400px;
+  .card__text {
+    &.expose p {
+      text-indent: 40px;
+      max-width: 400px;
+      margin: 10px auto;
+      font-size: 1.3em; 
+    }
+
+    &.secondary a {
+      color: white;
+    }
   }
 
   .card__title, .card__text {
@@ -228,8 +237,12 @@ function logout() {
 /* STEPPER */
 /***********/
 
-.stepper__wrapper {
-  min-height: 350px;
+.stepper__content {
+  padding: 0px !important;
+}
+
+.stepper__label {
+  text-align: center !important;
 }
 
 
@@ -332,14 +345,35 @@ function logout() {
 /*************/
 
 .pl-0-lg {
-  @media (min-width: $grid-breakpoints.md) {
+  @media $display-breakpoints.lg-and-up {
     padding-left: 0px !important;
   }
 }
-
 .pr-0-lg {
-  @media (min-width: $grid-breakpoints.md) {
+  @media $display-breakpoints.lg-and-up {
     padding-right: 0px !important;
+  }
+}
+
+.pl-10-md {
+  @media $display-breakpoints.md-and-up {
+    padding-left: 10px !important;
+  }
+}
+.pr-10-md {
+  @media $display-breakpoints.md-and-up {
+    padding-right: 10px !important;
+  }
+}
+
+.pl-20-md {
+  @media $display-breakpoints.md-and-up {
+    padding-left: 20px !important;
+  }
+}
+.pr-20-md {
+  @media $display-breakpoints.md-and-up {
+    padding-right: 20px !important;
   }
 }
 

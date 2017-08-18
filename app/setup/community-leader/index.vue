@@ -5,82 +5,130 @@
     <v-breadcrumbs-item disabled>Community Leader Setup</v-breadcrumbs-item>
   </v-breadcrumbs>
 
-  <v-stepper v-model="step">
+  <v-stepper alt-labels v-model="step">
 
     <v-stepper-header>
-      <v-stepper-step step="1" v-bind:complete="step > 1">Organization</v-stepper-step>
+      <v-stepper-step step="1" v-bind:complete="step > 1">Managing Organization</v-stepper-step>
       <v-divider></v-divider>
       <v-stepper-step step="2" v-bind:complete="step > 2">Community</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step step="3" v-bind:complete="step > 3">Invite Operators</v-stepper-step>
+      <v-stepper-step step="3" v-bind:complete="step > 3">Invite Business Operators<small>optional</small></v-stepper-step>
     </v-stepper-header>
 
+    <!-- MANAGING ORGANIZATION -->
     <v-stepper-content step="1">
-      <v-alert error dismissible v-model="error.organization">{{ msg.organization }}</v-alert>
-      <v-layout row wrap>
-        <v-flex xs12 md6>
-          <organizations-form v-model="organization" @geo-hit="() => zoom = 15" @geo-miss="() => zoom = 6"></organizations-form>
-          <p>If necessary, move the marker to adjust the organization's icon location on the map.</p>
-          <v-map v-if="step == 1 && organization.lon && organization.lat" :zoom="zoom" :center="[organization.lat, organization.lon]" @l-zoomend="({target: {_zoom: v}}) => zoom = v">
-            <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
-            <v-marker v-on:l-move="moveOrganization" :icon="icon" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}" :draggable="true"></v-marker>
-          </v-map>
-        </v-flex>
-        <v-flex xs12 md6>
-          <organizations-hours v-model="organization.hours"></organizations-hours>
-        </v-flex>
-      </v-layout>
-      <v-btn primary @click="createOrganization" :error="error.organization" :loading="submitting.organization" class="white--text">Setup Business</v-btn>
+      <v-card>
+
+        <v-card-text class="secondary expose">
+          <v-layout row wrap>
+            <v-flex xs12 md6>
+              <p><strong>Congratulations!</strong> You have just begun your journey to create a community in Peragrin.</p>
+              <p>The first step is to create the communities managing organization. For example, this would be the <strong>chamber of commerce, city council, or community management corporation</strong>. This is the legal organization that provides oversight and management for the community you will be creating.</p>
+            </v-flex>
+            <v-flex xs12 md6>
+              <p><strong>Why are we asking for this information?</strong></p>
+              <p>The information being requested below <i>general - address - hours of operation</i> is used to create your listing in Peragrin. This is used <strong>to generate your unique map</strong> and <strong>let your community organizations and members know about your managing organization</strong>.</p>
+              <p>If you have any questions while setting up your community, reach out to us at <a href="mailto:support@peragrin.com?subject=Setting Up My Community">support@peragrin.com</a>.</p>
+            </v-flex>
+          </v-layout>
+        </v-card-text>
+
+        <v-card-text>
+          <v-layout row wrap>
+            <v-flex xs12 md6 class="pr-20-md">
+              <organizations-form v-model="organization" @geo-hit="() => zoom = 15" @geo-miss="() => zoom = 6"></organizations-form>
+              <p>If necessary, move the marker to adjust the organization's icon location on the map.</p>
+              <v-map v-if="step == 1 && organization.lon && organization.lat" :zoom="zoom" :center="[organization.lat, organization.lon]" @l-zoomend="({target: {_zoom: v}}) => zoom = v">
+                <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+                <v-marker v-on:l-move="moveOrganization" :icon="icon" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}" :draggable="true"></v-marker>
+              </v-map>
+            </v-flex>
+            <v-flex xs12 md6 class="pl-10-md">
+              <organizations-hours v-model="organization.hours"></organizations-hours>
+            </v-flex>
+          </v-layout>
+        </v-card-text>
+
+        <v-snackbar v-model="error.organization" error>{{ msg.organization }}
+          <v-btn flat @click="error.organization = false" class="white--text">close</v-btn>
+        </v-snackbar>
+        <v-card-actions class="secondary">
+          <v-spacer></v-spacer>
+          <v-btn outline @click="createOrganization" :error="error.organization" :loading="submitting.organization" class="white--text">Create</v-btn>
+        </v-card-actions>
+
+      </v-card>
     </v-stepper-content>
 
+    <!-- COMMUNITY -->
     <v-stepper-content step="2">
-      <v-alert error dismissible v-model="error.community">{{ msg.community }}</v-alert>
-      <v-container>
-        <v-text-field v-model="community.name" type="text" label="Name"></v-text-field>
+      <v-card>
 
-        <v-subheader>Set the zoom level and map center for your community</v-subheader>
-        <v-map v-if="step == 2" :zoom="community.zoom" :center="[community.lat, community.lon]" v-on:l-zoomend="({target: {_zoom: v}}) => community.zoom = v">
-          <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
-          <v-marker :icon="icon" v-on:l-move="moveCommunity" :lat-lng="[community.lat, community.lon]" :draggable="true"></v-marker>
-        </v-map>
+        <v-card-text class="secondary expose">
+          <p>Now that you have defined your managing organization. You will now need to define the <strong>name and map settings for your community</strong>.</p>
+          <p>Use the map marker and zoom controls to set the initial center point and zoom level for your community map. This should be set so that <strong>all businesses in your community are visible at that zoom level and the marker is at the center focal point of your community</strong>. e.g. a city marker or court house</p>
+        </v-card-text>
 
-        <v-btn primary @click="createCommunity" :error="error.community" :loading="submitting.community" class="white--text">Create Community</v-btn>
-      </v-container>
+        <v-card-text>
+          <v-text-field v-model="community.name" type="text" label="Name"></v-text-field>
+          <v-map v-if="step == 2" :zoom="community.zoom" :center="[community.lat, community.lon]" v-on:l-zoomend="({target: {_zoom: v}}) => community.zoom = v">
+            <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+            <v-marker :icon="icon" v-on:l-move="moveCommunity" :lat-lng="[community.lat, community.lon]" :draggable="true"></v-marker>
+          </v-map>
+        </v-card-text>
+
+        <v-snackbar v-model="error.community" error>{{ msg.community }}
+          <v-btn flat @click="error.community = false" class="white--text">close</v-btn>
+        </v-snackbar>
+        <v-card-actions class="secondary">
+          <v-spacer></v-spacer>
+          <v-btn outline @click="createCommunity" :error="error.community" :loading="submitting.community" class="white--text">Create</v-btn>
+        </v-card-actions>
+
+      </v-card>
     </v-stepper-content>
 
+    <!-- INVITE BUSINESS OPERATORS -->
     <v-stepper-content step="3">
-      <v-alert error dismissible v-model="error.operators">{{ msg.operators }}</v-alert>
+      <v-card>
 
-      <v-container class="subheading">
-        <v-layout row wrap>
-          <v-flex md5 xs12>
-            <p>Upload a CSV file of those people who operate businesses in your community. Their accounts will be created and they will be sent activation emails. Upon activation, they will be prompted to setup their businesses and join your community.</p>
-          </v-flex>
-          <v-flex md2 xs12></v-flex>
-          <v-flex md5 xs12>
-            <p>Download this <a href="/assets/templates/operators.csv">example csv</a> to see a properly formatted csv file. Remember, there should be no spaces before or after the delimer.</p>
-          </v-flex>
-        </v-layout>
-        <v-btn :primary="!operators" class="mt-2 ma-0 file">{{ operators ? 'Select New CSV File' : 'Select CSV File' }}<input @change="selectCSVFile" type="file"></v-btn>
+        <v-card-text class="secondary expose">
+          <v-layout row wrap>
+            <v-flex xs12 md6>
+              <p>This is the final stage in the community setup process! Here, you can <strong>invite those people who operate businesses in your community</strong>.</p>
+              <p>This process is handled through a <strong>CSV file upload</strong> of your business operators. Download this <a href="/assets/templates/operators.csv">example csv</a> to see a properly formatted csv file. Remember, there should be no spaces before or after the delimiter.</p>
+            </v-flex>
+            <v-flex xs12 md6>
+              <p>After you have uploaded the CSV file, confirm that the file was parsed correctly by inspecting the <i>Parsed Operators</i> table. If the operators are correct, then <strong>press <i>Add Operators</i> in the bottom right</strong>. This will trigger their accounts to be created and activation emails sent out.</p>
+              <p>The activation email will take the operators through the business leader setup workflow and join their newly created organizations to your community.</p>
+            </v-flex>
+          </v-layout>
+        </v-card-text>
 
-        <v-card v-if="operators" class="mt-3 mb-3">
-          <v-card-title class="primary title">Parsed Operators</v-card-title>
-          <v-data-table :headers="headers" :items="operators">
-            <template slot="items" scope="props">
-              <td class="text-xs-right">{{ props.item.email }}</td>
-              <td class="text-xs-right">{{ props.item.firstName }}</td>
-              <td class="text-xs-right">{{ props.item.lastName }}</td>
-            </template>
-          </v-data-table>
-          <v-card-actions class="secondary">
-            <v-spacer></v-spacer>
-            <v-btn flat class="white--text" @click="operators = undefined">Cancel</v-btn>
-            <v-btn outline class="white--text" @click="addOperators" :error="error.operators" :loading="submitting.operators" type="submit">Add Operators</v-btn>
-          </v-card-actions>
-        </v-card>
+        <v-card-text>
+          <v-btn :primary="!operators" class="file">{{ operators ? 'Select New CSV File' : 'Select CSV File' }}<input @change="selectCSVFile" type="file"></v-btn>
+        </v-card-text>
 
-        <v-btn to="/communities" class="mt-2 ma-0">Continue to Console</v-btn>
-      </v-container>
+        <v-card-title v-if="operators" class="primary title">Parsed Operators</v-card-title>
+        <v-data-table v-if="operators" :headers="headers" :items="operators">
+          <template slot="items" scope="props">
+            <td class="text-xs-right">{{ props.item.email }}</td>
+            <td class="text-xs-right">{{ props.item.firstName }}</td>
+            <td class="text-xs-right">{{ props.item.lastName }}</td>
+          </template>
+        </v-data-table>
+
+        <v-snackbar v-model="error.operators" error>{{ msg.operators }}
+          <v-btn flat @click="error.operators = false" class="white--text">close</v-btn>
+        </v-snackbar>
+        <v-card-actions class="secondary">
+          <v-spacer></v-spacer>
+          <v-btn flat v-if="!operators" to="/communities" class="white--text">Continue to Console</v-btn>
+          <v-btn flat v-if="operators" @click="operators = undefined" class="white--text">Cancel</v-btn>
+          <v-btn outline class="white--text" @click="addOperators" :error="error.operators" :loading="submitting.operators" type="submit">Add Operators</v-btn>
+        </v-card-actions>
+
+      </v-card>
     </v-stepper-content>
 
   </v-stepper>

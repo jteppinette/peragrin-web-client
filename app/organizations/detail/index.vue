@@ -38,33 +38,23 @@
     </v-flex>
   </v-layout>
 
+  <!-- PROMOTIONS -->
+  <v-layout row wrap v-if="organization">
+    <v-flex xs12>
+      <v-card>
+        <v-card-title class="primary title">Promotions</v-card-title>
+        <promotions-list :organizationID="id"></promotions-list>
+      </v-card>
+    </v-flex>
+  </v-layout>
+
   <v-layout row wrap>
 
     <!-- COMMUNITIES -->
     <v-flex xs12 sm6 md4 v-if="initialized">
       <v-card>
         <v-card-title class="primary title">Communities</v-card-title>
-        <v-card-text v-if="communities.length" class="secondary">Click a community below to view more detailed information.</v-card-text>
-        <v-list v-if="communities.length" two-line>
-          <v-list-tile :to="`/communities/${community.id}`" v-for="community in communities" :key="community.id" v-if="community">
-            <v-list-tile-content>
-              <v-list-tile-title>{{ community.name }}</a></v-list-tile-title>
-              <v-list-tile-sub-title v-if="community.isAdministrator">Administrator</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-        <v-card-title v-if="isAdministrator && !communities.length" class="secondary subheading">Why join a community?</v-card-title>
-        <v-card-text v-if="!isAdministrator && !communities.length">
-          <p>This organization does not belong to any communities.</p>
-        </v-card-text>
-        <v-card-text v-if="isAdministrator && !communities.length">
-          <p>Joining a community allows you to access a <strong>shared map, donor perks program, promotions, and many other Peragrin features</strong>.</p>
-          <p>Contact us by clicking the button below to join a community near you.</p>
-        </v-card-text>
-        <v-card-actions v-if="isAdministrator && !communities.length" class="secondary">
-          <v-spacer></v-spacer>
-          <v-btn outline class="white--text" href="mailto:info@peragrin.com?subject=How to Join a Community">Contact Peragrin</v-btn>
-        </v-card-actions>
+        <organization-communities-list :communities="communities" :is-administrator="isAdministrator"></organization-communities-list>
       </v-card>
     </v-flex>
 
@@ -120,21 +110,12 @@
 
   </v-layout>
 
-  <!-- PROMOTIONS -->
-  <v-layout row wrap v-if="organization && communities.length">
-    <v-flex xs12>
-      <v-card>
-        <v-card-title class="primary title">Promotions</v-card-title>
-        <promotions-list :organizationID="id"></promotions-list>
-      </v-card>
-    </v-flex>
-  </v-layout>
-
 </v-container>
 </template>
 
 <script>
 import promotionsList from 'common/promotions/list';
+import organizationCommunitiesList from 'common/organizations/communities/list';
 import organizationsDetails from 'common/organizations/details';
 import organizationsCreateUpdate from 'common/organizations/create-update';
 import organizationsOperatorsAdd from 'common/organizations/operators/add';
@@ -166,7 +147,7 @@ export default {
       return this.organization.category ? MARKERS[this.organization.category] : undefined;
     }
   },
-  components: {confirmDialog, promotionsList, organizationsDetails, organizationsCreateUpdate, organizationsOperatorsAdd, Dropzone},
+  components: {confirmDialog, promotionsList, organizationCommunitiesList, organizationsDetails, organizationsCreateUpdate, organizationsOperatorsAdd, Dropzone},
   mounted: initialize,
   methods: {removeOperator, uploadLogoSuccess, initializeOperators, initializeOrganization, initializeCommunities}
 };
