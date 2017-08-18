@@ -8,8 +8,8 @@
 
     <v-card-actions class="secondary">
       <v-spacer></v-spacer>
-      <v-btn flat class="white--text" @click.native="$emit('input', false)">Close</v-btn>
-      <v-btn outline class="white--text" @click.native="confirm">Confirm</v-btn>
+      <v-btn flat class="white--text" @click="$emit('input', false)">Close</v-btn>
+      <v-btn outline class="white--text" @click="confirm">Confirm</v-btn>
     </v-card-actions>
 
   </v-card>

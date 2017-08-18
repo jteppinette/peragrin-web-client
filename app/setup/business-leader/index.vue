@@ -31,21 +31,21 @@
           <organizations-hours v-model="organization.hours"></organizations-hours>
         </v-flex>
       </v-layout>
-      <v-btn primary @click.native="create" class="white--text">Setup Business</v-btn>
+      <v-btn primary @click="create" class="white--text">Setup Business</v-btn>
     </v-stepper-content>
 
     <v-stepper-content step="2">
       <v-container fluid v-if="organization.id">
         <p>All images will be sized to a maxium size of 130px in width and 400px in height. The provided image's aspect ratio will be maintained.</p>
         <dropzone id="myVueDropzone" param-name="logo" :url="`/organizations/${organization.id}/logo`" :headers="{'Authorization': `Bearer ${account.token}`}" @vdropzone-success="(file, {logo}) => organization.logo = logo" :resize-width="400" resize-method="crop" :resize-height="130" :thumbnail-width="400" :thumbnail-height="130" :max-number-of-files="1" :max-file-size-in-m-b="100"><input type="hidden"></dropzone>
-        <v-btn flat @click.native="step = 3">Continue</v-btn>
+        <v-btn flat @click="step = 3">Continue</v-btn>
       </v-container>
     </v-stepper-content>
 
     <v-stepper-content step="3">
       <v-container class="community-picker">
         <v-select label="Community" return-object hint="Choose the community you would like to join" persistent-hint :items="communities" v-model="community" auto item-text="name" item-value="name" />
-        <v-btn primary @click.native="join" class="white--text">Join Community</v-btn>
+        <v-btn primary @click="join" class="white--text">Join Community</v-btn>
         <v-btn primary :router="true" to="/organizations" class="white--text">Continue to Console</v-btn>
       </v-container>
     </v-stepper-content>

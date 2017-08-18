@@ -19,7 +19,7 @@
   </v-list-tile>
 
   <!-- WEBSITE -->
-  <v-list-tile v-if="organization.website" :href="organization.website">
+  <v-list-tile v-if="organization.website" :href="`//${organization.website}`">
     <v-list-tile-action><v-icon class="primary--text">link</v-icon></v-list-tile-action>
     <v-list-tile-content>
       <v-list-tile-title>{{ organization.website }}</v-list-tile-title>

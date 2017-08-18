@@ -5,7 +5,7 @@
     <form @submit.prevent="add" novalidate>
 
       <v-card-text>
-        <v-text-field v-model="account.email" @keyup.native="search" :error="error" label="Email"></v-text-field>
+        <v-text-field v-model="account.email" @keyup="search" :error="error" label="Email"></v-text-field>
         <v-text-field v-model="account.firstName" :disabled="exists" :error="error" label="First Name"></v-text-field>
         <v-text-field v-model="account.lastName" :disabled="exists" :error="error" label="Last Name"></v-text-field>
 
@@ -15,12 +15,12 @@
 
       <v-card-actions class="secondary">
         <v-spacer></v-spacer>
-        <v-btn flat class="white--text" @click.native="$emit('input', false)">Close</v-btn>
+        <v-btn flat class="white--text" @click="$emit('input', false)">Close</v-btn>
         <v-btn outline class="white--text" :error="error" :loading="submitting" type="submit">Add</v-btn>
       </v-card-actions>
 
       <v-snackbar v-if="value" v-model="error" error>{{ msg }}
-        <v-btn flat @click.native="error = false" class="white--text">Close</v-btn>
+        <v-btn flat @click="error = false" class="white--text">Close</v-btn>
       </v-snackbar>
 
     </form>

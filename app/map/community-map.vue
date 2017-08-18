@@ -2,8 +2,8 @@
 <div :class="{'with-organization': organization}">
 
   <v-container fluid class="pl-2 pr-2 pt-2 pb-1 elevation-1 grey lighten-4 categories top">
-    <v-btn :ripple="false" flat v-for="category in categories" class="hidden-sm-and-down" :class="{'btn--active': filter.category == category.name}" @click.native="filter.category = filter.category == category.name ? '' : category.name; clear()" :key="category.name"><v-icon left class="secondary--after" :class="{'white--text': filter.category == category.name}" v-badge="{value: 'close', icon: true, left: true, visible: filter.category == category.name}">{{ category.icon }}</v-icon> {{ category.name }}</v-btn>
-    <v-btn flat v-for="category in categories" :icon="filter.category != category.name" class="hidden-md-and-up" :class="{'btn--active': filter.category == category.name}" @click.native="filter.category = filter.category == category.name ? '' : category.name; clear()" :key="category.name"><v-icon class="secondary--after" :left="filter.category == category.name" v-badge="{value: 'close', icon: true, left: true, visible: filter.category == category.name}" :class="{'white--text': filter.category == category.name}">{{ category.icon }}</v-icon>{{ filter.category == category.name ? category.name : '' }}</v-btn>
+    <v-btn :ripple="false" flat v-for="category in categories" class="hidden-sm-and-down" :class="{'btn--active': filter.category == category.name}" @click="filter.category = filter.category == category.name ? '' : category.name; clear()" :key="category.name"><v-icon left class="secondary--after" :class="{'white--text': filter.category == category.name}" v-badge="{value: 'close', icon: true, left: true, visible: filter.category == category.name}">{{ category.icon }}</v-icon> {{ category.name }}</v-btn>
+    <v-btn flat v-for="category in categories" :icon="filter.category != category.name" class="hidden-md-and-up" :class="{'btn--active': filter.category == category.name}" @click="filter.category = filter.category == category.name ? '' : category.name; clear()" :key="category.name"><v-icon class="secondary--after" :left="filter.category == category.name" v-badge="{value: 'close', icon: true, left: true, visible: filter.category == category.name}" :class="{'white--text': filter.category == category.name}">{{ category.icon }}</v-icon>{{ filter.category == category.name ? category.name : '' }}</v-btn>
   </v-container>
 
   <div class="filter" :class="{top: organization, floater: !organization}">
@@ -13,24 +13,24 @@
       <v-toolbar floating dense class="elevation-0">
         <v-text-field :disabled="!!organization" v-model="filter.name" solo class="elevation-0" prepend-icon="search"></v-text-field>
         <div class="hidden-xs-only">
-          <v-btn icon v-if="self" @click.native="() => latlng = self" v-tooltip:bottom="{html: 'center on my location'}"><v-icon>my_location</v-icon></v-btn>
-          <v-btn icon v-if="organization || filter.name" @click.native="clear" v-tooltip:bottom="{html: 'clear search'}"><v-icon>close</v-icon></v-btn>
-          <v-btn v-if="!organization" @click.native="results = !results" flat icon :disabled="!filtered.length && !results" v-tooltip:bottom="{html: results ? 'collapse results' : 'expand results'}"><v-icon v-badge="{value: filtered.length, right: true}">{{ results ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon></v-btn>
+          <v-btn icon v-if="self" @click="() => latlng = self" v-tooltip:bottom="{html: 'center on my location'}"><v-icon>my_location</v-icon></v-btn>
+          <v-btn icon v-if="organization || filter.name" @click="clear" v-tooltip:bottom="{html: 'clear search'}"><v-icon>close</v-icon></v-btn>
+          <v-btn v-if="!organization" @click="results = !results" flat icon :disabled="!filtered.length && !results" v-tooltip:bottom="{html: results ? 'collapse results' : 'expand results'}"><v-icon v-badge="{value: filtered.length, right: true}">{{ results ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon></v-btn>
         </div>
         <div class="hidden-sm-and-up">
-          <v-btn icon v-if="self" @click.native="() => latlng = self"><v-icon>my_location</v-icon></v-btn>
-          <v-btn v-if="organization || filter.name" icon @click.native="clear"><v-icon>close</v-icon></v-btn>
-          <v-btn v-if="!organization" @click.native="results = !results" flat icon :disabled="!filtered.length && !results"><v-icon v-badge="{value: filtered.length, right: true}">{{ results ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon></v-btn>
+          <v-btn icon v-if="self" @click="() => latlng = self"><v-icon>my_location</v-icon></v-btn>
+          <v-btn v-if="organization || filter.name" icon @click="clear"><v-icon>close</v-icon></v-btn>
+          <v-btn v-if="!organization" @click="results = !results" flat icon :disabled="!filtered.length && !results"><v-icon v-badge="{value: filtered.length, right: true}">{{ results ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon></v-btn>
         </div>
       </v-toolbar>
 
       <v-list v-if="results" class="elevation-0">
-        <v-list-tile v-if="filter.category && results" @click.native="() => select(organization, true)" v-for="organization in filtered" :key="organization.id">
+        <v-list-tile v-if="filter.category && results" @click="() => select(organization, true)" v-for="organization in filtered" :key="organization.id">
           <v-list-tile-content>{{ organization.name }}</v-list-tile-content>
         </v-list-tile>
         <template v-if="!filter.category && results" v-for="(organizations, category) in categorized">
           <v-subheader>{{ category }}</v-subheader>
-          <v-list-tile @click.native="() => select(organization, true)" v-for="organization in organizations" :key="organization.id">
+          <v-list-tile @click="() => select(organization, true)" v-for="organization in organizations" :key="organization.id">
             <v-list-tile-content>{{ organization.name }}</v-list-tile-content>
           </v-list-tile>
         </template>
@@ -179,7 +179,7 @@ function select(o, fly=false) {
   position: fixed;
 
   &.filter {
-    @media screen and (min-width: 600px) {
+    @media $display-breakpoints.sm-and-up {
       top: 113px;
       background-color: rgba(0, 0, 0, 0);
       padding: 16px;
@@ -195,7 +195,7 @@ function select(o, fly=false) {
   background-color: rgba(0, 0, 0, 0);
   padding: 8px;
 
-  @media screen and (max-width: 599px) {
+  @media $display-breakpoints.xs-only {
     padding: 0px;
   }
 }
@@ -221,6 +221,10 @@ function select(o, fly=false) {
   max-width: 100%;
   width: 500px;
 
+  @media $display-breakpoints.xs-only {
+    width: 100%;
+  }
+
   .dropdown {
     overflow-y: scroll;
     max-height: -moz-calc(100vh - 209px);
@@ -233,14 +237,9 @@ function select(o, fly=false) {
     overflow-y: scroll;
     max-height: 300px;
 
-    @media screen and (max-width: 599px) {
+    @media $display-breakpoints.xs-only {
       max-height: 100vh;
     }
-  }
-
-  @media screen and (max-width: 599px) {
-    max-width: 100%;
-    width: 599px;
   }
 
   .toolbar {
@@ -254,15 +253,11 @@ function select(o, fly=false) {
   }
 
   .card {
-    @media screen and (max-width: 599px) {
+    @media $display-breakpoints.xs-only {
       border-radius: 0px !important;
       box-shadow: 0 0px 0px rgba(0,0,0,.2), 0 2px 2px rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.12);
     }
   }
-}
-
-.btn {
-  margin: 6px 4px !important;
 }
 </style>
 
@@ -270,7 +265,7 @@ function select(o, fly=false) {
 @import '../../settings';
 
 .with-organization .vue2leaflet-map {
-  @media screen and (max-width: 599px) {
+  @media $display-breakpoints.xs-only {
     top: 117px !important;
     height: 100px !important;
   }
@@ -283,7 +278,7 @@ function select(o, fly=false) {
   top: 113px;
   overflow: hidden;
 
-  @media screen and (max-width: 599px) {
+  @media $display-breakpoints.xs-only {
     top: 177px;
   }
 }

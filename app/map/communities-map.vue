@@ -11,7 +11,7 @@
         </v-list-tile>
       </v-list>
       <v-card-actions class="secondary">
-        <v-btn flat class="white--text" @click.native="() => community = c">Fly Over</v-btn>
+        <v-btn flat class="white--text" @click="() => community = c">Fly Over</v-btn>
         <v-btn outline class="white--text" :to="`/map?community=${c.name}`">View Map</v-btn>
       </v-card-actions>
     </v-card>

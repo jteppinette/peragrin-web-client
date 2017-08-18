@@ -1,6 +1,6 @@
 <template>
 <v-list two-line>
-  <v-list-tile v-for="promotion in organization.promotions" @click.native.stop="dialogs.redeem[promotion.id] = !dialogs.redeem[promotion.id]" v-if="promotion && promotion.name" :key="promotion.name">
+  <v-list-tile v-for="promotion in organization.promotions" @click.stop="dialogs.redeem[promotion.id] = !dialogs.redeem[promotion.id]" v-if="promotion && promotion.name" :key="promotion.name">
 
     <v-list-tile-action>
       <v-icon medium class="primary--text" v-if="promotion.redeemed">check_circle</v-icon>
@@ -24,7 +24,7 @@
           <v-card-text class="warning" v-if="dialogs.redeem[promotion.id] && promotion.redemptions && promotion.redemptions.length">This promotion has been redeemed <strong>{{ promotion.redemptions.length }} times</strong>. The last redemption was <strong>{{ promotion.redemptions[0].consumedAt | moment("from", true) }} ago</strong>.</v-card-text>
 
           <v-snackbar v-if="dialogs.redeem[promotion.id]" v-model="error" error>{{ msg }}
-            <v-btn flat @click.native="error = false" class="white--text">close</v-btn>
+            <v-btn flat @click="error = false" class="white--text">close</v-btn>
           </v-snackbar>
 
           <v-card-text>Show this screen to an employee of {{ organization.name }}. After they acknowledge the promotion, you can have them click 'Redeem' button below. Provided you are able to receive this promotion, the promotion will be accepted.</v-card-text>
@@ -57,8 +57,8 @@
 
         <v-card-actions class="secondary">
           <v-spacer></v-spacer>
-          <v-btn flat class="white--text" @click.native.stop="dialogs.redeem[promotion.id] = false">Close</v-btn>
-          <v-btn outline class="white--text" :error="error" :loading="submitting" @click.native="redeem(promotion)">Redeem</v-btn>
+          <v-btn flat class="white--text" @click.stop="dialogs.redeem[promotion.id] = false">Close</v-btn>
+          <v-btn outline class="white--text" :error="error" :loading="submitting" @click="redeem(promotion)">Redeem</v-btn>
         </v-card-actions>
 
       </v-card>

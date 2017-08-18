@@ -31,6 +31,10 @@
       <v-card>
         <v-card-title class="primary title">Map</v-card-title>
         <communities-map :community="community"></communities-map>
+        <v-card-actions class="secondary">
+          <v-spacer></v-spacer>
+          <v-btn outline flat class="white--text" :to="`/map?community=${community.name}`">Map</v-btn>
+        </v-card-actions>
       </v-card>
     </v-flex>
 

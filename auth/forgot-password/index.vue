@@ -9,7 +9,7 @@
     <p class="pt-2 text-xs-center"><router-link class="black--text" to="/auth/login">If you know your password, then click here to login.</router-link></p>
 
     <v-snackbar v-model="error" error>{{ msg }}
-      <v-btn flat @click.native="error = false" class="white--text">Close</v-btn>
+      <v-btn flat @click="error = false" class="white--text">Close</v-btn>
     </v-snackbar>
 
   </form>

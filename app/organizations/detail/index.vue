@@ -9,11 +9,11 @@
   <v-layout row wrap>
     <v-flex xs12>
 
-    <v-card>
+    <v-card v-if="initialized">
       <v-card-title primary-title class="primary headline">{{ organization.name }}</v-card-title>
       <v-card-text class="secondary" style="position: relative">
         <v-chip v-if="organization.category" outline class="ma-0 white--text">{{ organization.category }}</v-chip>
-        <v-btn v-if="isAdministrator" @click.native.stop="dialogs.organizationsCreateUpdate = !dialogs.organizationsCreateUpdate" fab right bottom absolute><v-icon>edit</v-icon></v-btn>
+        <v-btn v-if="isAdministrator" @click.stop="dialogs.organizationsCreateUpdate = !dialogs.organizationsCreateUpdate" fab right bottom absolute><v-icon>edit</v-icon></v-btn>
         <organizations-create-update v-model="dialogs.organizationsCreateUpdate" v-if="organization.id" :organization="organization" @updated="o => organization = o"></organizations-create-update>
       </v-card-text>
 
@@ -38,13 +38,14 @@
     </v-flex>
   </v-layout>
 
-  <v-layout row wrap if="organization" class="middle">
+  <v-layout row wrap>
 
     <!-- COMMUNITIES -->
-    <v-flex xs12 sm6 md4>
+    <v-flex xs12 sm6 md4 v-if="initialized">
       <v-card>
         <v-card-title class="primary title">Communities</v-card-title>
-        <v-list two-line class="card-body">
+        <v-card-text v-if="communities.length" class="secondary">Click a community below to view more detailed information.</v-card-text>
+        <v-list v-if="communities.length" two-line>
           <v-list-tile :to="`/communities/${community.id}`" v-for="community in communities" :key="community.id" v-if="community">
             <v-list-tile-content>
               <v-list-tile-title>{{ community.name }}</a></v-list-tile-title>
@@ -52,38 +53,48 @@
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
+        <v-card-title v-if="isAdministrator && !communities.length" class="secondary subheading">Why join a community?</v-card-title>
+        <v-card-text v-if="!isAdministrator && !communities.length">
+          <p>This organization does not belong to any communities.</p>
+        </v-card-text>
+        <v-card-text v-if="isAdministrator && !communities.length">
+          <p>Joining a community allows you to access a <strong>shared map, donor perks program, promotions, and many other Peragrin features</strong>.</p>
+          <p>Contact us by clicking the button below to join a community near you.</p>
+        </v-card-text>
+        <v-card-actions v-if="isAdministrator && !communities.length" class="secondary">
+          <v-spacer></v-spacer>
+          <v-btn outline class="white--text" href="mailto:info@peragrin.com?subject=How to Join a Community">Contact Peragrin</v-btn>
+        </v-card-actions>
       </v-card>
     </v-flex>
 
     <!-- OPERATORS -->
-    <v-flex xs12 sm6 md4>
+    <v-flex xs12 sm6 md4 v-if="initialized">
       <v-card>
         <v-card-title class="primary" style="position: relative">
           <span class="title">Operators</span>
-          <v-btn v-if="isAdministrator" fab absolute right bottom @click.native.stop="dialogs.operatorsAdd = !dialogs.operatorsAdd"><v-icon>add</v-icon></v-btn>
+          <v-btn v-if="isAdministrator" fab absolute right bottom @click.stop="dialogs.operatorsAdd = !dialogs.operatorsAdd"><v-icon>add</v-icon></v-btn>
           <organizations-operators-add v-model="dialogs.operatorsAdd" :organization="organization" @success="initializeOperators"></organizations-operators-add>
         </v-card-title>
-        <div class="card-body">
-          <v-card-text class="secondary" v-if="isAdministrator && organization.accounts && !organization.accounts.length">Click the plus button above to add a new operator to this organization.</v-card-text>
-          <v-card-text class="secondary" v-if="organization.accounts && organization.accounts.length">Click the minus sign below to remove an operator.</v-card-text>
-          <v-list two-line>
-            <v-list-tile v-for="account in organization.accounts" :key="account.id" v-if="account">
-              <v-list-tile-content>
-                <v-list-tile-title>{{ account.email }}</v-list-tile-title>
-                <v-list-tile-sub-title>{{ account.firstName }} {{ account.lastName }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action v-if="isAdministrator">
-                <v-btn icon class="secondary" @click.native.stop.prevent="dialogs.operatorsRemove[account.id] = true"><v-icon class="white--text">remove</v-icon></v-btn>
-              </v-list-tile-action>
-              <confirm-dialog v-model="dialogs.operatorsRemove[account.id]" @confirmed="removeOperator(account.id)">Are you sure you want to remove this account, {{ account.email }}, from the {{ organization.name }} organization?</confirm-dialog>
-            </v-list-tile>
-          </v-list>
-        </div>
+        <v-card-text class="secondary" v-if="organization.accounts && organization.accounts.length">The following list of accounts has management access over this organization and any community that this organization manages.</v-card-text>
+        <v-card-text class="secondary" v-if="organization.accounts && !organization.accounts.length">Only a managing community operator is managing this organization.</v-card-text>
+        <v-list v-if="organization.accounts && organization.accounts.length" two-line>
+          <v-list-tile v-for="account in organization.accounts" :key="account.id" v-if="account">
+            <v-list-tile-content>
+              <v-list-tile-title>{{ account.email }}</v-list-tile-title>
+              <v-list-tile-sub-title>{{ account.firstName }} {{ account.lastName }}</v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-action v-if="isAdministrator">
+              <v-btn icon class="secondary" @click.stop.prevent="dialogs.operatorsRemove[account.id] = true"><v-icon class="white--text">remove</v-icon></v-btn>
+            </v-list-tile-action>
+            <confirm-dialog v-model="dialogs.operatorsRemove[account.id]" @confirmed="removeOperator(account.id)">Are you sure you want to remove this account, {{ account.email }}, from the {{ organization.name }} organization?</confirm-dialog>
+          </v-list-tile>
+        </v-list>
       </v-card>
     </v-flex>
 
     <!-- LOGO -->
-    <v-flex xs12 sm6 md4>
+    <v-flex xs12 sm6 md4 v-if="initialized">
       <v-card img>
         <v-card-title class="primary" style="position: relative">
           <span class="title">Logo</span>
@@ -97,20 +108,20 @@
               </v-card-text>
               <v-card-actions class="secondary">
                 <v-spacer></v-spacer>
-                <v-btn flat class="white--text" @click.native="dialogs.uploadLogo = false">Close</v-btn>
+                <v-btn flat class="white--text" @click="dialogs.uploadLogo = false">Close</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
         </v-card-title>
         </v-card-text>
-        <v-card-media :src="organization.logoURL" height="130px" width="100%" class="card-body"></v-card-media>
+        <v-card-media :src="organization.logoURL" height="130px" width="100%"></v-card-media>
       </v-card>
     </v-flex>
 
   </v-layout>
 
   <!-- PROMOTIONS -->
-  <v-layout row wrap v-if="organization && communities">
+  <v-layout row wrap v-if="organization && communities.length">
     <v-flex xs12>
       <v-card>
         <v-card-title class="primary title">Promotions</v-card-title>
@@ -140,7 +151,7 @@ let dialogs = {
 
 export default {
   props: ['id'],
-  data: () => ({organization: {}, communities: [], dialogs}),
+  data: () => ({initialized: false, organization: {}, communities: [], dialogs}),
   computed: {
     isAdministrator () {
       let isSuper = this.$store.state.account.isSuper;
@@ -163,9 +174,9 @@ export default {
 function initialize() {
   return Promise.all([
     this.initializeOperators(),
-    this.initializeOrganization().then(this.initializeIsAdministrator),
+    this.initializeOrganization(),
     this.initializeCommunities()
-  ]);
+  ]).then(() => this.initialized = true);
 }
 
 function removeOperator(id) {
@@ -207,12 +218,6 @@ function initializeOperators() {
 
   @media screen and (max-width: $grid-breakpoints.md) {
     height: 100px;
-  }
-}
-
-.middle {
-  .card-body {
-    min-height: 130px;
   }
 }
 </style>

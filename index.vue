@@ -19,8 +19,4 @@ html {
   margin-top: 0px;
   text-transform: capitalize;
 }
-
-.btn:not(.btn--icon):focus .btn__content:before {
-  background-color: rgba(0, 0, 0, 0) !important;
-}
 </style>

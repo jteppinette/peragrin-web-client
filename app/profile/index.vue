@@ -29,7 +29,7 @@
             <v-btn outline class="white--text" :error="errors.account" :loading="submitting.account" type="submit">Update</v-btn>
           </v-card-actions>
           <v-snackbar v-model="errors.account" error>{{ messages.account }}
-            <v-btn flat @click.native="errors.account = false" class="white--text">Close</v-btn>
+            <v-btn flat @click="errors.account = false" class="white--text">Close</v-btn>
           </v-snackbar>
         </form>
       </v-card>
@@ -48,7 +48,7 @@
             <v-btn outline class="white--text" :error="errors.password" :loading="submitting.password" type="submit">Set</v-btn>
           </v-card-actions>
           <v-snackbar v-model="errors.password" error>{{ messages.password }}
-            <v-btn flat @click.native="errors.password = false" class="white--text">Close</v-btn>
+            <v-btn flat @click="errors.password = false" class="white--text">Close</v-btn>
           </v-snackbar>
         </form>
       </v-card>

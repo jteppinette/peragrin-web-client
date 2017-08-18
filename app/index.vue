@@ -9,7 +9,7 @@
       <v-list-tile avatar tag="div">
         <v-list-tile-avatar><gravatar :email="account.email"></gravatar></v-list-tile-avatar>
         <v-list-tile-content><v-list-tile-title>{{ account.email }}</v-list-tile-title></v-list-tile-content>
-        <v-list-tile-action v-if="!mini"><v-btn icon @click.native.stop="mini = !mini"><v-icon>chevron_left</v-icon></v-btn></v-list-tile-action>
+        <v-list-tile-action v-if="!mini"><v-btn icon @click.stop="mini = !mini"><v-icon>chevron_left</v-icon></v-btn></v-list-tile-action>
       </v-list-tile>
     </v-list> 
 
@@ -24,11 +24,11 @@
         <v-list-tile-action><v-icon>map</v-icon></v-list-tile-action>
         <v-list-tile-content><v-list-tile-title>Map</v-list-tile-title></v-list-tile-content>
       </v-list-tile>
-      <v-list-tile v-if="account && organizations" to="/organizations">
+      <v-list-tile v-if="account && organizations.length" to="/organizations">
         <v-list-tile-action><v-icon>business</v-icon></v-list-tile-action>
         <v-list-tile-content><v-list-tile-title>Organizations</v-list-tile-title></v-list-tile-content>
       </v-list-tile>
-      <v-list-tile v-if="account && (account.isSuper || communities)" to="/communities">
+      <v-list-tile v-if="account && organizations.length" to="/communities">
         <v-list-tile-action><v-icon>account_balance</v-icon></v-list-tile-action>
         <v-list-tile-content><v-list-tile-title>Communities</v-list-tile-title></v-list-tile-content>
       </v-list-tile>
@@ -38,10 +38,10 @@
 
   <!-- TOOLBAR -->
   <v-toolbar class="primary elevation-0" dark fixed>
-    <v-toolbar-side-icon class="hidden-lg-and-up" @click.native.stop="navbar = !navbar"></v-toolbar-side-icon>
+    <v-toolbar-side-icon class="hidden-lg-and-up" @click.stop="navbar = !navbar"></v-toolbar-side-icon>
     <v-toolbar-title>{{ community || 'peragrin' }}</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn icon v-if="community" @click.native="deselect"><v-icon class="white--text">apps</v-icon></v-btn>
+    <v-btn icon v-if="community" @click="deselect"><v-icon class="white--text">apps</v-icon></v-btn>
     <v-menu bottom left origin="bottom left" transition="v-scale-transition">
       <v-btn icon slot="activator"><v-icon class="white--text">account_circle</v-icon></v-btn>
       <v-list>
@@ -51,7 +51,7 @@
         <v-list-tile v-if="account" to="/profile">
           <v-list-tile-content><v-list-tile-title>Profile</v-list-tile-title></v-list-tile-content>
         </v-list-tile>
-        <v-list-tile v-if="account" @click.native="logout">
+        <v-list-tile v-if="account" @click="logout">
           <v-list-tile-content><v-list-tile-title>Log Out</v-list-tile-title></v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -161,6 +161,10 @@ function logout() {
 /*********/
 
 .card {
+
+  .card__text p {
+    max-width: 400px;
+  }
 
   .card__title, .card__text {
     padding: 20px 16px;
@@ -345,10 +349,9 @@ function logout() {
 /***************/
 
 .no-limit-select .datatable__actions__select {
-  display: none !important;
-}
-.no-headers .datatable thead {
-  display: none;
+  @media (max-width: $grid-breakpoints.md) {
+    display: none !important;
+  }
 }
 
 
@@ -413,5 +416,9 @@ function logout() {
   outline: none;
   cursor: inherit;
   display: block;
+}
+
+.input-group {
+  padding-bottom: 0px !important;
 }
 </style>

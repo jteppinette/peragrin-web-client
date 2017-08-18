@@ -16,7 +16,10 @@
           <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
           <v-marker :lat-lng="{'lat': organization.lat, 'lng': organization.lon}" :icon="organization.icon"></v-marker>
         </v-map>
-        <v-card-actions><v-btn flat :to="`/organizations/${organization.id}`">Manage</v-btn></v-card-actions>
+        <v-card-actions class="secondary">
+          <v-spacer></v-spacer>
+          <v-btn flat class="white--text" :to="`/organizations/${organization.id}`">Manage</v-btn>
+        </v-card-actions>
       </v-card>
 
     </v-flex>

@@ -8,7 +8,7 @@
     <v-btn type="submit" class="white--text" block primary :error="error" :loading="submitting" :disabled="!password || !confirm || password !== confirm">Set Password</v-btn>
 
     <v-snackbar v-model="error" error>{{ msg }}
-      <v-btn flat @click.native="error = false" class="white--text">Close</v-btn>
+      <v-btn flat @click="error = false" class="white--text">Close</v-btn>
     </v-snackbar>
 
   </form>

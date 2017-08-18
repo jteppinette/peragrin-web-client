@@ -2,9 +2,9 @@
 <div>
 
   <v-toolbar flat>
-    <v-text-field solo prepend-icon="search" :label="!search ? 'Search' : ''" v-model="search" class="ma-2 elevation-0"></v-text-field>
+    <v-text-field solo prepend-icon="search" v-model="search" class="ma-2 elevation-0"></v-text-field>
     <v-spacer></v-spacer>
-    <v-btn v-if="isAdministrator" @click.native.stop="dialogs.organizationsCreateUpdate = !dialogs.organizationsCreateUpdate" fab absolute top right><v-icon>add</v-icon></v-btn>
+    <v-btn v-if="isAdministrator" @click.stop="dialogs.organizationsCreateUpdate = !dialogs.organizationsCreateUpdate" fab absolute top right><v-icon>add</v-icon></v-btn>
     <organizations-create-update v-model="dialogs.organizationsCreateUpdate" :communityID="community.id" @created="o => initializeOrganizations()"></organizations-create-update>
   </v-toolbar>
 

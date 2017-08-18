@@ -30,7 +30,7 @@
           <organizations-hours v-model="organization.hours"></organizations-hours>
         </v-flex>
       </v-layout>
-      <v-btn primary @click.native="createOrganization" :error="error.organization" :loading="submitting.organization" class="white--text">Setup Business</v-btn>
+      <v-btn primary @click="createOrganization" :error="error.organization" :loading="submitting.organization" class="white--text">Setup Business</v-btn>
     </v-stepper-content>
 
     <v-stepper-content step="2">
@@ -44,7 +44,7 @@
           <v-marker :icon="icon" v-on:l-move="moveCommunity" :lat-lng="[community.lat, community.lon]" :draggable="true"></v-marker>
         </v-map>
 
-        <v-btn primary @click.native="createCommunity" :error="error.community" :loading="submitting.community" class="white--text">Create Community</v-btn>
+        <v-btn primary @click="createCommunity" :error="error.community" :loading="submitting.community" class="white--text">Create Community</v-btn>
       </v-container>
     </v-stepper-content>
 
@@ -74,8 +74,8 @@
           </v-data-table>
           <v-card-actions class="secondary">
             <v-spacer></v-spacer>
-            <v-btn flat class="white--text" @click.native="operators = undefined">Cancel</v-btn>
-            <v-btn outline class="white--text" @click.native="addOperators" :error="error.operators" :loading="submitting.operators" type="submit">Add Operators</v-btn>
+            <v-btn flat class="white--text" @click="operators = undefined">Cancel</v-btn>
+            <v-btn outline class="white--text" @click="addOperators" :error="error.operators" :loading="submitting.operators" type="submit">Add Operators</v-btn>
           </v-card-actions>
         </v-card>
 

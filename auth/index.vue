@@ -15,7 +15,6 @@
 .auth {
   height: 100vh;
   width: 100vw;
-  background-color: white;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -29,7 +28,9 @@
   }
 
   .container {
-    height: auto;
+    height: 100% !important;
+    min-height: initial !important;
+    background-color: white;
     max-width: 500px;
     overflow: hidden;
     padding: 0px;
