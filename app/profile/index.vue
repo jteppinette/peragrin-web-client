@@ -81,8 +81,8 @@
         <v-list v-if="redemptions && redemptions.length" two-line>
           <v-list-tile v-for="redemption in redemptions" :key="redemption.consumedAt">
             <v-list-tile-content>
-              <v-list-tile-title>{{ redemption.promotionID }}</v-list-tile-title>
-              <v-list-tile-sub-title>{{ redemption.consumedAt }}</v-list-tile-sub-title>
+              <v-list-tile-title>{{ redemption.promotion.name }}</v-list-tile-title>
+              <v-list-tile-sub-title>{{ redemption.consumedAt | moment("from") }}</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
