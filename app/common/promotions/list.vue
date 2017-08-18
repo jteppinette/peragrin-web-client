@@ -1,12 +1,14 @@
 <template>
-<div>
+<div style="position: relative">
 
-  <v-card-text style="position: relative">
-    <v-btn v-if="isAdministrator" @click.stop="dialogs.promotionsCreate = !dialogs.promotionsCreate" fab absolute top right><v-icon>add</v-icon></v-btn>
-    <promotions-create-update v-model="dialogs.promotionsCreate" :organizationID="organizationID" @created="initializePromotions"></promotions-create-update>
+  <v-btn v-if="communities.length && isAdministrator && initialized" @click.stop="dialogs.promotionsCreate = !dialogs.promotionsCreate" fab absolute top right><v-icon>add</v-icon></v-btn>
+  <promotions-create-update v-model="dialogs.promotionsCreate" :organizationID="organizationID" @created="initializePromotions"></promotions-create-update>
+
+  <v-card-text v-if="!communities.length && initialized" class="secondary expose">
+    <p>Managing promotions requires that this organization be a member of a community. View the community panel below for more information.</p>
   </v-card-text>
 
-  <v-data-table :items="promotions" :headers="headers" class="no-limit-select">
+  <v-data-table v-if="communities.length && initialized" :items="promotions" :headers="headers" class="no-limit-select">
     <template slot="items" scope="props">
       <td class="text-xs-right">{{ props.item.name }}</td>
       <td class="text-xs-right">{{ props.item.redemptions || '0' }}</td>
