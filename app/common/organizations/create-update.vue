@@ -7,6 +7,8 @@
       <v-card-text>
         <organizations-form v-model="data" @geo-hit="() => zoom = 15" @geo-miss="() => zoom = 6"></organizations-form>
 
+        <v-checkbox v-if="communityID && account.isSuper" label="Is Community Administrator?" v-model="data.isAdministrator"></v-checkbox>
+
         <p>If necessary, move the marker to adjust the organization's icon location on the map.</p>
         <v-map v-if="value && data.lon && data.lat" :zoom="zoom" :center="[data.lat, data.lon]" @l-zoomend="({target: {_zoom: v}}) => zoom = v">
           <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
@@ -14,6 +16,7 @@
         </v-map>
 
         <organizations-hours v-model="data.hours"></organizations-hours>
+
       </v-card-text>
 
       <v-card-actions class="secondary">
@@ -44,6 +47,9 @@ export default {
   computed: {
     icon () {
       return this.data.category ? MARKERS[this.data.category] : undefined;
+    },
+    account () {
+      return this.$store.state.account;
     }
   },
   methods: {create, update, move: _.debounce(move, 500)},
@@ -66,7 +72,8 @@ function initialize() {
     phone: '',
     website: '',
     hours: [{weekday: 1}, {weekday: 2}, {weekday: 3}, {weekday: 4}, {weekday: 5}],
-    category: ''
+    category: '',
+    isAdministrator: false
   };
   this.zoom = this.organization ? 15 : 6;
 }
