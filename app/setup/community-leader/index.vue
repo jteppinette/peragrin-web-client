@@ -66,16 +66,20 @@
 
         <v-card-text class="secondary expose">
           <p>Now that you have defined your managing organization. You will now need to define the <strong>name and map settings for your community</strong>.</p>
-          <p>Use the map marker and zoom controls to set the initial center point and zoom level for your community map. This should be set so that <strong>all businesses in your community are visible at that zoom level and the marker is at the center focal point of your community</strong>. e.g. a city marker or court house</p>
         </v-card-text>
 
         <v-card-text>
           <v-text-field v-model="community.name" type="text" label="Name"></v-text-field>
-          <v-map v-if="step == 2" :zoom="community.zoom" :center="[community.lat, community.lon]" v-on:l-zoomend="({target: {_zoom: v}}) => community.zoom = v">
-            <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
-            <v-marker :icon="icon" v-on:l-move="moveCommunity" :lat-lng="[community.lat, community.lon]" :draggable="true"></v-marker>
-          </v-map>
         </v-card-text>
+
+        <v-card-text class="secondary">
+          <p>Use the map marker and zoom controls to set the initial center point and zoom level for your community map. This should be set so that <strong>all businesses in your community are visible at that zoom level and the marker is at the center focal point of your community</strong>. e.g. a city marker or court house</p>
+        </v-card-text>
+
+        <v-map v-if="step == 2" :zoom="community.zoom" :center="[community.lat, community.lon]" v-on:l-zoomend="({target: {_zoom: v}}) => community.zoom = v">
+          <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+          <v-marker :icon="icon" v-on:l-move="moveCommunity" :lat-lng="[community.lat, community.lon]" :draggable="true"></v-marker>
+        </v-map>
 
         <v-snackbar v-model="error.community" error>{{ msg.community }}
           <v-btn flat @click="error.community = false" class="white--text">close</v-btn>
@@ -254,6 +258,6 @@ function moveCommunity({latlng}) {
 
 <style scoped lang="stylus">
 .vue2leaflet-map {
-  height: 150px;
+  height: 250px;
 }
 </style>

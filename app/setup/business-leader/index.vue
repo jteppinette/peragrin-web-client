@@ -178,6 +178,6 @@ function move({latlng}) {
 
 <style scoped lang="stylus">
 .vue2leaflet-map {
-  height: 150px;
+  height: 250px;
 }
 </style>
