@@ -9,7 +9,7 @@
       </v-card-text>
 
       <v-card-text class="secondary">
-        <p>Use the map marker and zoom controls to update the initial center point and zoom level for your community map. This should be set so that <strong>all businesses in your community are visible at that zoom level and the marker is at the center focal point of your community</strong>. e.g. a city marker or court house</p>
+        <p>Use the map marker and zoom controls to set the initial center point and zoom level for your community map. This should be set so that <strong>all businesses in your community are visible at that zoom level and the marker is at the center focal point of your community</strong>. e.g. a city marker or court house</p>
       </v-card-text>
 
       <v-map v-if="value && data.lon && data.lat" :zoom="data.zoom" :center="[data.lat, data.lon]" @l-zoomend="({target: {_zoom: v}}) => data.zoom = v">
@@ -69,7 +69,12 @@ function update() {
 }
 
 function create() {
-  console.log("NOT IMPLEMENTED");
+  this.submitting = true;
+  return this.$http.post('/communities', this.data)
+    .then(({data: community}) => this.$emit('created', this.community = community))
+    .then(() => this.$emit('input', false))
+    .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'))
+    .then(() => this.submitting = false);
 }
 </script>
 

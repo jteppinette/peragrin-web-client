@@ -23,7 +23,13 @@
     <v-flex xs12>
       <v-card>
         <v-card-title class="primary title">Super Administrator</v-card-title>
-        <v-card-text class="secondary">You are currently authenticated as a super administrator. This gives you access to manage all communities and organization in Peragrin.</v-card-text>
+
+        <v-card-text class="secondary" style="position: relative">
+          <p>You are currently authenticated as a super administrator. This gives you access to manage all communities and organization in Peragrin.</p>
+          <v-btn @click.stop="dialogs.communitiesCreateUpdate = !dialogs.communitiesCreateUpdate" fab absolute top right><v-icon>add</v-icon></v-btn>
+          <communities-create-update v-model="dialogs.communitiesCreateUpdate" @created="c => initializeCommunities()"></communities-create-update>
+        </v-card-text>
+
         <v-data-table :items="communities" :headers="headers" class="no-limit-select">
           <template slot="items" scope="props">
             <td class="text-xs-right"><router-link :to="`/communities/${props.item.id}`">{{ props.item.name }}</router-link></td>
@@ -38,14 +44,19 @@
 
 <script>
 import communitiesMap from 'common/communities/map';
+import communitiesCreateUpdate from 'common/communities/create-update';
 
 const headers = [
   {text: 'Name', value: 'name', sortable: true},
 ];
 
+let dialogs = {
+  communitiesCreateUpdate: false
+};
+
 export default {
-  data: () => ({headers, communities: [], operating: []}),
-  components: {communitiesMap},
+  data: () => ({headers, communities: [], operating: [], dialogs}),
+  components: {communitiesMap, communitiesCreateUpdate},
   computed: {
     account () {
       return this.$store.state.account;
