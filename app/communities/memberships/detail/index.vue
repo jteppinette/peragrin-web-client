@@ -40,7 +40,7 @@
             <td class="text-xs-right">{{ props.item.firstName }}</td>
             <td class="text-xs-right">{{ props.item.lastName }}</td>
             <td v-if="isAdministrator" class="text-xs-right" style="white-space: nowrap">
-              <v-btn @click="dialogs.accountsDelete[props.item.id] = !dialogs.accountsDelete[props.item.id]" secondary class="ma-0"><v-icon left class="white--text">remove</v-icon>Remove</v-btn>
+              <v-btn @click.stop="dialogs.accountsDelete[props.item.id] = !dialogs.accountsDelete[props.item.id]" secondary class="ma-0"><v-icon left class="white--text">remove</v-icon>Remove</v-btn>
               <v-btn @click.stop="resendResetPasswordEmail(props.item.id)" secondary class="ma-0"><v-icon left class="white--text">send</v-icon>Resend Reset Password Email</v-btn>
 
               <confirm-dialog v-model="dialogs.accountsDelete[props.item.id]" @confirmed="removeAccount(props.item.id)">Are you sure you want to remove this account, {{ props.item.email }}, from the {{ membership.name }} membership?</confirm-dialog>
