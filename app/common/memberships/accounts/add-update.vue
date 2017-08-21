@@ -50,11 +50,13 @@ export default {
       return date;
     }
   },
+  watch: {value: initialize},
   mounted: initialize,
-  methods: {update, add, search: _.debounce(search, 250)}
+  methods: {initialize, update, add, search: _.debounce(search, 250)}
 };
 
 function initialize() {
+  this.exists = false;
   this.data = this.account ? JSON.parse(JSON.stringify(this.account)) : {
     email: '',
     firstName: '',
