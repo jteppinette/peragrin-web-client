@@ -34,7 +34,7 @@ export default {
 
 function register() {
   this.submitting = true;
-  return this.$http.post('/auth/register', {email: this.email, firstName: this.firstName, lastName: this.lastName})
+  return this.$http.post('/auth/register', {email: this.email, firstName: this.firstName, lastName: this.lastName}, {headers: {'X-Activation-Location': this.$route.query['activation-location'] || ''}})
     .then(() => this.success = true)
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'))
     .then(() => this.submitting = false);
