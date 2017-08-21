@@ -17,12 +17,12 @@
         <v-card-text class="secondary" style="position: relative">
           <v-speed-dial v-if="isAdministrator" absolute bottom right direction="bottom">
             <v-btn slot="activator" fab><v-icon>apps</v-icon></v-btn>
-            <v-btn fab small primary @click.stop="dialogs.membershipsCreateUpdate = !dialogs.membershipsCreateUpdate"><v-icon class="white--text">edit</v-icon></v-btn>
-            <v-btn fab small primary @click.stop="dialogs.membershipsAccountsAdd = !dialogs.membershipsAccountsAdd"><v-icon class="white--text">add</v-icon></v-btn>
+            <v-btn fab small primary @click.stop="dialogs.membershipsUpdate = !dialogs.membershipsUpdate"><v-icon class="white--text">edit</v-icon></v-btn>
+            <v-btn fab small primary @click.stop="dialogs.accountsAdd = !dialogs.accountsAdd"><v-icon class="white--text">add</v-icon></v-btn>
             <v-btn fab small primary @click.stop="dialogs.membershipsDelete = !dialogs.membershipsDelete"><v-icon class="white--text">delete</v-icon></v-btn>
           </v-speed-dial>
-          <memberships-create-update v-model="dialogs.membershipsCreateUpdate" :membership="membership" @updated="m => membership = m"></memberships-create-update>
-          <memberships-accounts-add v-model="dialogs.membershipsAccountsAdd" :membership="membership" @success="initializeAccounts"></memberships-accounts-add>
+          <memberships-create-update v-model="dialogs.membershipsUpdate" :membership="membership" @updated="m => membership = m"></memberships-create-update>
+          <memberships-accounts-add-update v-model="dialogs.accountsAdd" :membership="membership" @added="initializeAccounts"></memberships-accounts-add-update>
           <confirm-dialog v-model="dialogs.membershipsDelete" @confirmed="deleteMembership">Are you sure you want to delete the membership: {{ membership.name }} ?</confirm-dialog>
           <span>{{ membership.description }}</span>
         </v-card-text>
@@ -41,9 +41,11 @@
             <td class="text-xs-right">{{ props.item.lastName }}</td>
             <td class="text-xs-right">{{ props.item.expiration | moment("from") }}</td>
             <td v-if="isAdministrator" class="text-xs-right" style="white-space: nowrap">
+              <v-btn @click.stop="dialogs.accountsUpdate[props.item.id] = !dialogs.accountsUpdate[props.item.id]" secondary class="ma-0"><v-icon left class="white--text">edit</v-icon>Update</v-btn>
               <v-btn @click.stop="dialogs.accountsDelete[props.item.id] = !dialogs.accountsDelete[props.item.id]" secondary class="ma-0"><v-icon left class="white--text">remove</v-icon>Remove</v-btn>
               <v-btn @click.stop="resendResetPasswordEmail(props.item.id)" secondary class="ma-0"><v-icon left class="white--text">send</v-icon>Resend Reset Password Email</v-btn>
 
+              <memberships-accounts-add-update v-model="dialogs.accountsUpdate[props.item.id]" :membership="membership" :account="props.item" @updated="initializeAccounts" :key="props.item.id"></memberships-accounts-add-update>
               <confirm-dialog v-model="dialogs.accountsDelete[props.item.id]" @confirmed="removeAccount(props.item.id)">Are you sure you want to remove this account, {{ props.item.email }}, from the {{ membership.name }} membership?</confirm-dialog>
             </td>
 
@@ -63,14 +65,15 @@
 </template>
 
 <script>
-import membershipsAccountsAdd from 'common/memberships/accounts/add';
+import membershipsAccountsAddUpdate from 'common/memberships/accounts/add-update';
 import membershipsCreateUpdate from 'common/memberships/create-update';
 import confirmDialog from 'common/confirm-dialog';
 
 let dialogs = {
-  membershipsCreateUpdate: false,
-  membershipsAccountsAdd: false,
+  membershipsUpdate: false,
   membershipsDelete: false,
+  accountsAdd: false,
+  accountsUpdate: {},
   accountsDelete: {}
 };
 
@@ -94,7 +97,7 @@ export default {
       return this.$store.state.account || (this.$store.state.communities.indexOf(this.communityID) >= 0);
     }
   },
-  components: {membershipsCreateUpdate, membershipsAccountsAdd, confirmDialog},
+  components: {membershipsCreateUpdate, membershipsAccountsAddUpdate, confirmDialog},
   methods: {initializeCommunity, initializeMembership, initializeAccounts, deleteMembership, removeAccount, resendResetPasswordEmail}
 };
 
@@ -119,7 +122,8 @@ function initializeAccounts() {
   return this.$http.get(`/memberships/${this.membershipID}/accounts`)
     .then(({data: accounts}) => this.accounts = accounts)
     .then(() => this.snackbars.resendResetPasswordEmail = this.accounts.reduce((obj, a) => ({...obj, [a.id]: false}), {}))
-    .then(() => this.dialogs.accountsDelete = this.accounts.reduce((obj, a) => ({...obj, [a.id]: false}), {}));
+    .then(() => this.dialogs.accountsDelete = this.accounts.reduce((obj, a) => ({...obj, [a.id]: false}), {}))
+    .then(() => this.dialogs.accountsUpdate = this.accounts.reduce((obj, a) => ({...obj, [a.id]: false}), {}));
 }
 
 function deleteMembership() {
