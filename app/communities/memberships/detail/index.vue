@@ -39,6 +39,7 @@
             <td class="text-xs-right">{{ props.item.email }}</td>
             <td class="text-xs-right">{{ props.item.firstName }}</td>
             <td class="text-xs-right">{{ props.item.lastName }}</td>
+            <td class="text-xs-right">{{ props.item.expiration | moment("from") }}</td>
             <td v-if="isAdministrator" class="text-xs-right" style="white-space: nowrap">
               <v-btn @click.stop="dialogs.accountsDelete[props.item.id] = !dialogs.accountsDelete[props.item.id]" secondary class="ma-0"><v-icon left class="white--text">remove</v-icon>Remove</v-btn>
               <v-btn @click.stop="resendResetPasswordEmail(props.item.id)" secondary class="ma-0"><v-icon left class="white--text">send</v-icon>Resend Reset Password Email</v-btn>
@@ -80,7 +81,8 @@ let snackbars = {
 const headers = [
   {text: 'Email', value: 'email', sortable: true},
   {text: 'First Name', value: 'firstName', sortable: true},
-  {text: 'Last Name', value: 'lastName', sortable: true}
+  {text: 'Last Name', value: 'lastName', sortable: true},
+  {text: 'Expiration', value: 'expiration', sortable: true}
 ];
 
 export default {

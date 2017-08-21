@@ -1,5 +1,5 @@
 <template>
-<v-dialog v-model="value" width="400px" scrollable persistent>
+<v-dialog v-model="value" width="600px" scrollable persistent>
   <v-card>
     <v-card-title class="primary title">Add {{ membership.name }} Account</v-card-title>
     <form @submit.prevent="add" novalidate>
@@ -8,6 +8,11 @@
         <v-text-field v-model="account.email" @keyup="search" :error="error" label="Email"></v-text-field>
         <v-text-field v-model="account.firstName" :disabled="exists" :error="error" label="First Name"></v-text-field>
         <v-text-field v-model="account.lastName" :disabled="exists" :error="error" label="Last Name"></v-text-field>
+
+        <v-menu lazy style="width: 100%">
+          <v-text-field slot="activator" label="Expiration" :value="expiration | moment('from')" readonly></v-text-field>
+          <v-date-picker v-model="expiration" autosave></v-date-picker>
+        </v-menu>
 
         <p v-if="exists" class="subheading">This pre-existing account will not receive an activation email after being added to this membership.</p>
         <p v-else class="subheading">Upon creation, this account will receive an email to activate their account.</p>
@@ -30,20 +35,24 @@
 <script>
 import _ from 'lodash';
 
+let expiration = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+
 let account = {
   email: '',
   firstName: '',
-  lastName: ''
+  lastName: '',
+  expiration: null
 };
 
 export default {
   props: ['membership', 'value'],
-  data: () => ({submitting: false, msg: '', error: false, account, exists: false}),
+  data: () => ({expiration, submitting: false, msg: '', error: false, account, exists: false}),
   methods: {add, search: _.debounce(search, 250)}
 };
 
 function add() {
   this.submitting = true;
+  this.account.expiration = expiration.toISOString();
   return this.$http.post(`/memberships/${this.membership.id}/accounts`, this.account)
     .then(({data: account}) => this.$emit('success', account))
     .then(() => this.$emit('input', false))

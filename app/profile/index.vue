@@ -63,7 +63,7 @@
             <v-list-tile v-for="membership in community.memberships" :key="membership.id">
               <v-list-tile-content>
                 <v-list-tile-title>{{ membership.name }}</v-list-tile-title>
-                <v-list-tile-sub-title>{{ membership.description }}</v-list-tile-sub-title>
+                <v-list-tile-sub-title>Expires {{ membership.expiration | moment('from') }}</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
           </template>
