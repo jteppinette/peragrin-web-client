@@ -1,6 +1,6 @@
 <template>
 <v-dialog v-model="value" width="800px" scrollable persistent>
-  <v-card>
+  <v-card v-if="value">
     <v-card-title class="primary title">{{ action.name }} Community</v-card-title>
     <form @submit.prevent="action.method" novalidate>
 
@@ -38,14 +38,25 @@ import _ from 'lodash';
 
 export default {
   props: ['community', 'value'],
-  data: () => ({icon: MARKERS['Community Leader'], submitting: false, msg: '', error: false, action: {}, data: {}}),
-  methods: {create, update, move: _.debounce(move, 500)},
-  mounted: initialize
+  data: () => ({icon: MARKERS['Community Leader'], submitting: false, msg: '', error: false, data: {}}),
+  methods: {initialize, create, update, move: _.debounce(move, 500)},
+  computed: {
+    action () {
+      return this.community ? {name: 'Update', method: this.update, icon: 'edit'} : {name: 'Create', method: this.create, icon: 'add'};
+    }
+  },
+  watch: {
+    value (v) {
+      if (v) this.initialize();
+    }
+  }
 };
 
 function initialize() {
   let georgia = STATES.find(s => s.code == 'GA');
-  this.action = this.community ? {name: 'Update', method: this.update, icon: 'edit'} : {name: 'Create', method: this.create, icon: 'add'};
+  this.submitting = false;
+  this.msg = '';
+  this.error = false;
   this.data = this.community ? JSON.parse(JSON.stringify(this.community)) : {
     name: '',
     lon: georgia.lon,

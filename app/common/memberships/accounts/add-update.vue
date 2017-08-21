@@ -1,6 +1,6 @@
 <template>
 <v-dialog v-model="value" width="600px" scrollable persistent>
-  <v-card>
+  <v-card v-if="value">
     <v-card-title class="primary title">{{ action.name }} {{ membership.name }} Account</v-card-title>
     <form @submit.prevent="action.method" novalidate>
 
@@ -50,12 +50,17 @@ export default {
       return date;
     }
   },
-  watch: {value: initialize},
-  mounted: initialize,
+  watch: {
+    value (v) {
+      if (v) this.initialize();
+    }
+  },
   methods: {initialize, update, add, search: _.debounce(search, 250)}
 };
 
 function initialize() {
+  this.submitting = false;
+  this.msg = false;
   this.exists = false;
   this.data = this.account ? JSON.parse(JSON.stringify(this.account)) : {
     email: '',

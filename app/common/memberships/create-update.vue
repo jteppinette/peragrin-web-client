@@ -1,6 +1,6 @@
 <template>
 <v-dialog v-model="value" width="400px" scrollable persistent>
-  <v-card>
+  <v-card v-if="value">
     <v-card-title class="primary title">{{ action.name }} Membership</v-card-title>
     <form @submit.prevent="action.method" novalidate>
 
@@ -27,17 +27,26 @@
 
 export default {
   props: ['membership', 'communityID', 'value'],
-  data: () => ({submitting: false, msg: '', error: false}),
+  data: () => ({submitting: false, msg: '', error: false, data: {}}),
   computed: {
     action () {
       return this.membership ? {name: 'Update', method: this.update, icon: 'edit'} : {name: 'Create', method: this.create, icon: 'add'};
-    },
-    data () {
-      return this.membership ? JSON.parse(JSON.stringify(this.membership)) : {name: '', description: ''};
     }
   },
-  methods: {create, update}
+  watch: {
+    value (v) {
+      if (v) this.initialize();
+    }
+  },
+  methods: {initialize, create, update}
 };
+
+function initialize() {
+  this.submitting = false;
+  this.msg = '';
+  this.error = false;
+  this.data = this.membership ? JSON.parse(JSON.stringify(this.membership)) : {name: '', description: ''};
+}
 
 function update() {
   this.submitting = true;

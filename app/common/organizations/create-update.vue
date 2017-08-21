@@ -1,6 +1,6 @@
 <template>
 <v-dialog v-model="value" width="800px" scrollable persistent>
-  <v-card>
+  <v-card v-if="value">
     <v-card-title class="primary title">{{ action.name }} Organization</v-card-title>
     <form @submit.prevent="action.method" novalidate>
 
@@ -42,7 +42,7 @@ import _ from 'lodash';
 
 export default {
   props: ['organization', 'communityID', 'value'],
-  data: () => ({zoom: 6, submitting: false, msg: '', error: false, action: {}, data: {}}),
+  data: () => ({zoom: 6, submitting: false, msg: '', error: false, data: {}}),
   components: {organizationsForm, organizationsHours},
   computed: {
     icon () {
@@ -50,15 +50,24 @@ export default {
     },
     account () {
       return this.$store.state.account;
+    },
+    action () {
+      return this.organization ? {name: 'Update', method: this.update, icon: 'edit'} : {name: 'Create', method: this.create, icon: 'add'};
     }
   },
-  methods: {create, update, move: _.debounce(move, 500)},
-  mounted: initialize
+  watch: {
+    value (v) {
+      if (v) this.initialize();
+    }
+  },
+  methods: {initialize, create, update, move: _.debounce(move, 500)},
 };
 
 function initialize() {
   let georgia = STATES.find(s => s.code == 'GA');
-  this.action = this.organization ? {name: 'Update', method: this.update, icon: 'edit'} : {name: 'Create', method: this.create, icon: 'add'};
+  this.submitting = false;
+  this.msg = '';
+  this.error = false;
   this.data = this.organization ? JSON.parse(JSON.stringify(this.organization)) : {
     name: '',
     street: '',
