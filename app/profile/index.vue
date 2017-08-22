@@ -59,7 +59,7 @@
         <v-card-title class="primary title">Memberships</v-card-title>
         <v-list v-if="communities && communities.length" two-line>
           <template v-for="community in communities">
-            <v-subheader>{{ community.name }}</v-subheader>
+            <v-subheader>{{ community.name }} <v-btn icon :to="`/map?community=${community.name}`"><v-icon class="secondary--text">map</v-icon></v-btn></v-subheader>
             <v-list-tile v-for="membership in community.memberships" :key="membership.id">
               <v-list-tile-content>
                 <v-list-tile-title>{{ membership.name }}
