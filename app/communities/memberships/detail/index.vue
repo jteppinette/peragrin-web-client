@@ -11,7 +11,7 @@
     <v-flex xs12>
       <v-card>
 
-        <v-card-title primary-title class="primary headline">{{ membership.name }}</v-card-title>
+        <v-card-title primary-title class="primary headline">{{ membership.name }}<v-spacer></v-spacer>${{ membership.price }}</v-card-title>
 
         <!-- SPEED DIAL -->
         <v-card-text class="secondary" style="position: relative">

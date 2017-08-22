@@ -9,7 +9,9 @@
     <v-list two-line>
       <v-list-tile :to="isAdministrator ? `/communities/${communityID}/memberships/${membership.id}` : undefined" v-for="membership in memberships" :key="membership.id" v-if="membership">
         <v-list-tile-content>
-          <v-list-tile-title avatar>{{ membership.name }}</v-list-tile-title>
+          <v-list-tile-title avatar>{{ membership.name }}
+            <span class="grey--text text--lighten-1">${{ membership.price }}</span>
+          </v-list-tile-title>
           <v-list-tile-sub-title>{{ membership.description }}</v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action v-if="isAdministrator">

@@ -7,6 +7,7 @@
       <v-card-text>
         <v-text-field v-model="data.name" :error="error" label="Name"></v-text-field>
         <v-text-field v-model="data.description" :error="error" label="Description" rows="1" multi-line></v-text-field>
+        <v-text-field :value="data.price" @input="v => data.price = Number(v)" prefix="$" type="number" :error="error" label="Price"></v-text-field>
       </v-card-text>
 
       <v-card-actions class="secondary">
@@ -45,7 +46,7 @@ function initialize() {
   this.submitting = false;
   this.msg = '';
   this.error = false;
-  this.data = this.membership ? JSON.parse(JSON.stringify(this.membership)) : {name: '', description: ''};
+  this.data = this.membership ? JSON.parse(JSON.stringify(this.membership)) : {name: '', description: '', price: 10};
 }
 
 function update() {
