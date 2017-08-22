@@ -2,7 +2,7 @@
 <div style="position: relative">
 
   <v-btn v-if="communities.length && isAdministrator && initialized" @click.stop="dialogs.promotionsCreate = !dialogs.promotionsCreate" fab absolute top right><v-icon>add</v-icon></v-btn>
-  <promotions-create-update v-model="dialogs.promotionsCreate" :organizationID="organizationID" @created="initializePromotions"></promotions-create-update>
+  <promotions-create-update v-model="dialogs.promotionsCreate" :communities="communities" :organizationID="organizationID" @created="initializePromotions"></promotions-create-update>
 
   <v-card-text v-if="!communities.length && initialized" class="secondary expose">
     <p>Managing promotions requires that this organization be a member of a community. View the community panel below for more information.</p>
@@ -15,15 +15,13 @@
       <td class="text-xs-right">{{ props.item.description }}</td>
       <td class="text-xs-right">{{ props.item.exclusions }}</td>
       <td class="text-xs-right">{{ props.item.expiration | moment("from", true) }}</td>
-      <td class="text-xs-right">
-        <span v-if="initialized && props.item.membershipID">{{ membershipsByID[props.item.membershipID].community.name }} ({{ membershipsByID[props.item.membershipID].name }})</span>
-      </td>
+      <td class="text-xs-right"><v-chip v-for="id in props.item.communities" :key="id" v-if="communitiesByID[id]">{{ communitiesByID[id].name }}</v-chip></td>
       <td class="text-xs-right"><v-icon v-if="props.item.isSingleUse">check</v-icon></td>
       <td class="text-xs-right" style="white-space: nowrap">
         <v-btn v-if="isAdministrator" @click.stop="dialogs.promotionsDelete[props.item.id] = !dialogs.promotionsDelete[props.item.id]" secondary class="ma-0"><v-icon left class="white--text">delete</v-icon>Delete</v-btn>
         <v-btn v-if="isAdministrator" @click.stop="dialogs.promotionsUpdate[props.item.id] = !dialogs.promotionsUpdate[props.item.id]" secondary class="ma-0"><v-icon left class="white--text">edit</v-icon>Update</v-btn>
 
-        <promotions-create-update v-model="dialogs.promotionsUpdate[props.item.id]" :promotion="props.item" :organizationID="organizationID" @updated="initializePromotions" :key="props.item.id"></promotions-create-update>
+        <promotions-create-update v-model="dialogs.promotionsUpdate[props.item.id]" :communities="communities" :promotion="props.item" :organizationID="organizationID" @updated="initializePromotions" :key="props.item.id"></promotions-create-update>
         <confirm-dialog v-model="dialogs.promotionsDelete[props.item.id]" @confirmed="del(props.item)">Are you sure you want to delete the promotion: {{ props.item.name }} ?</confirm-dialog>
       </td>
     </template>
@@ -42,7 +40,7 @@ const headers = [
   {text: 'Description', value: 'description', sortable: false},
   {text: 'Exclusions', value: 'exclusions', sortable: false},
   {text: 'Expiration', value: 'expiration', sortable: false},
-  {text: 'Membership', value: 'membershipID', sortable: false},
+  {text: 'Community Membership Requirements', value: 'communities', sortable: false},
   {text: 'Is Single Use', value: 'isSingleUse', sortable: false},
   {sortable: false}
 ];
@@ -55,7 +53,7 @@ let dialogs = {
 
 export default {
   props: ['organizationID'],
-  data: () => ({communities: [], memberships: [], promotions: [], headers, dialogs, error: false, msg: '', initialized: false}),
+  data: () => ({communities: [], promotions: [], headers, dialogs, error: false, msg: '', initialized: false}),
   components: {promotionsCreateUpdate, confirmDialog},
   computed: {
     isAdministrator () {
@@ -64,11 +62,13 @@ export default {
       let isAdministrator = this.communities.some(c => this.$store.state.communities.indexOf(c.id) >= 0);
       return isSuper || isOwner || isAdministrator;
     },
-    membershipsByID () {
-      return this.memberships.reduce((obj, membership) => ({...obj, [membership.id]: membership}), {});
+    communitiesByID () {
+      return this.communities.reduce((obj, c) => {
+        return {...obj, [c.id]: c};
+      }, {});
     }
   },
-  methods: {del, initializePromotions, initializeCommunities, initializeMemberships},
+  methods: {del, initializePromotions, initializeCommunities},
   mounted: initialize
 };
 
@@ -89,14 +89,6 @@ function initializePromotions() {
 function initializeCommunities() {
   return this.$http.get(`/organizations/${this.organizationID}/communities`)
     .then(({data: communities}) => this.communities = communities);
-}
-
-function initializeMemberships() {
-  return Promise.all(this.communities.map(community => {
-    return this.$http.get(`/communities/${community.id}/memberships`)
-      .then(({data: memberships}) => memberships.map(m => ({...m, community})))
-      .then(memberships => this.memberships.push(...memberships));
-  }));
 }
 
 function del(promotion) {

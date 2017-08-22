@@ -9,8 +9,8 @@
         <v-text-field v-model="data.description" :error="error" label="Description" rows="1" multi-line></v-text-field>
         <v-text-field v-model="data.exclusions" :error="error" label="Exclusions" rows="1" multi-line></v-text-field>
 
-        <v-subheader v-if="memberships.length" class="pa-0 pt-2" style="height: 0px">Required Community Membership</v-subheader>
-        <v-select v-if="memberships.length" :items="memberships" v-model="data.membershipID" itemText="name" itemValue="id" label="Membership" single-line auto></v-select>
+        <v-subheader v-if="communities.length" class="pa-0 pt-2" style="height: 0px">Required Community Memberships</v-subheader>
+        <v-select v-if="communities.length" :items="communities" v-model="data.communities" itemText="name" itemValue="id" label="Communities" multiple chips single-line></v-select>
       </v-card-text>
 
       <v-card-actions class="secondary">
@@ -29,9 +29,9 @@
 </template>
 <script>
 export default {
-  props: ['promotion', 'organizationID', 'value'],
-  data: () => ({submitting: false, msg: '', error: false, memberships: [], data: {}}),
-  methods: {initialize, create, update, initializeMemberships},
+  props: ['promotion', 'communities', 'organizationID', 'value'],
+  data: () => ({submitting: false, msg: '', error: false, data: {}}),
+  methods: {initialize, create, update},
   watch: {
     value (v) {
       if (v) this.initialize();
@@ -54,18 +54,6 @@ function initialize() {
     exclusions: '',
     membershipID: null
   };
-  return this.initializeMemberships();
-}
-
-function initializeMemberships() {
-  let that = this;
-  return this.$http.get(`/organizations/${this.organizationID}/communities`)
-    .then(({data: communities}) => Promise.all(communities.map(fn)))
-
-  function fn(community) {
-    return that.$http.get(`/communities/${community.id}/memberships`)
-      .then(({data: memberships}) => memberships.length ? that.memberships.push({header: community.name}, ...memberships) : undefined);
-  }
 }
 
 function create() {
