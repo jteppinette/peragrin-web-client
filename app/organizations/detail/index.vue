@@ -54,7 +54,7 @@
     <v-flex xs12 sm6 md4 v-if="initialized">
       <v-card>
         <v-card-title class="primary title">Communities</v-card-title>
-        <organization-communities-list :communities="communities" :is-administrator="isAdministrator"></organization-communities-list>
+        <organization-communities-list :organizationID="id" :communities="communities" :is-administrator="isAdministrator" @removed="initialize"></organization-communities-list>
       </v-card>
     </v-flex>
 
@@ -149,7 +149,7 @@ export default {
   },
   components: {confirmDialog, promotionsList, organizationCommunitiesList, organizationsDetails, organizationsCreateUpdate, organizationsOperatorsAdd, Dropzone},
   mounted: initialize,
-  methods: {removeOperator, uploadLogoSuccess, initializeOperators, initializeOrganization, initializeCommunities}
+  methods: {removeOperator, uploadLogoSuccess, initialize, initializeOperators, initializeOrganization, initializeCommunities}
 };
 
 function initialize() {
