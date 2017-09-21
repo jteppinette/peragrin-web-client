@@ -7,6 +7,8 @@
       <v-card-text>
         <v-subheader v-if="communities.length" class="pa-0 pt-2" style="height: 0px">Community</v-subheader>
         <v-select v-if="communities.length" return-object :items="communities" v-model="data" itemText="name" itemValue="id" label="Community" single-line></v-select>
+
+        <v-checkbox v-if="account && account.isSuper" label="Is Community Administrator?" v-model="isAdministrator"></v-checkbox>
       </v-card-text>
 
       <v-map v-if="data.lon && data.lat" :zoom="data.zoom" :center="[data.lat, data.lon]">
@@ -33,8 +35,13 @@ import {MARKERS} from 'common/categories';
 
 export default {
   props: ['organizationID', 'value'],
-  data: () => ({icon: MARKERS['Community Leader'], submitting: false, msg: '', error: false, data: {}, communities: []}),
+  data: () => ({icon: MARKERS['Community Leader'], submitting: false, msg: '', error: false, data: {}, communities: [], isAdministrator: false}),
   methods: {initialize, initializeCommunities, add},
+  computed: {
+    account () {
+      return this.$store.state.account;
+    }
+  },
   watch: {
     value (v) {
       if (v) this.initialize();
@@ -56,7 +63,7 @@ function initializeCommunities() {
 
 function add() {
   this.submitting = true;
-  return this.$http.post(`/organizations/${this.organizationID}/communities/${this.data.id}`)
+  return this.$http.post(`/organizations/${this.organizationID}/communities/${this.data.id}`, {isAdministrator: this.isAdministrator})
     .then(({data: account}) => this.$emit('success'))
     .then(() => this.$emit('input', false))
     .catch(({data}) => this.error = !!(this.msg = data && data.msg ? data.msg : 'unknown error'))
