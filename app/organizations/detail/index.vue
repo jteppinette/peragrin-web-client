@@ -39,11 +39,11 @@
   </v-layout>
 
   <!-- PROMOTIONS -->
-  <v-layout row wrap v-if="organization">
+  <v-layout row wrap v-if="organization && communities">
     <v-flex xs12>
       <v-card>
         <v-card-title class="primary title">Promotions</v-card-title>
-        <promotions-list :organizationID="id"></promotions-list>
+        <promotions-list :organizationID="id" :communities="communities"></promotions-list>
       </v-card>
     </v-flex>
   </v-layout>
@@ -54,7 +54,7 @@
     <v-flex xs12 sm6 md4 v-if="initialized">
       <v-card>
         <v-card-title class="primary title">Communities</v-card-title>
-        <organization-communities-list :organizationID="id" :communities="communities" :is-administrator="isAdministrator" @removed="initialize"></organization-communities-list>
+        <organization-communities-list :organizationID="id" :communities="communities" :is-administrator="isAdministrator" @added="initialize" @removed="initialize"></organization-communities-list>
       </v-card>
     </v-flex>
 

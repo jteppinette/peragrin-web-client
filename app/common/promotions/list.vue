@@ -52,8 +52,8 @@ let dialogs = {
 };
 
 export default {
-  props: ['organizationID'],
-  data: () => ({communities: [], promotions: [], headers, dialogs, error: false, msg: '', initialized: false}),
+  props: ['organizationID', 'communities'],
+  data: () => ({promotions: [], headers, dialogs, error: false, msg: '', initialized: false}),
   components: {promotionsCreateUpdate, confirmDialog},
   computed: {
     isAdministrator () {
@@ -68,15 +68,13 @@ export default {
       }, {});
     }
   },
-  methods: {del, initializePromotions, initializeCommunities},
+  methods: {del, initializePromotions},
   mounted: initialize
 };
 
 function initialize() {
-  return Promise.all([
-    this.initializePromotions(),
-    this.initializeCommunities().then(this.initializeMemberships)
-  ]).then(() => this.initialized = true);
+  return this.initializePromotions()
+    .then(() => this.initialized = true);
 }
 
 function initializePromotions() {
@@ -84,11 +82,6 @@ function initializePromotions() {
     .then(({data: promotions}) => this.promotions = promotions)
     .then(() => this.dialogs.promotionsUpdate = this.promotions.reduce((obj, p) => ({...obj, [p.id]: false}), {}))
     .then(() => this.dialogs.promotionsDelete = this.promotions.reduce((obj, p) => ({...obj, [p.id]: false}), {}))
-}
-
-function initializeCommunities() {
-  return this.$http.get(`/organizations/${this.organizationID}/communities`)
-    .then(({data: communities}) => this.communities = communities);
 }
 
 function del(promotion) {

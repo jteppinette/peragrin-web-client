@@ -1,5 +1,8 @@
 <template>
-<div>
+<div style="position: relative">
+
+  <v-btn v-if="isAdministrator" @click.stop="dialogs.addCommunity = !dialogs.addCommunity" fab absolute top right><v-icon>add</v-icon></v-btn>
+  <organizations-communities-add v-model="dialogs.addCommunity" :organizationID="organizationID" @success="() => $emit('added')"></organizations-communities-add>
 
   <template v-if="communities.length">
     <v-card-text class="secondary">Click a community below to view more detailed information.</v-card-text>
@@ -38,15 +41,17 @@
 
 <script>
 import confirmDialog from 'common/confirm-dialog';
+import organizationsCommunitiesAdd from 'common/organizations/communities/add';
 
 let dialogs = {
-  removeCommunity: {}
+  removeCommunity: {},
+  addCommunity: false
 };
 
 export default {
   data: () => ({dialogs}),
   props: ['organizationID', 'communities', 'isAdministrator'],
-  components: {confirmDialog},
+  components: {confirmDialog, organizationsCommunitiesAdd},
   mounted () {
       return this.dialogs.removeCommunity = this.communities.reduce((obj, c) => ({...obj, [c.id]: false}), {});
   },
