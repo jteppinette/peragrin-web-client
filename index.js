@@ -47,6 +47,7 @@ import organizationsDetail from 'organizations/detail';
 
 require('./assets/images/favicon-64.png');
 require('./assets/templates/operators.csv');
+require('./assets/templates/accounts.csv');
 
 const routes = [
     {path: '/', redirect: '/map'},

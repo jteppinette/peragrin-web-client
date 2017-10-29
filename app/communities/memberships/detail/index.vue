@@ -20,9 +20,11 @@
             <v-btn fab small primary @click.stop="dialogs.membershipsUpdate = !dialogs.membershipsUpdate"><v-icon class="white--text">edit</v-icon></v-btn>
             <v-btn fab small primary @click.stop="dialogs.accountsAdd = !dialogs.accountsAdd"><v-icon class="white--text">add</v-icon></v-btn>
             <v-btn fab small primary @click.stop="dialogs.membershipsDelete = !dialogs.membershipsDelete"><v-icon class="white--text">delete</v-icon></v-btn>
+            <v-btn fab small primary @click.stop="dialogs.accountsUpload = !dialogs.accountsUpload"><v-icon class="white--text">file_upload</v-icon></v-btn>
           </v-speed-dial>
           <memberships-create-update v-model="dialogs.membershipsUpdate" :membership="membership" @updated="m => membership = m"></memberships-create-update>
           <memberships-accounts-add-update v-model="dialogs.accountsAdd" :membership="membership" @added="initializeAccounts"></memberships-accounts-add-update>
+          <memberships-accounts-upload v-model="dialogs.accountsUpload" :membership="membership" @uploaded="initializeAccounts"></memberships-accounts-upload>
           <confirm-dialog v-model="dialogs.membershipsDelete" @confirmed="deleteMembership">Are you sure you want to delete the membership: {{ membership.name }} ?</confirm-dialog>
           <span>{{ membership.description }}</span>
         </v-card-text>
@@ -66,6 +68,7 @@
 
 <script>
 import membershipsAccountsAddUpdate from 'common/memberships/accounts/add-update';
+import membershipsAccountsUpload from 'common/memberships/accounts/upload';
 import membershipsCreateUpdate from 'common/memberships/create-update';
 import confirmDialog from 'common/confirm-dialog';
 
@@ -73,6 +76,7 @@ let dialogs = {
   membershipsUpdate: false,
   membershipsDelete: false,
   accountsAdd: false,
+  accountsUpload: false,
   accountsUpdate: {},
   accountsDelete: {}
 };
@@ -97,7 +101,7 @@ export default {
       return this.$store.state.account || (this.$store.state.communities.indexOf(this.communityID) >= 0);
     }
   },
-  components: {membershipsCreateUpdate, membershipsAccountsAddUpdate, confirmDialog},
+  components: {membershipsCreateUpdate, membershipsAccountsAddUpdate, membershipsAccountsUpload, confirmDialog},
   methods: {initializeCommunity, initializeMembership, initializeAccounts, deleteMembership, removeAccount, resendResetPasswordEmail}
 };
 
