@@ -2,7 +2,7 @@ version: "3"
 networks:
   default:
     external:
-      name: api_default
+      name: peragrinapi_default
 services:
   client:
     build: .
