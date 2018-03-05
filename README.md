@@ -1,4 +1,4 @@
-# Peragrin Client - *a VueJS front end to the Peragrin application*
+# Peragrin Web Client - *a VueJS front end to the Peragrin application*
 
 ## Development
 
