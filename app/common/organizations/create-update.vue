@@ -11,7 +11,7 @@
 
         <p>If necessary, move the marker to adjust the organization's icon location on the map.</p>
         <v-map v-if="value && data.lon && data.lat" :zoom="zoom" :center="[data.lat, data.lon]" @l-zoomend="({target: {_zoom: v}}) => zoom = v">
-          <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+          <v-tilelayer :url="URL"></v-tilelayer>
           <v-marker v-on:l-move="move" :icon="icon" :lat-lng="{'lat': data.lat, 'lng': data.lon}" draggable></v-marker>
         </v-map>
 
@@ -38,11 +38,12 @@ import organizationsForm from 'common/organizations/form';
 import organizationsHours from 'common/organizations/hours';
 import {MARKERS} from 'common/categories';
 import {STATES} from 'common/geo';
+import {URL} from 'common/map';
 import _ from 'lodash';
 
 export default {
   props: ['organization', 'communityID', 'value'],
-  data: () => ({zoom: 6, submitting: false, msg: '', error: false, data: {}}),
+  data: () => ({zoom: 6, submitting: false, msg: '', error: false, data: {}, URL}),
   components: {organizationsForm, organizationsHours},
   computed: {
     icon () {

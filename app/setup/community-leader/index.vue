@@ -39,7 +39,7 @@
               <organizations-form v-model="organization" @geo-hit="() => zoom = 15" @geo-miss="() => zoom = 6"></organizations-form>
               <p>If necessary, move the marker to adjust the organization's icon location on the map.</p>
               <v-map v-if="step == 1 && organization.lon && organization.lat" :zoom="zoom" :center="[organization.lat, organization.lon]" @l-zoomend="({target: {_zoom: v}}) => zoom = v">
-                <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+                <v-tilelayer :url="URL"></v-tilelayer>
                 <v-marker v-on:l-move="moveOrganization" :icon="icon" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}" :draggable="true"></v-marker>
               </v-map>
             </v-flex>
@@ -77,7 +77,7 @@
         </v-card-text>
 
         <v-map v-if="step == 2" :zoom="community.zoom" :center="[community.lat, community.lon]" v-on:l-zoomend="({target: {_zoom: v}}) => community.zoom = v">
-          <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+          <v-tilelayer :url="URL"></v-tilelayer>
           <v-marker :icon="icon" v-on:l-move="moveCommunity" :lat-lng="[community.lat, community.lon]" :draggable="true"></v-marker>
         </v-map>
 
@@ -144,6 +144,7 @@ import organizationsForm from 'common/organizations/form';
 import organizationsHours from 'common/organizations/hours';
 import {MARKERS} from 'common/categories';
 import {STATES} from 'common/geo';
+import {URL} from 'common/map';
 import _ from 'lodash';
 import Papa from 'papaparse';
 
@@ -181,7 +182,7 @@ let georgia = STATES.find(s => s.code == 'GA'),
     submitting = {community: false, organization: false, operators: false};
 
 export default {
-  data: () => ({headers, operators: undefined, zoom: 6, step: undefined, organization, community, submitting, error, msg, success}),
+  data: () => ({headers, operators: undefined, zoom: 6, step: undefined, organization, community, submitting, error, msg, success, URL}),
   methods: {selectCSVFile, createOrganization, moveOrganization: _.debounce(moveOrganization, 500), moveCommunity: _.debounce(moveCommunity, 500), createCommunity, addOperators},
   components: {organizationsForm, organizationsHours},
   computed: {

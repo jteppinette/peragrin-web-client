@@ -12,7 +12,7 @@
       </v-card-text>
 
       <v-map v-if="data.lon && data.lat" :zoom="data.zoom" :center="[data.lat, data.lon]">
-        <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+        <v-tilelayer :url="URL"></v-tilelayer>
         <v-marker :icon="icon" :lat-lng="{'lat': data.lat, 'lng': data.lon}"></v-marker>
       </v-map>
 
@@ -32,10 +32,11 @@
 </template>
 <script>
 import {MARKERS} from 'common/categories';
+import {URL} from 'common/map';
 
 export default {
   props: ['organizationID', 'value'],
-  data: () => ({icon: MARKERS['Community Leader'], submitting: false, msg: '', error: false, data: {}, communities: [], isAdministrator: false}),
+  data: () => ({icon: MARKERS['Community Leader'], submitting: false, msg: '', error: false, data: {}, communities: [], isAdministrator: false, URL}),
   methods: {initialize, initializeCommunities, add},
   computed: {
     account () {

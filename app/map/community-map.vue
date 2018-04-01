@@ -41,7 +41,7 @@
   </div>
 
   <v-map ref="map" v-if="community && community.geoJSONOverlays" :zoom="zoom" :center="latlng" v-on:l-zoomend="({target: {_zoom: v}}) => zoom = v" class="control-right">
-    <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+    <v-tilelayer :url="URL"></v-tilelayer>
     <v-marker v-for="organization in filtered" @l-click="select(organization)" :key="organization.id" :icon="organization.icon" v-if="organization" :lat-lng="[organization.lat, organization.lon]"></v-marker>
     <v-marker v-if="self" :icon="icons.self" :lat-lng="self">
       <v-tooltip content="you"></v-tooltip>
@@ -57,6 +57,7 @@
 <script>
 import organizationDropdown from './organization-dropdown';
 import {CATEGORIES, MARKERS, SELF} from 'common/categories';
+import {URL} from 'common/map';
 
 let icons = {
   cl: MARKERS['Community Leader'],
@@ -65,7 +66,7 @@ let icons = {
 
 export default {
   props: ['community', 'distance', 'self'],
-  data: () => ({initialized: false, icons, results: false, filter: {}, latlng: undefined, categories: CATEGORIES, zoom: undefined, organization: undefined}),
+  data: () => ({initialized: false, icons, results: false, filter: {}, latlng: undefined, categories: CATEGORIES, zoom: undefined, organization: undefined, URL}),
   mounted: initialize,
   methods: {options, select, clear, initializeCommunity, initializeGeoJSONOverlays, initializeOrganizations},
   components: {organizationDropdown},

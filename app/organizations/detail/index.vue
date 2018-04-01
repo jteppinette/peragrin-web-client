@@ -27,7 +27,7 @@
         <!-- MAP -->
         <v-flex xs12 md6 class="pl-0-lg">
           <v-map v-if="organization.lat && organization.lon" :zoom="15" :center="[organization.lat, organization.lon]">
-            <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+            <v-tilelayer :url="URL"></v-tilelayer>
             <v-marker :icon="icon" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}"></v-marker>
           </v-map>
         </v-flex>
@@ -120,6 +120,7 @@ import organizationsDetails from 'common/organizations/details';
 import organizationsCreateUpdate from 'common/organizations/create-update';
 import organizationsOperatorsAdd from 'common/organizations/operators/add';
 import {MARKERS} from 'common/categories';
+import {URL} from 'common/map';
 import Dropzone from 'vue2-dropzone';
 import confirmDialog from 'common/confirm-dialog';
 
@@ -132,7 +133,7 @@ let dialogs = {
 
 export default {
   props: ['id'],
-  data: () => ({initialized: false, organization: {}, communities: [], dialogs}),
+  data: () => ({initialized: false, organization: {}, communities: [], dialogs, URL}),
   computed: {
     isAdministrator () {
       let isSuper = this.$store.state.account.isSuper;

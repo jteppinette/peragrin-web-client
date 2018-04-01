@@ -32,7 +32,7 @@
               <organizations-form v-model="organization" @geo-hit="() => zoom = 15" @geo-miss="() => zoom = 6"></organizations-form>
               <p>If necessary, move the marker to adjust the organization's icon location on the map.</p>
               <v-map v-if="step == 1 && organization.lon && organization.lat" :zoom="zoom" :center="[organization.lat, organization.lon]" @l-zoomend="({target: {_zoom: v}}) => zoom = v">
-                <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+                <v-tilelayer :url="URL"></v-tilelayer>
                 <v-marker v-on:l-move="move" :icon="icon" :lat-lng="{'lat': organization.lat, 'lng': organization.lon}" :draggable="true"></v-marker>
               </v-map>
             </v-flex>
@@ -110,6 +110,7 @@ import organizationsHours from 'common/organizations/hours';
 import Dropzone from 'vue2-dropzone';
 import {MARKERS} from 'common/categories';
 import {STATES} from 'common/geo';
+import {URL} from 'common/map';
 import _ from 'lodash';
 
 let georgia = STATES.find(s => s.code == 'GA'),
@@ -133,7 +134,7 @@ let georgia = STATES.find(s => s.code == 'GA'),
     submitting = {organization: false, community: false};
 
 export default {
-  data: () => ({zoom: 6, step: undefined, organization, communities: [], community: {}, error, msg, submitting}),
+  data: () => ({zoom: 6, step: undefined, organization, communities: [], community: {}, error, msg, submitting, URL}),
   mounted: initialize,
   methods: {create, move: _.debounce(move, 500), join},
   components: {organizationsForm, organizationsHours, Dropzone},

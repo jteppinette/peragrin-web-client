@@ -18,7 +18,7 @@
   </div>
 
   <v-map ref="map" :zoom="zoom" :center="latlng" v-on:l-zoomend="({target: {_zoom: v}}) => zoom = v" class="control-right">
-    <v-tilelayer url="https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoianRlcHBpbmV0dGUtcGVyYWdyaW4iLCJhIjoiY2oxb2phcGY0MDAzajJxcGZvc29wN3ExbyJ9.xtRkiXQAS-P6VOO7B-dEsA"></v-tilelayer>
+    <v-tilelayer :url="URL"></v-tilelayer>
     <v-marker v-for="c in communities" :icon="c.id == community.id ? icons.active : icons.cl" @l-click="() => community = c" :key="c.id" v-if="c" :lat-lng="[c.lat, c.lon]">
       <v-tooltip :content="c.name"></v-tooltip>
     </v-marker>
@@ -33,6 +33,7 @@
 <script>
 import {MARKERS, ACTIVE_COMMUNITY, SELF} from 'common/categories';
 import {generateLink} from 'common/directions';
+import {URL} from 'common/map';
 
 let icons = {
   cl: MARKERS['Community Leader'],
@@ -42,7 +43,7 @@ let icons = {
 
 export default {
   props: ['communities', 'self'],
-  data: () => ({initialized: false, community: undefined, latlng: [], zoom: 11, icons}),
+  data: () => ({initialized: false, community: undefined, latlng: [], zoom: 11, icons, URL}),
   mounted: initialize,
   methods: {generateLink},
   watch: {
